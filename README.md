@@ -1,1 +1,1 @@
-# Modeling trend of variance of spatio-temporal data
+# Modeling trend in variance of spatio-temporal data
