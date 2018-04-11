@@ -146,7 +146,7 @@ def gribToArray(gribFilename,outputFilename,destDir,
         #save data and metadata
         dataMat.tofile(join(destDir,outputFilename+'_data'))
         metadata={'lats':lats,'lons':lons,
-                  'n_rows':n_rows,'n_cols':n_cols,'dates':date}
+                  'n_rows':n_rows,'n_cols':n_cols,'dates':date,'T':len(date)}
         with open(join(destDir,outputFilename+'_metadata'),'wb') as f:
             dump(metadata,f)
     

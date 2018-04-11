@@ -16,13 +16,8 @@ class BaseAlgorithmClass():
             self.dataDir=config.DATA_DIR
         else:
             self.dataDir=dataDir
-
-        if destDir is None:
-            self.destDir=config.DATA_DIR
-        else:
-            self.destDir=destDir
         
-        self.metadata={'nrows':[],'ncols':[],'T':[],'dates':[],
+        self.metadata={'n_rows':[],'n_cols':[],'T':[],'dates':[],
                        'lats':[],'lons':[]}
         self.dataMat=[]
         
@@ -32,27 +27,30 @@ class BaseAlgorithmClass():
         with open(join(self.dataDir,metadata_fn)) as f:
             self.metadata=load(f)
             
-        nrows,ncols,T=(self.metadata['nrows'],self.metadata['ncols'],
-               self.metadata['T'])
+        n_rows,n_cols,T=(self.metadata['n_rows'],self.metadata['n_cols'],
+                         self.metadata['T'])
         #===load metadata===
 
         #===load data===
-        self.dataMat=np.fromfile(join(self.dataDir,data_fn)).\
-                            reshape((nrows*ncols,T))
+        self.dataMat=np.fromfile(join(self.dataDir,data_fn),dtype='float32').\
+                            reshape((n_rows*n_cols,T))
         #===load data===
     
  
 class LinearizedADMM(BaseAlgorithmClass):
 
-    def fit(self,lam_t_vec,lam_s_vec,mu=.01,maxIter=40000,freq=100,
-            ifWarmStart=False,lh_trend=True,
+    def fit(self,destDir,lam_t_vec,lam_s_vec,
+            mu=.01,maxIter=40000,freq=100,
+            ifWarmStart=True,lh_trend=True,
             earlyStopping=True,patience=2,tol=.1):
         
-
         
-        
-        
-        linearizedADMM_fit()
+        linearizedADMM_fit(self.dataMat,destDir,self.metadata,
+                           lam_t_vec,lam_s_vec,mu=mu,
+                           maxIter=maxIter,freq=freq,
+                           ifWarmStart=ifWarmStart,lh_trend=lh_trend,
+                           earlyStopping=earlyStopping,
+                           patience=patience,tol=tol)
         
     
     

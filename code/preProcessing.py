@@ -66,6 +66,6 @@ df.to_csv(join(dataDir,'1960-01-01_to_2010-12-31_data_avg_sub.csv'),
 #Then come back and run the folllowing lines.
 
 #fn='1960-01-01_to_2010-12-31_data_avg_sub_north_detrended'
-#dataMat=pd.read_csv(join(dataDir,fn+'.csv')).values
+#dataMat=np.array(pd.read_csv(join(dataDir,fn+'.csv')).values,'float32')
 #dataMat.tofile(join(dataDir,fn))
 #===save detrended data as numpy.array inbinary file===
