@@ -1,9 +1,13 @@
 import numpy as np
 from os.path import join
 from cPickle import load
+import gc,datetime
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
 
 from .. import config
 from .linearized_admm import linearizedADMM_fit
+from ..utils import latlon_to_rowcol
 
 __metaclass__=type
 class BaseAlgorithmClass():
@@ -35,8 +39,126 @@ class BaseAlgorithmClass():
         self.dataMat=np.fromfile(join(self.dataDir,data_fn),dtype='float32').\
                             reshape((n_rows*n_cols,T))
         #===load data===
-    
- 
+        
+    def analyseFittedValues(self,filepath):
+
+        #===metadata===
+        n_rows=self.metadata['n_rows'];n_cols=self.metadata['n_cols']
+        gridsize=n_rows*n_cols
+        T=self.metadata['T'];n_years=T/52 
+        years=np.unique(np.array(map(lambda x:x.year,self.metadata['dates'])))
+        self.metadata.update({'years':[datetime.date(y,06,01)\
+                                       for y in years.tolist()]})
+        #===metadata===
+        
+        #===load fitted values and compute fitted variance===        
+        X=np.exp(np.fromfile(filepath).reshape((gridsize,T)))
+        self.fittedVar=X.copy()
+        #===load fitted values and compute fitted variance===
+        
+        #===compute yearly average of fitted variance===        
+        X=X[:,0:n_years*52].reshape((n_years*gridsize,52))
+        X=np.mean(X,axis=1).reshape((gridsize,n_years))
+        self.fittedVar_yearly_avg=X.copy()
+        #===compute yearly average of fitted variance===
+        
+        #===compute the sum of the change in variance at each location===
+        self.changeInVar=np.mean(X-np.tile(X[:,[0]],(1,n_years)),axis=1).\
+                            reshape((n_rows,n_cols),order='F')
+        del X;gc.collect()                                    
+        #===compute the sum of the change in variance at each location===
+        
+    def plot_ts_of_locations(self,latList,lonList,
+                             savepath,figureLayout,figsize,
+                             overlayFittedSD=True):
+        
+        #===metadata===
+        lats,lons,n_rows,n_cols,dates=(self.metadata['lats'],
+                                       self.metadata['lons'],
+                                       self.metadata['n_rows'],
+                                       self.metadata['n_cols'],
+                                       self.metadata['dates'])
+        r,c=figureLayout
+        #===metadata===
+        
+        fig=plt.figure(figsize=figsize)
+        for i,lat,lon in zip(range(len(latList)),latList,lonList):
+            row,col,idx=latlon_to_rowcol(lat,lon,lats,lons,n_rows,n_cols)
+            if i==0:
+                ax1=fig.add_subplot(r,c,i+1)
+            elif r==1:
+                fig.add_subplot(r,c,i+1,sharey=ax1)
+            elif c==1:
+                fig.add_subplot(r,c,i+1,sharex=ax1)
+                
+            plt.plot(dates,self.dataMat[idx,:]);
+            
+            if overlayFittedSD:
+                years=self.metadata['years']
+                plt.plot(dates,np.sqrt(self.fittedVar[idx,:]));
+                plt.plot(years,np.sqrt(self.fittedVar_yearly_avg[idx,:]));
+                
+        if overlayFittedSD:
+            plt.legend(['data','estimated SD',
+                                'yearly average \n of estimated SD'])
+        fig.text(0.5, 0.04, 'year', ha='center', va='center')
+        fig.text(0.08,0.5,'temperature (K)',ha='center',va='center',
+                 rotation='vertical')
+        fig.savefig(savepath,dpi=300,format='pdf')
+        
+    def plotAvgChangeInVariance(self,saveDir):
+        
+        #===metadata===
+        lats,lons,n_rows,n_cols=(self.metadata['lats'],
+                                       self.metadata['lons'],
+                                       self.metadata['n_rows'],
+                                       self.metadata['n_cols'])
+        #===metadata===
+        
+        lats=lats.reshape((n_rows,n_cols),order='F')
+        lons=lons.reshape((n_rows,n_cols),order='F')
+        
+        #===plot average change in variance===
+        fig=plt.figure(figsize=(10,6))
+        plt.plot()
+        map = Basemap(projection='mill',
+                      llcrnrlon=lons.min(),llcrnrlat=lats.min(),
+                      urcrnrlon=lons.max(),urcrnrlat=lats.max())
+        map.drawcoastlines()
+        map.drawparallels(np.arange(np.ceil(lats.min()),
+                                    np.floor(lats.max()),20),
+                          labels=[1,0,0,0])
+        map.drawmeridians(np.arange(np.ceil(lons.min()),
+                                    np.floor(lons.max()),40),
+                          labels=[0,0,0,1])
+        map.pcolor(lons,lats,data=self.changeInVar,latlon=True)
+        plt.colorbar(fraction=.013)
+        
+        fig.savefig(join(saveDir,'avg_change_estimatedVar.pdf'),
+                  dpi=300,format='pdf')
+        #===plot average change in variance===
+        
+        #===plot average variance===
+        fig=plt.figure(figsize=(10,6))
+        plt.plot()
+        map = Basemap(projection='mill',
+                      llcrnrlon=lons.min(),llcrnrlat=lats.min(),
+                      urcrnrlon=lons.max(),urcrnrlat=lats.max())
+        map.drawcoastlines()
+        map.drawparallels(np.arange(np.ceil(lats.min()),
+                                    np.floor(lats.max()),20),
+                          labels=[1,0,0,0])
+        map.drawmeridians(np.arange(np.ceil(lons.min()),
+                                    np.floor(lons.max()),40),
+                          labels=[0,0,0,1])
+        map.pcolor(lons,lats,data=np.mean(self.fittedVar,axis=1).\
+                                       reshape((n_rows,n_cols),order='F'),
+                                       latlon=True)
+        plt.colorbar(fraction=.013)
+        fig.savefig(join(saveDir,'avg_estimatedVar.pdf'),
+                  dpi=300,format='pdf')
+        #===plot average variance===
+        
 class LinearizedADMM(BaseAlgorithmClass):
 
     def fit(self,destDir,lam_t_vec,lam_s_vec,

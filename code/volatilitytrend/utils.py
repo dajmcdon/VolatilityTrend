@@ -112,3 +112,15 @@ def compute_D_and_lam(n_rows,n_cols,T,lam_t,lam_s,lh_trend=True,
 def computeLoss(X,o2,D,lam_vec):
     l= np.sum(X + o2*np.exp(-X)) + np.sum(lam_vec*np.abs(D.dot(X)))
     return l
+
+def latlon_to_rowcol(lat,lon,lats,lons,n_rows,n_cols):
+    
+    lats=lats.reshape((n_rows,n_cols),order='F')
+    lons=lons.reshape((n_rows,n_cols),order='F')
+    if lon<0:
+        lon=lon+360
+
+    row=np.argmin(np.abs(lats[:,0]-lat))
+    col=np.argmin(np.abs(lons[0,:]-lon))
+    idx=np.ravel_multi_index((row,col),lats.shape,order='F')
+    return row,col,idx
