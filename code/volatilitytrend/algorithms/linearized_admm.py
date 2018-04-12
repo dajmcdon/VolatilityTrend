@@ -9,7 +9,6 @@ from time import ctime
 from os.path import join
 import os
 import pandas as pd
-from cPickle import dump,load
            
                 
 def prox_f(v,o2,rho):
@@ -61,12 +60,12 @@ def warmStart(i_t,i_s,lam_t_vec,lam_s_vec,mu,c_D,r_D,destDir):
                 fn='mu_'+str(mu)+'_lam_t_'+str(df.lam_t[0])+\
                    '_lam_s_'+str(df.lam_s[0])
     
-    #===load fitted values===
-    fn=join(destDir,'fitted_'+fn)
+    #===load fitted values===       
     print('warm starting from %s'%fn)
-    with open(fn) as f:
-        fittedModel = load(f)
-    X,Z,U=(fittedModel['X'],fittedModel['Z'],fittedModel['U'])
+    
+    X=np.fromfile(join(destDir,'X_'+fn),'float64').reshape((c_D,1))
+    Z=np.fromfile(join(destDir,'Z_'+fn),'float64').reshape((r_D,1))
+    U=np.fromfile(join(destDir,'U_'+fn),'float64').reshape((r_D,1)) 
     return X,Z,U,1
     #===load fitted values===
 
@@ -161,11 +160,13 @@ def linearizedADMM_fit(dataMat,destDir,metadata,
             
             #---save results---
             print(ctime()+'...saving results...')
+            
+            X.tofile(join(destDir,'X_'+result_fn))
+            Z.tofile(join(destDir,'Z_'+result_fn))
+            U.tofile(join(destDir,'U_'+result_fn))
             totalLoss=np.vstack((freq*np.arange(len(totalLoss)),
-                      np.array(totalLoss)))
-            fittedValues={'X':X,'U':U,'Z':Z,'totalLoss':totalLoss}
-            with open(join(destDir,'fitted_'+result_fn),'wb') as f:
-                dump(fittedValues,f)                
+                                 np.array(totalLoss)))
+            totalLoss.tofile(join(destDir,'loss_'+result_fn))               
             #---save results---    
     #===compute solution for all lam_t and lam_s===
     
