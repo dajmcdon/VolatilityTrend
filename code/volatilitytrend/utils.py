@@ -3,7 +3,7 @@ from time import ctime
 import numpy as np
 
 def compute_D_and_lam(n_rows,n_cols,T,lam_t,lam_s,lh_trend=True,
-                        ifCompute_Gh=False,wrapAround=False):
+                        ifCompute_Gh=False,wrapAround=True):
     '''
     This computes the matrix D and vector lam_vec.
     '''
@@ -88,7 +88,7 @@ def compute_D_and_lam(n_rows,n_cols,T,lam_t,lam_s,lh_trend=True,
     #---temporal penalty---
     
     if lh_trend:
-        r_lh=(n_year-2)*p#this is used in computing h below
+        r_lh=(n_year-2)*p
         I_lh=np.hstack(I_lh);J_lh=np.hstack(J_lh);
         I=np.hstack([I_t,I_s+r_t,I_lh+r_s+r_t]);
         J=np.hstack([J_t,J_s,J_lh]);

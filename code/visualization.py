@@ -2,7 +2,7 @@ from volatilitytrend.algorithms.base import LinearizedADMM
 from os.path import join
 import matplotlib.pyplot as plt
 
-lam_t=.1;lam_s=0;mu=.01
+lam_t=2;lam_s=5;mu=.01
 dataset='north_hemisphere'
 #dataset='us'
 
@@ -39,6 +39,9 @@ plt.hist(la.changeInVar.flatten(),bins=50)
 plt.xlabel('change in variance');plt.ylabel('frequency');
 fig.savefig(join(saveFigDir,'hist_avg_change.pdf'),dpi=300,format='pdf')
 #===plot histogram of avg. change===
+
+la.plot_solution_for_timeStamp('1974-01-01',figsize=(18,6),
+                               saveDir=saveFigDir)
 
 
 

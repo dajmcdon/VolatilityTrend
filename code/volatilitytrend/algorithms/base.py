@@ -4,6 +4,7 @@ from cPickle import load
 import gc,datetime
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
+import pandas as pd
 
 from .. import config
 from .linearized_admm import linearizedADMM_fit
@@ -67,6 +68,47 @@ class BaseAlgorithmClass():
                             reshape((n_rows,n_cols),order='F')
         del X;gc.collect()                                    
         #===compute the sum of the change in variance at each location===
+    
+    def plot_solution_for_timeStamp(self,date,figsize,saveDir):
+        #===metadata===
+        lats,lons,n_rows,n_cols,dates=(self.metadata['lats'],
+                                       self.metadata['lons'],
+                                       self.metadata['n_rows'],
+                                       self.metadata['n_cols'],
+                                       self.metadata['dates'])
+        #===metadata===
+        
+        #===retrieve the solution for the desired date===
+        td=pd.DataFrame({'dates':dates}).dates.dt.date-\
+           pd.Timestamp(date).date()        
+        idx=td.abs().argmin()
+        X = self.fittedVar[:,idx]
+        #===retrieve the solution for the desired date===
+        
+        #===reshape data for map.pcolor===
+        lons=((lons+180) % 360) - 180
+        lats=lats.reshape((n_rows,n_cols),order='F')
+        lons=lons.reshape((n_rows,n_cols),order='F')
+        X=X.reshape((n_rows,n_cols),order='F')
+        #===reshape data for map.pcolor===
+        
+        fig=plt.figure(figsize=figsize)
+        map = Basemap(projection='mill',
+                      llcrnrlon=lons.min(),llcrnrlat=lats.min(),
+                      urcrnrlon=lons.max(),urcrnrlat=lats.max())
+        map.drawcoastlines()
+        map.drawparallels(np.arange(np.ceil(lats.min()),
+                                    np.floor(lats.max()),20),
+                          labels=[1,0,0,0])
+        map.drawmeridians(np.arange(np.ceil(lons.min()),
+                                    np.floor(lons.max()),40),
+                          labels=[0,0,0,1])
+        map.pcolor(lons,lats,data=X,latlon=True)
+        plt.colorbar(fraction=.013)   
+        
+        fn=join(saveDir,'estimatedVar_in_{}.pdf'.format(date))
+        fig.savefig(fn,dpi=300,format='pdf')
+        
         
     def plot_ts_of_locations(self,latList,lonList,
                              savepath,figureLayout,figsize,
@@ -115,6 +157,7 @@ class BaseAlgorithmClass():
                                        self.metadata['n_cols'])
         #===metadata===
         
+        lons=((lons+180) % 360) - 180
         lats=lats.reshape((n_rows,n_cols),order='F')
         lons=lons.reshape((n_rows,n_cols),order='F')
         
@@ -164,7 +207,8 @@ class LinearizedADMM(BaseAlgorithmClass):
     def fit(self,destDir,lam_t_vec,lam_s_vec,
             mu=.01,maxIter=40000,freq=100,
             ifWarmStart=True,lh_trend=True,
-            earlyStopping=True,patience=2,tol=.1):
+            earlyStopping=True,patience=2,tol=.1,
+            ifAdaptMu=False,mu_adapt_rate=.95,mu_adapt_freq=100):
         
         
         linearizedADMM_fit(self.dataMat,destDir,self.metadata,
@@ -172,7 +216,9 @@ class LinearizedADMM(BaseAlgorithmClass):
                            maxIter=maxIter,freq=freq,
                            ifWarmStart=ifWarmStart,lh_trend=lh_trend,
                            earlyStopping=earlyStopping,
-                           patience=patience,tol=tol)
+                           patience=patience,tol=tol,
+                           ifAdaptMu=ifAdaptMu,mu_adapt_rate=mu_adapt_rate,
+                           mu_adapt_freq=mu_adapt_freq)
         
     
     

@@ -79,7 +79,8 @@ def linearizedADMM_fit(dataMat,destDir,metadata,
                        lam_t_vec,lam_s_vec,mu=.01,
                        maxIter=40000,freq=100,
                        ifWarmStart=True,lh_trend=True,
-                       earlyStopping=True,patience=2,tol=.1):
+                       earlyStopping=True,patience=2,tol=.1,
+                       ifAdaptMu=False,mu_adapt_rate=.95,mu_adapt_freq=100):
     
     #===reshape data===
     o=dataMat.reshape((dataMat.size,1))
@@ -136,6 +137,14 @@ def linearizedADMM_fit(dataMat,destDir,metadata,
             
             #---ADMM loop---
             for it in range(maxIter):
+                #adapt mu
+                if ifAdaptMu and (it!=0) and (it%mu_adapt_freq==0):
+                    mu*=mu_adapt_rate
+                    lam=1.*D_norm*mu
+                    scaled_lam=lam*lam_vec 
+                    print('mu={}'.format(mu))
+                #adapt mu
+                
                 X_= X-(mu/lam)*D.transpose()*(Dx-Z+U)
                 
                 X = prox_f(X_,o2,mu)

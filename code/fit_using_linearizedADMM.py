@@ -2,7 +2,7 @@ from volatilitytrend.algorithms.base import LinearizedADMM
 
 dataset='north_hemisphere'
 #dataset='us'
-lam_t_vec=[.1,1]
+lam_t_vec=[.5]
 lam_s_vec=[0]
 
 if dataset=='us':
@@ -15,12 +15,14 @@ elif dataset=='north_hemisphere':
     data_fn='1960-01-01_to_2010-12-31_data_avg_sub_north_detrended'
     metadata_fn='1960-01-01_to_2010-12-31_metadata_avg_sub_north_detrended'
     destDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/'+\
-            'globe/Fitted_linADMM'
+            'globe/Fitted_linADMM/adaptMu'
 
 print('\014')
 la = LinearizedADMM()#construct linearizedADMM object
 la.loadData(data_fn,metadata_fn)#load data
-la.fit(destDir,lam_t_vec,lam_s_vec,maxIter=2,freq=1)
+la.fit(destDir,lam_t_vec,lam_s_vec,maxIter=5000,freq=100,
+       ifWarmStart=False,earlyStopping=False,mu=.1,
+       ifAdaptMu=True,mu_adapt_rate=.99,mu_adapt_freq=500)
 
 
 
