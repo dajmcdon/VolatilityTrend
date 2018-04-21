@@ -53,7 +53,7 @@ class BaseAlgorithmClass():
         #===metadata===
         
         #===load fitted values and compute fitted variance===        
-        X=np.exp(np.fromfile(filepath).reshape((gridsize,T)))
+        X=np.fromfile(filepath).reshape((gridsize,T))#???work on log(var)?
         self.fittedVar=X.copy()
         #===load fitted values and compute fitted variance===
         
@@ -69,7 +69,7 @@ class BaseAlgorithmClass():
         del X;gc.collect()                                    
         #===compute the sum of the change in variance at each location===
     
-    def plot_solution_for_timeStamp(self,date,figsize,saveDir):
+    def plot_solution_for_timeStamp(self,date,figsize,saveDir,suffix):
         #===metadata===
         lats,lons,n_rows,n_cols,dates=(self.metadata['lats'],
                                        self.metadata['lons'],
@@ -106,7 +106,7 @@ class BaseAlgorithmClass():
         map.pcolor(lons,lats,data=X,latlon=True)
         plt.colorbar(fraction=.013)   
         
-        fn=join(saveDir,'estimatedVar_in_{}.pdf'.format(date))
+        fn=join(saveDir,'estimatedVar_in_{}_{}.pdf'.format(date,suffix))
         fig.savefig(fn,dpi=300,format='pdf')
         
         
@@ -137,8 +137,9 @@ class BaseAlgorithmClass():
             
             if overlayFittedSD:
                 years=self.metadata['years']
-                plt.plot(dates,np.sqrt(self.fittedVar[idx,:]));
-                plt.plot(years,np.sqrt(self.fittedVar_yearly_avg[idx,:]));
+                plt.plot(dates,2*np.sqrt(np.exp(self.fittedVar[idx,:])/2));
+                plt.plot(years,2*np.sqrt(np.exp(self.\
+                                              fittedVar_yearly_avg[idx,:])/2));
                 
         if overlayFittedSD:
             plt.legend(['data','estimated SD',
@@ -148,7 +149,7 @@ class BaseAlgorithmClass():
                  rotation='vertical')
         fig.savefig(savepath,dpi=300,format='pdf')
         
-    def plotAvgChangeInVariance(self,saveDir):
+    def plotAvgChangeInVariance(self,saveDir,suffix):
         
         #===metadata===
         lats,lons,n_rows,n_cols=(self.metadata['lats'],
@@ -177,8 +178,8 @@ class BaseAlgorithmClass():
         map.pcolor(lons,lats,data=self.changeInVar,latlon=True)
         plt.colorbar(fraction=.013)
         
-        fig.savefig(join(saveDir,'avg_change_estimatedVar.pdf'),
-                  dpi=300,format='pdf')
+        fn=join(saveDir,'avg_change_logVar_{}.pdf'.format(suffix))
+        fig.savefig(fn,dpi=300,format='pdf')
         #===plot average change in variance===
         
         #===plot average variance===
@@ -198,8 +199,8 @@ class BaseAlgorithmClass():
                                        reshape((n_rows,n_cols),order='F'),
                                        latlon=True)
         plt.colorbar(fraction=.013)
-        fig.savefig(join(saveDir,'avg_estimatedVar.pdf'),
-                  dpi=300,format='pdf')
+        fn=join(saveDir,'avg_logVar_{}.pdf'.format(suffix))
+        fig.savefig(fn,dpi=300,format='pdf')
         #===plot average variance===
         
 class LinearizedADMM(BaseAlgorithmClass):

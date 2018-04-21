@@ -20,29 +20,40 @@ elif dataset=='north_hemisphere':
             'globe/Fitted_linADMM'
     saveFigDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/globe/Figures'
 
+#===load data===
 print('\014')
+mu,lam_t,lam_s=(float(mu),float(lam_t),float(lam_s))
+fn='mu_{}_lam_t_{}_lam_s_{}'.format(mu,lam_t,lam_s)
 la = LinearizedADMM()#construct linearizedADMM object
 la.loadData(data_fn,metadata_fn)#load data
+#===load data===
 
-mu,lam_t,lam_s=(float(mu),float(lam_t),float(lam_s))
-fn='mu_'+str(mu)+'_lam_t_'+str(lam_t)+'_lam_s_'+str(lam_s)
+#===analyse fitted value and compute var and ave. var===
 la.analyseFittedValues(join(destDir,'X_'+fn))
+#===analyse fitted value and compute var and ave. var===
 
+#===plot time series of temerature at different locations===
 saveFigPath=join(saveFigDir,'ts_'+fn)
 la.plot_ts_of_locations([39.17,32.7],[-86.52,-117.6],saveFigPath,
                         figureLayout=(1,2),figsize=(12,4))
-la.plotAvgChangeInVariance(saveFigDir)
+#===plot time series of temerature at different locations===
+
+#===plot average change in variance===
+la.plotAvgChangeInVariance(saveFigDir,suffix=fn)
+#===plot average change in variance===
 
 #===plot histogram of avg. change===
 fig=plt.figure()
 plt.hist(la.changeInVar.flatten(),bins=50)
 plt.xlabel('change in variance');plt.ylabel('frequency');
-fig.savefig(join(saveFigDir,'hist_avg_change.pdf'),dpi=300,format='pdf')
+fig.savefig(join(saveFigDir,'hist_avg_change_{}.pdf'.format(fn)),
+            dpi=300,format='pdf')
 #===plot histogram of avg. change===
 
+#===plot solution for a given data===
 la.plot_solution_for_timeStamp('1974-01-01',figsize=(18,6),
-                               saveDir=saveFigDir)
-
+                               saveDir=saveFigDir,suffix=fn)
+#===plot solution for a given data===
 
 
 
