@@ -125,7 +125,7 @@ def linearizedADMM_fit(dataMat,destDir,metadata,
             if (ifWarmStart==0) or (ifWarmStartFlag==0):
                 X=initializeWithMeanVar(o2.reshape((n_cols*n_rows,T)))
                 Z=np.zeros((r_D,1));U=np.zeros((r_D,1));    
-        
+                  
             Dx=D*X        
             totalLoss=[]
             totalLoss.append(computeLoss(X,o2,D,lam_vec))
@@ -142,7 +142,6 @@ def linearizedADMM_fit(dataMat,destDir,metadata,
                     mu*=mu_adapt_rate
                     lam=1.*D_norm*mu
                     scaled_lam=lam*lam_vec 
-                    print('mu={}'.format(mu))
                 #adapt mu
                 
                 X_= X-(mu/lam)*D.transpose()*(Dx-Z+U)
