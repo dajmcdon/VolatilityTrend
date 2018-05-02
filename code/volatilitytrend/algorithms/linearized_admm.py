@@ -22,43 +22,43 @@ def prox_g(v,lam_vec):
 
 def warmStart(i_t,i_s,lam_t_vec,lam_s_vec,mu,c_D,r_D,destDir): 
     fn=None
-    if i_s!=0:
-        fn='mu_'+str(mu)+'_lam_t_'+str(lam_t_vec[i_t])+\
-           '_lam_s_'+str(lam_s_vec[i_s-1])
-    elif (i_s==0) and (i_t!=0):
-        fn='mu_'+str(mu)+'_lam_t_'+str(lam_t_vec[i_t-1])+\
-           '_lam_s_'+str(lam_s_vec[i_s])
-    elif (i_s==0) and (i_t==0):
-        #check destDir to see if there is any results saved
-        #there which can be used to warm start.
+#    if i_s!=0:
+#        fn='mu_'+str(mu)+'_lam_t_'+str(lam_t_vec[i_t])+\
+#           '_lam_s_'+str(lam_s_vec[i_s-1])
+#    elif (i_s==0) and (i_t!=0):
+#        fn='mu_'+str(mu)+'_lam_t_'+str(lam_t_vec[i_t-1])+\
+#           '_lam_s_'+str(lam_s_vec[i_s])
+#    elif (i_s==0) and (i_t==0):
+#        #check destDir to see if there is any results saved
+#        #there which can be used to warm start.
                 
-        files=os.listdir(destDir)#get all files in destDir
-        if len(files)==0:
-            #no fitted values for warmstart
-            return [],[],[],0#X,Z,U,ifWarmStart            
+    files=os.listdir(destDir)#get all files in destDir
+    if len(files)==0:
+        #no fitted values for warmstart
+        return [],[],[],0#X,Z,U,ifWarmStart            
+    else:
+        fitted_lam_t=np.array([float(s[(s.find('lam_t')+6):\
+                                     s.find('_lam_s')]) for s in files \
+                                     if s.find('lam_t')!=-1])
+        fitted_lam_s=np.array([float(s[(s.find('lam_s')+6):]) \
+                               for s in files if s.find('lam_t')!=-1])
+        candidate_idx=(fitted_lam_t<=lam_t_vec[i_t]) & \
+                      (fitted_lam_s<=lam_s_vec[i_s])
+        if candidate_idx.sum()==0:
+            #no appropriate fitted values for warmstart
+            return [],[],[],0#X,Z,U,ifWarmStart  
         else:
-            fitted_lam_t=np.array([float(s[(s.find('lam_t')+6):\
-                                         s.find('_lam_s')]) for s in files \
-                                         if s.find('lam_t')!=-1])
-            fitted_lam_s=np.array([float(s[(s.find('lam_s')+6):]) \
-                                   for s in files if s.find('lam_t')!=-1])
-            candidate_idx=(fitted_lam_t<=lam_t_vec[i_t]) & \
-                          (fitted_lam_s<=lam_s_vec[i_s])
-            if candidate_idx.sum()==0:
-                #no appropriate fitted values for warmstart
-                return [],[],[],0#X,Z,U,ifWarmStart  
-            else:
-                #choose the one with the closest lam_t and then lam_s
-                df=pd.DataFrame({'lam_t':fitted_lam_t[candidate_idx],
-                                 'lam_s':fitted_lam_s[candidate_idx],
-                                 'dist_t':np.abs(lam_t_vec[i_t]-\
-                                                 fitted_lam_t[candidate_idx]),
-                                 'dist_s':np.abs(lam_s_vec[i_s]-\
-                                                 fitted_lam_s[candidate_idx])})
-                df=df.sort_values(by=['dist_t','dist_s']).reset_index()
+            #choose the one with the closest lam_t and then lam_s
+            df=pd.DataFrame({'lam_t':fitted_lam_t[candidate_idx],
+                             'lam_s':fitted_lam_s[candidate_idx],
+                             'dist_t':np.abs(lam_t_vec[i_t]-\
+                                             fitted_lam_t[candidate_idx]),
+                             'dist_s':np.abs(lam_s_vec[i_s]-\
+                                             fitted_lam_s[candidate_idx])})
+            df=df.sort_values(by=['dist_t','dist_s']).reset_index()
 
-                fn='mu_'+str(mu)+'_lam_t_'+str(df.lam_t[0])+\
-                   '_lam_s_'+str(df.lam_s[0])
+            fn='mu_'+str(mu)+'_lam_t_'+str(df.lam_t[0])+\
+               '_lam_s_'+str(df.lam_s[0])
     
     #===load fitted values===       
     print('warm starting from %s'%fn)
