@@ -37,8 +37,8 @@ class BaseAlgorithmClass():
         #===load metadata===
 
         #===load data===
-        self.dataMat=np.fromfile(join(self.dataDir,data_fn),dtype='float32').\
-                            reshape((n_rows*n_cols,T))
+        self.dataMat=np.fromfile(join(self.dataDir,data_fn),
+                                 dtype='float32').reshape((n_rows*n_cols,T))
         #===load data===
         
     def analyseFittedValues(self,filepath):
@@ -207,7 +207,7 @@ class LinearizedADMM(BaseAlgorithmClass):
 
     def fit(self,destDir,lam_t_vec,lam_s_vec,
             mu=.01,maxIter=40000,freq=100,
-            ifWarmStart=True,lh_trend=True,
+            ifWarmStart=True,lh_trend=True,wrapAround=True,
             earlyStopping=True,patience=2,tol=.1,
             ifAdaptMu=False,mu_adapt_rate=.95,mu_adapt_freq=100):
         
@@ -216,6 +216,7 @@ class LinearizedADMM(BaseAlgorithmClass):
                            lam_t_vec,lam_s_vec,mu=mu,
                            maxIter=maxIter,freq=freq,
                            ifWarmStart=ifWarmStart,lh_trend=lh_trend,
+                           wrapAround=wrapAround,
                            earlyStopping=earlyStopping,
                            patience=patience,tol=tol,
                            ifAdaptMu=ifAdaptMu,mu_adapt_rate=mu_adapt_rate,

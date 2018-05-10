@@ -78,7 +78,7 @@ def initializeWithMeanVar(o2_mat):
 def linearizedADMM_fit(dataMat,destDir,metadata,
                        lam_t_vec,lam_s_vec,mu=.01,
                        maxIter=40000,freq=100,
-                       ifWarmStart=True,lh_trend=True,
+                       ifWarmStart=True,lh_trend=True,wrapAround=True,
                        earlyStopping=True,patience=2,tol=.1,
                        ifAdaptMu=False,mu_adapt_rate=.95,mu_adapt_freq=100):
     
@@ -97,21 +97,23 @@ def linearizedADMM_fit(dataMat,destDir,metadata,
     lam_s_vec=[float(lam_s) for lam_s in lam_s_vec]
     mu=float(mu)
     #===make sure the parameters are float===   
-    
-    #===compute D and lam_vec===
-    D,lam_vec=compute_D_and_lam(n_rows,n_cols,T,lam_t,lam_s,lh_trend=lh_trend)
-    r_D,c_D=D.shape
-    D_norm=norm(D)    
-    lam=1.*D_norm*mu
-    scaled_lam=lam*lam_vec    
-    #===compute D and lam_vec===
 
     #===compute solution for all lam_t and lam_s=== 
     for i_t,lam_t in enumerate(lam_t_vec):
-        for i_s,lam_s in enumerate(lam_s_vec):
+        for i_s,lam_s in enumerate(lam_s_vec):            
             print('\014')
             print('\n'+ctime()+'...fitting model with lam_t=%.2f, lam_s=%.2f'%\
                   (lam_t,lam_s))
+
+            #===compute D and lam_vec===
+            D,lam_vec=compute_D_and_lam(n_rows,n_cols,T,lam_t,lam_s,
+                                        lh_trend=lh_trend,
+                                        wrapAround=wrapAround)
+            r_D,c_D=D.shape
+            D_norm=norm(D)    
+            lam=1.*D_norm*mu
+            scaled_lam=lam*lam_vec    
+            #===compute D and lam_vec===
             
             #results filename 
             result_fn = 'mu_'+str(mu)+'_lam_t_'+str(lam_t)+\
@@ -122,7 +124,7 @@ def linearizedADMM_fit(dataMat,destDir,metadata,
             if ifWarmStart:
                 X,Z,U,ifWarmStartFlag=warmStart(i_t,i_s,lam_t_vec,lam_s_vec,
                                                 mu,c_D,r_D,destDir)                
-            if (ifWarmStart==0) or (ifWarmStartFlag==0):
+            if (~ifWarmStart) or (ifWarmStartFlag==0):
                 X=initializeWithMeanVar(o2.reshape((n_cols*n_rows,T)))
                 Z=np.zeros((r_D,1));U=np.zeros((r_D,1));    
                   
