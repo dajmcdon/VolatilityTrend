@@ -1,18 +1,18 @@
 import numpy as np
 from volatilitytrend.data_utils.simulate_data import simulateSpatioTemporalData
 from os.path import join
-from volatilitytrend.algorithms.base import LinearizedADMM
+from volatilitytrend.algorithms.base import LinearizedADMM,ConsensusADMM
 import matplotlib.pyplot as plt
 
 bl=[False,True]
-ifSimulateData=bl[0]
+ifSimulateData=bl[1]
 ifFitModel=bl[0]
-ifVisualize=bl[1]
+ifVisualize=bl[0]
 ifModelSelection=bl[0]
 
 dstDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/Simulated data'
 
-n_rows=5;n_cols=7;
+n_rows=6;n_cols=8;
 n_yeras=15
 T=n_yeras*52#time-series length
 gridsize=n_rows*n_cols

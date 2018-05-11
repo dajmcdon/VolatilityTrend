@@ -8,6 +8,7 @@ import pandas as pd
 
 from .. import config
 from .linearized_admm import linearizedADMM_fit
+from .consensus_admm import consensusADMM_fit
 from ..utils import latlon_to_rowcol
 
 __metaclass__=type
@@ -223,7 +224,23 @@ class LinearizedADMM(BaseAlgorithmClass):
                            mu_adapt_freq=mu_adapt_freq)
         
     
-    
+class ConsensusADMM(BaseAlgorithmClass):
+
+    def fit(self,destDir,
+            lam_t_vec,lam_s_vec,rho=.1,
+            n_r_b=2,n_c_b=2,
+            maxIter=1000,freq=100,
+            lh_trend=True,wrapAround=True,
+            earlyStopping=True,patience=2,tol=.1):
+        
+        
+        consensusADMM_fit(self.dataMat,destDir,self.metadata,
+                          lam_t_vec,lam_s_vec,rho=rho,
+                          n_r_b=n_r_b,n_c_b=n_c_b,
+                          maxIter=maxIter,freq=freq,
+                          lh_trend=lh_trend,wrapAround=wrapAround,
+                          earlyStopping=earlyStopping,
+                          patience=patience,tol=tol)
     
     
     

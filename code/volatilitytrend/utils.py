@@ -12,8 +12,11 @@ def compute_D_and_lam(n_rows,n_cols,T,lam_t,lam_s,lh_trend=True,
     if grid_size>200:
         print(ctime()+'...computing optimization matrices...')
 
-        
-    r_s=T*(2*n_rows*n_cols-n_rows-n_cols);#no. of spatial constraints
+    if wrapAround:#no. of spatial constraints
+        r_s=T*(2*n_rows*n_cols-n_rows);    
+    else:
+        r_s=T*(2*n_rows*n_cols-n_rows-n_cols);        
+    
     r_t=n_rows*n_cols*(T-2);#no. of temporal constraints
     
     #===form matrix D===
