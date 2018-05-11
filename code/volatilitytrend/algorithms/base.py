@@ -64,8 +64,8 @@ class BaseAlgorithmClass():
         #===compute yearly average of fitted variance===
         
         #===compute the sum of the change in variance at each location===
-        self.changeInVar=np.mean(X-np.tile(X[:,[0]],(1,n_years)),axis=1).\
-                            reshape((n_rows,n_cols),order='F')
+        self.changeInVar=np.sum(np.diff(X,axis=1),axis=1).\
+                        reshape((n_rows,n_cols),order='F')
         del X;gc.collect()                                    
         #===compute the sum of the change in variance at each location===
     
