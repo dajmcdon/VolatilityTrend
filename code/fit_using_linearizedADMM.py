@@ -2,8 +2,8 @@ from volatilitytrend.algorithms.base import LinearizedADMM
 
 dataset='north_hemisphere'
 #dataset='us'
-lam_t_vec=[2,4,8,10,15]
-lam_s_vec=[0.5]
+lam_t_vec=[4]
+lam_s_vec=[0,.1,.5,2,5,10]
 
 if dataset=='us':
     data_fn='1992-08-31_to_2002-08-31_data_avg_us_detrended'
@@ -20,7 +20,7 @@ elif dataset=='north_hemisphere':
 print('\014')
 la = LinearizedADMM()#construct linearizedADMM object
 la.loadData(data_fn,metadata_fn)#load data
-la.fit(dstDir,lam_t_vec,lam_s_vec,maxIter=10000,freq=500,
+la.fit(dstDir,lam_t_vec,lam_s_vec,maxIter=10000,freq=500,wrapAround=True,
        ifWarmStart=True,earlyStopping=True,mu=.01,
        ifAdaptMu=False,mu_adapt_rate=.999,mu_adapt_freq=1)
 

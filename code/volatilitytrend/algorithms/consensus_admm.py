@@ -341,7 +341,7 @@ def x_update(Y,D,G,h,Kinv,alpha,rho):
         
         return f, Df, H 
 
-    solvers.options['maxiters']=250;solvers.options['show_progress']=False
+    solvers.options['maxiters']=500;solvers.options['show_progress']=False
     sol=solvers.cp(F=F,G=G,h=h)
     v=sol['x'];#dual solution
     x=compute_primal(Y,v,D,matrix(Kinv),alpha,rho)#primal solution
@@ -502,7 +502,7 @@ def consensusADMM_fit(dataMat,destDir,metadata,
                 W=W+X-Z_hat
                 #---w-update---
                 
-                if  (it+1)%freq==0:
+                if ((it==0) or ((it+1)%freq==0)):
                     totalLoss.append(computeLoss(Z,Y,D,lam_t,lam_s,
                                                  T,n_rows,n_cols,lh_trend))
                     print(ctime()+'          %5.0f          %.1f'\

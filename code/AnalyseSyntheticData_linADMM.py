@@ -5,14 +5,17 @@ from volatilitytrend.algorithms.base import LinearizedADMM,ConsensusADMM
 import matplotlib.pyplot as plt
 
 bl=[False,True]
-ifSimulateData=bl[1]
+ifSimulateData=bl[0]
 ifFitModel=bl[0]
-ifVisualize=bl[0]
+ifVisualize=bl[1]
 ifModelSelection=bl[0]
 
 dstDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/Simulated data'
+savedResultsDir='/home/arash/datasets/ecmwf/Fits_to_simulated_data/'+\
+'LinADMM_withTrend'
+saveFigDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Reports/051218/Figures'
 
-n_rows=6;n_cols=8;
+n_rows=5;n_cols=7;
 n_yeras=15
 T=n_yeras*52#time-series length
 gridsize=n_rows*n_cols
@@ -64,9 +67,9 @@ if ifSimulateData:
 ###################
 ###Fit model###
 ###################
-lam_t_vec=[100.];
+lam_t_vec=[5.];
 lam_s_vec=[0.0,.05,.1,.2,.3];
-#lam_s_vec=[0.1];
+lam_s_vec=[0.1];
 mu=.01
 #lam_t_vec=[10];lam_s_vec=[.05];mu=.01
 
@@ -76,9 +79,9 @@ metadata_fn=join(dstDir,'metadata')
 la.loadData(data_fn,metadata_fn)#load data
 
 if ifFitModel:   
-    la.fit(dstDir,lam_t_vec,lam_s_vec,maxIter=15000,freq=500,
+    la.fit(dstDir,lam_t_vec,lam_s_vec,maxIter=40000,freq=500,
            lh_trend=True,wrapAround=False,patience=2,
-           ifWarmStart=False,earlyStopping=True,mu=mu,
+           ifWarmStart=False,earlyStopping=False,mu=mu,
            ifAdaptMu=False,mu_adapt_rate=.999,mu_adapt_freq=1)
 
 
@@ -87,8 +90,9 @@ if ifFitModel:
 ###################
 
 if ifVisualize:
-    lam_t=lam_t_vec[-1];lam_s=lam_s_vec[2]
-    lam_t=5.;lam_s=.2;
+#    lam_t=lam_t_vec[-1];lam_s=lam_s_vec[2]        
+#    lam_t=100.;lam_s=.1;mu=.0001
+    lam_t=5.;lam_s=.1;mu=.01
     
     mu,lam_t,lam_s=(float(mu),float(lam_t),float(lam_s))
     fn='mu_{}_lam_t_{}_lam_s_{}'.format(mu,lam_t,lam_s)
@@ -97,11 +101,35 @@ if ifVisualize:
     n_rows=la.metadata['n_rows'];n_cols=la.metadata['n_cols']
     gridsize=n_rows*n_cols
     
-    covMat = np.fromfile(join(dstDir,'covMat')).reshape((gridsize,-1))
-    filepath=join(dstDir,'X_'+fn)    
+    #---true spatial variance ---
+    covMat = np.fromfile(join(savedResultsDir,'covMat')).reshape((gridsize,-1))    
+    fig=plt.figure(figsize=(10,4))
+    fig.add_subplot(121)
+    plt.pcolor(covMat[:,25].reshape((n_rows,n_cols),order='F'))    
+    plt.xticks([]);plt.yticks([]);
+    fig.add_subplot(122)
+    plt.pcolor(covMat[:,45].reshape((n_rows,n_cols),order='F'))    
+    plt.xticks([]);plt.yticks([]);    
+    fig.savefig(join(saveFigDir,'true_var_spatial.pdf'))
+    #---true spatial variance ---
+
+    #---true vs estimated temporal variance --- 
+    lam_t=5.;lam_s=.1;mu=.01
+    fn='mu_{}_lam_t_{}_lam_s_{}'.format(mu,lam_t,lam_s)
+    filepath=join(savedResultsDir,'X_'+fn)    
     la.analyseFittedValues(filepath)
-    plt.figure()
+    fig=plt.figure()
     i=0;plt.plot(np.exp(la.fittedVar[i,]/2));plt.plot(covMat[i,:])
+    plt.xlabel('time');plt.ylabel('standard deviation')
+    
+#    lam_t=100.;lam_s=.1;mu=.0001
+#    fn='mu_{}_lam_t_{}_lam_s_{}'.format(mu,lam_t,lam_s)
+#    filepath=join(savedResultsDir,'X_'+fn)
+#    la.analyseFittedValues(filepath)
+#    plt.plot(np.exp(la.fittedVar[i,]/2))
+#    plt.legend(['estimated, $\lambda_t=5$','true','estimated, $\lambda_t=100$'])
+#    fig.savefig(join(saveFigDir,'true_fitted_var.pdf'))
+    #---true vs estimated temporal variance ---
     #===load fitted values===
     
     #===compute mean absolute error between true and estimated variance===
@@ -125,6 +153,16 @@ if ifVisualize:
     f.add_subplot(1,2,2)
     plt.pcolor(est_changeInVar)
     #===compute change in variance===
+    
+    #===plot loss vs iteration===
+    filepath=join(savedResultsDir,'loss_'+fn)
+    loss_lin = np.fromfile(filepath).reshape((2,-1))
+    plt.figure()
+    plt.plot(loss_lin[0,:],loss_lin[1,:])
+    plt.xlabel('iteration');plt.ylabel('loss')
+    #===plot loss vs iteration===
+    
+
 
 #####################
 ###model selection###
@@ -136,12 +174,13 @@ if ifModelSelection:
     mu_vec=[.01]*3+[.001]*2+[.0001]
     
     MAE_mat=np.zeros((len(lam_t_vec),len(lam_s_vec)))
-    covMat = np.fromfile(join(dstDir,'covMat')).reshape((gridsize,-1))        
+    covMat = np.fromfile(join(savedResultsDir,'covMat')).\
+    reshape((gridsize,-1))        
     for i,lam_t in enumerate(lam_t_vec):
         for j,lam_s in enumerate(lam_s_vec):
             mu=mu_vec[i]
             fn='mu_{}_lam_t_{}_lam_s_{}'.format(mu,lam_t,lam_s)
-            filepath=join(dstDir,'X_'+fn)
+            filepath=join(savedResultsDir,'X_'+fn)
             X=np.fromfile(filepath).reshape((gridsize,-1))
             MAE_mat[i,j]=np.mean(np.abs(np.exp(X/2)-covMat))
 
