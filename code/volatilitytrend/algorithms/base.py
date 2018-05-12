@@ -8,6 +8,7 @@ import pandas as pd
 
 from .. import config
 from .linearized_admm import linearizedADMM_fit
+from .consensus_admm import consensusADMM_fit
 from ..utils import latlon_to_rowcol
 
 __metaclass__=type
@@ -37,8 +38,8 @@ class BaseAlgorithmClass():
         #===load metadata===
 
         #===load data===
-        self.dataMat=np.fromfile(join(self.dataDir,data_fn),dtype='float32').\
-                            reshape((n_rows*n_cols,T))
+        self.dataMat=np.fromfile(join(self.dataDir,data_fn),
+                                 dtype='float32').reshape((n_rows*n_cols,T))
         #===load data===
         
     def analyseFittedValues(self,filepath):
@@ -64,8 +65,8 @@ class BaseAlgorithmClass():
         #===compute yearly average of fitted variance===
         
         #===compute the sum of the change in variance at each location===
-        self.changeInVar=np.mean(X-np.tile(X[:,[0]],(1,n_years)),axis=1).\
-                            reshape((n_rows,n_cols),order='F')
+        self.changeInVar=np.sum(np.diff(X,axis=1),axis=1).\
+                        reshape((n_rows,n_cols),order='F')
         del X;gc.collect()                                    
         #===compute the sum of the change in variance at each location===
     
@@ -207,7 +208,7 @@ class LinearizedADMM(BaseAlgorithmClass):
 
     def fit(self,destDir,lam_t_vec,lam_s_vec,
             mu=.01,maxIter=40000,freq=100,
-            ifWarmStart=True,lh_trend=True,
+            ifWarmStart=True,lh_trend=True,wrapAround=True,
             earlyStopping=True,patience=2,tol=.1,
             ifAdaptMu=False,mu_adapt_rate=.95,mu_adapt_freq=100):
         
@@ -216,13 +217,30 @@ class LinearizedADMM(BaseAlgorithmClass):
                            lam_t_vec,lam_s_vec,mu=mu,
                            maxIter=maxIter,freq=freq,
                            ifWarmStart=ifWarmStart,lh_trend=lh_trend,
+                           wrapAround=wrapAround,
                            earlyStopping=earlyStopping,
                            patience=patience,tol=tol,
                            ifAdaptMu=ifAdaptMu,mu_adapt_rate=mu_adapt_rate,
                            mu_adapt_freq=mu_adapt_freq)
         
     
-    
+class ConsensusADMM(BaseAlgorithmClass):
+
+    def fit(self,destDir,
+            lam_t_vec,lam_s_vec,rho=.1,
+            n_r_b=2,n_c_b=2,
+            maxIter=1000,freq=100,
+            lh_trend=True,wrapAround=True,
+            earlyStopping=True,patience=2,tol=.1):
+        
+        
+        consensusADMM_fit(self.dataMat,destDir,self.metadata,
+                          lam_t_vec,lam_s_vec,rho=rho,
+                          n_r_b=n_r_b,n_c_b=n_c_b,
+                          maxIter=maxIter,freq=freq,
+                          lh_trend=lh_trend,wrapAround=wrapAround,
+                          earlyStopping=earlyStopping,
+                          patience=patience,tol=tol)
     
     
     
