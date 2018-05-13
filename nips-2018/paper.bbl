@@ -1,4 +1,4 @@
-\begin{thebibliography}{17}
+\begin{thebibliography}{30}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -40,6 +40,21 @@ R.~M. Corless, G.~H. Gonnet, D.~E.~G. Hare, D.~J. Jeffrey, and D.~E. Knuth.
 \newblock \emph{Advances in Computational Mathematics}, 5\penalty0
   (1):\penalty0 329--359, Dec. 1996.
 
+\bibitem[Fischer et~al.(2013)Fischer, Beyerle, and Knutti]{FischerBeyerle2013}
+E.~M. Fischer, U.~Beyerle, and R.~Knutti.
+\newblock Robust spatially aggregated projections of climate extremes.
+\newblock \emph{Nature Climate Change}, 3:\penalty0 1033---1038, 2013.
+\newblock URL \url{http://dx.doi.org/10.1038/nclimate2051}.
+
+\bibitem[Hallac et~al.(2017)Hallac, Park, Boyd, and Leskovec]{HallacPark2017}
+D.~Hallac, Y.~Park, S.~Boyd, and J.~Leskovec.
+\newblock Network inference via the time-varying graphical lasso.
+\newblock In \emph{Proceedings of the 23rd ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, KDD '17, pages 205--213, New York,
+  NY, USA, 2017. ACM.
+\newblock \doi{10.1145/3097983.3098037}.
+\newblock URL \url{http://doi.acm.org/10.1145/3097983.3098037}.
+
 \bibitem[Hansen et~al.(2012)Hansen, Sato, and Ruedy]{hansen_perception_2012}
 J.~Hansen, M.~Sato, and R.~Ruedy.
 \newblock Perception of climate change.
@@ -61,13 +76,36 @@ C.~Huntingford, P.~D. Jones, V.~N. Livina, T.~M. Lenton, and P.~M. Cox.
 \newblock \emph{Nature}, 500\penalty0 (7462):\penalty0 327--330, Aug. 2013.
 \newblock ISSN 0028-0836.
 
-\bibitem[Kim et~al.(2009)Kim, Koh, Boyd, and Gorinevsky]{kim_$ell_1$_2009}
+\bibitem[Kim et~al.(2009{\natexlab{a}})Kim, Koh, Boyd, and
+  Gorinevsky]{kim_$ell_1$_2009}
 S.~Kim, K.~Koh, S.~Boyd, and D.~Gorinevsky.
 \newblock \${\textbackslash}ell\_1\$ {Trend} {Filtering}.
-\newblock \emph{SIAM Review}, 51\penalty0 (2):\penalty0 339--360, May 2009.
+\newblock \emph{SIAM Review}, 51\penalty0 (2):\penalty0 339--360, May
+  2009{\natexlab{a}}.
 \newblock ISSN 0036-1445.
 \newblock \doi{10.1137/070690274}.
 \newblock URL \url{http://epubs.siam.org/doi/abs/10.1137/070690274}.
+
+\bibitem[Kim et~al.(2009{\natexlab{b}})Kim, Koh, Boyd, and
+  Gorinevsky]{KimKoh2009}
+S.-J. Kim, K.~Koh, S.~Boyd, and D.~Gorinevsky.
+\newblock $\ell_1$ trend filtering.
+\newblock \emph{SIAM Review}, 51\penalty0 (2):\penalty0 339--360,
+  2009{\natexlab{b}}.
+\newblock \doi{10.1137/070690274}.
+\newblock URL \url{https://doi.org/10.1137/070690274}.
+
+\bibitem[Lin et~al.(2017)Lin, Sharpnack, Rinaldo, and
+  Tibshirani]{LinSharpnack2017}
+K.~Lin, J.~L. Sharpnack, A.~Rinaldo, and R.~J. Tibshirani.
+\newblock A sharp error analysis for the fused lasso, with application to
+  approximate changepoint screening.
+\newblock In I.~Guyon, U.~V. Luxburg, S.~Bengio, H.~Wallach, R.~Fergus,
+  S.~Vishwanathan, and R.~Garnett, editors, \emph{Advances in Neural
+  Information Processing Systems 30}, pages 6884--6893. Curran Associates,
+  Inc., 2017.
+\newblock URL \url{http://papers.nips.cc/paper/
+  7264-a-sharp-error-analysis-for-the-fused-lasso-with-application-to-approximate-changepoint-screening.pdf}.
 
 \bibitem[Parikh and Boyd(2014)]{parikh_proximal_2014}
 N.~Parikh and S.~Boyd.
@@ -75,12 +113,46 @@ N.~Parikh and S.~Boyd.
 \newblock \emph{Foundations and Trends® in Optimization}, 1\penalty0
   (3):\penalty0 127--239, Jan. 2014.
 
+\bibitem[Ramdas and Tibshirani(2016)]{RamdasTibshirani2016}
+A.~Ramdas and R.~J. Tibshirani.
+\newblock Fast and flexible admm algorithms for trend filtering.
+\newblock \emph{Journal of Computational and Graphical Statistics}, 25\penalty0
+  (3):\penalty0 839--858, 2016.
+
 \bibitem[Rhines and Huybers(2013)]{rhines_frequent_2013}
 A.~Rhines and P.~Huybers.
 \newblock Frequent summer temperature extremes reflect changes in the mean, not
   the variance.
 \newblock \emph{Proceedings of the National Academy of Sciences}, 110\penalty0
   (7):\penalty0 E546--E546, Feb. 2013.
+
+\bibitem[Sadhanala et~al.(2017)Sadhanala, Wang, Sharpnack, and
+  Tibshirani]{SadhanalaWang2017}
+V.~Sadhanala, Y.-X. Wang, J.~L. Sharpnack, and R.~J. Tibshirani.
+\newblock Higher-order total variation classes on grids: Minimax theory and
+  trend filtering methods.
+\newblock In I.~Guyon, U.~V. Luxburg, S.~Bengio, H.~Wallach, R.~Fergus,
+  S.~Vishwanathan, and R.~Garnett, editors, \emph{Advances in Neural
+  Information Processing Systems 30}, pages 5800--5810. Curran Associates,
+  Inc., 2017.
+\newblock URL \url{http://papers.nips.cc/paper/
+  7162-higher-order-total-variation-classes-on-grids-minimax-theory-and-trend-filtering-methods.pdf}.
+
+\bibitem[Screen(2014)]{Screen2014}
+J.~A. Screen.
+\newblock Arctic amplification decreases temperature variance in northern mid-
+  to high-latitudes.
+\newblock \emph{Nature Climate Change}, 4:\penalty0 577---582, 2014.
+\newblock URL \url{http://dx.doi.org/10.1038/nclimate2268}.
+
+\bibitem[Staten et~al.(2016)Staten, Kahn, Schreier, and
+  Heidinger]{StatenKahn2016}
+P.~W. Staten, B.~H. Kahn, M.~M. Schreier, and A.~K. Heidinger.
+\newblock Subpixel characterization of {HIRS} spectral radiances using cloud
+  properties from {AVHRR}.
+\newblock \emph{Journal of Atmospheric and Oceanic Technology}, 33\penalty0
+  (7):\penalty0 1519--1538, 2016.
+\newblock \doi{10.1175/JTECH-D-15-0187.1}.
 
 \bibitem[Tibshirani(1996)]{tibshirani_regression_1996}
 R.~Tibshirani.
@@ -93,11 +165,32 @@ R.~J. Tibshirani.
 \newblock \emph{The {Solution} {Path} of the {Generalized} {Lasso}}.
 \newblock {PhD} {Thesis}, Stanford University, 2011.
 
+\bibitem[Tibshirani(2014)]{Tibshirani2014}
+R.~J. Tibshirani.
+\newblock Adaptive piecewise polynomial estimation via trend filtering.
+\newblock \emph{Annals of Statistics}, 42:\penalty0 285--323, 2014.
+\newblock URL \url{http://www.stat.cmu.edu/~ryantibs/papers/trendfilter.pdf}.
+
+\bibitem[Tibshirani and Taylor(2011)]{TibshiraniTaylor2011}
+R.~J. Tibshirani and J.~Taylor.
+\newblock The solution path of the generalized lasso.
+\newblock \emph{Annals of Statistics}, 39\penalty0 (3):\penalty0 1335--1371,
+  2011.
+
 \bibitem[Tibshirani and Taylor(2012)]{tibshirani_degrees_2012}
 R.~J. Tibshirani and J.~Taylor.
 \newblock Degrees of freedom in lasso problems.
 \newblock \emph{The Annals of Statistics}, 40\penalty0 (2):\penalty0
   1198--1232, 2012.
+
+\bibitem[Trenberth et~al.(2014)Trenberth, Zhang, Fasullo, and
+  Taguchi]{TrenberthZhang2014}
+K.~E. Trenberth, Y.~Zhang, J.~T. Fasullo, and S.~Taguchi.
+\newblock Climate variability and relationships between top-of-atmosphere
+  radiation and temperatures on earth.
+\newblock \emph{Journal of Geophysical Research: Atmospheres}, 120\penalty0
+  (9):\penalty0 3642--3659, 2014.
+\newblock \doi{10.1002/2014JD022887}.
 
 \bibitem[Uppala et~al.(2005)Uppala, KÅllberg, Simmons, Andrae, and
   al]{uppala_era-40_2005}
@@ -106,12 +199,30 @@ S.~M. Uppala, P.~W. KÅllberg, A.~J. Simmons, U.~Andrae, and e.~al.
 \newblock \emph{Quarterly Journal of the Royal Meteorological Society},
   131\penalty0 (612):\penalty0 2961--3012, Oct. 2005.
 
-\bibitem[Wang et~al.(2016)Wang, Sharpnack, Smola, and
+\bibitem[Vasseur et~al.(2014)Vasseur, DeLong, Gilbert, Greig, Harley, McCann,
+  Savage, Tunney, and O{\textquoteright}Connor]{VasseurDeLong2014}
+D.~A. Vasseur, J.~P. DeLong, B.~Gilbert, H.~S. Greig, C.~D.~G. Harley, K.~S.
+  McCann, V.~Savage, T.~D. Tunney, and M.~I. O{\textquoteright}Connor.
+\newblock Increased temperature variation poses a greater risk to species than
+  climate warming.
+\newblock \emph{Proceedings of the Royal Society of London B: Biological
+  Sciences}, 281\penalty0 (1779), 2014.
+\newblock \doi{10.1098/rspb.2013.2612}.
+
+\bibitem[Wang et~al.(2016{\natexlab{a}})Wang, Sharpnack, Smola, and
+  Tibshirani]{WangSharpnack2016}
+Y.-X. Wang, J.~Sharpnack, A.~J. Smola, and R.~J. Tibshirani.
+\newblock Trend filtering on graphs.
+\newblock \emph{Journal of Machine Learning Research}, 17\penalty0
+  (105):\penalty0 1--41, 2016{\natexlab{a}}.
+\newblock URL \url{http://jmlr.org/papers/v17/15-147.html}.
+
+\bibitem[Wang et~al.(2016{\natexlab{b}})Wang, Sharpnack, Smola, and
   Tibshirani]{wang_trend_2016}
 Y.-X. Wang, J.~Sharpnack, A.~J. Smola, and R.~J. Tibshirani.
 \newblock Trend {Filtering} on {Graphs}.
 \newblock \emph{Journal of Machine Learning Research}, 17\penalty0
-  (105):\penalty0 1--41, 2016.
+  (105):\penalty0 1--41, 2016{\natexlab{b}}.
 \newblock URL \url{http://jmlr.org/papers/v17/15-147.html}.
 
 \bibitem[Zeng et~al.(2017)Zeng, Hu, and Li]{zeng_geometry_2017}

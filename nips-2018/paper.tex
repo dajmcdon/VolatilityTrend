@@ -34,7 +34,8 @@
 \DeclareMathOperator*{\argmin}{argmin}
 \usepackage{siunitx}
 
-\usepackage[showonlyrefs]{mathtools}
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs}
 
 \renewcommand*{\figureautorefname}{Figure}%
 \renewcommand*{\tableautorefname}{Table}%
@@ -43,6 +44,8 @@
 \renewcommand*{\subsubsectionautorefname}{Section}%
 
 
+\usepackage{xcolor}
+\newcommand{\alert}[1]{\textcolor{red}{TODO: #1}}
 
 
 
@@ -76,9 +79,13 @@ words, words,
 
 \section{Introduction}
 
+Nonparametric variance estimation for spatio-temporal data.
+
+\subsection{Motivating applications}
+
 There is a considerable interest in determining if there is an increasing trend in the climate variability \citep{hansen_perception_2012,huntingford_no_2013}. An increase in the temperature variability will increase the probability of extreme hot outliers. It might be harder for the society to adapt to these extremes than to the gradual increase in the mean temperature \citep{huntingford_no_2013}.
 
-In this project, we consider the problem of detecting the trend in the temperature volatility. All analyses are performed on a sub-set of the European Centre for Medium-Range Weather Forecasts (ECMWF) ERA-40 dataset \citep{uppala_era-40_2005}. This dataset include the temperature measurements over a grid over the earth from 1957 to 2002.
+In this project, we consider the problem of detecting the trend in the temperature volatility. All analyses are performed on a sub-set of the European Centre for Medium-Range Weather Forecasts (ECMWF) ERA-40 dataset \citep{uppala_era-40_2005}. This dataset include the temperature measurements over a grid over the earth from 1957 to 2002.~\citep{VasseurDeLong2014,TrenberthZhang2014,StatenKahn2016,Screen2014,FischerBeyerle2013}
 
 Research on analyzing the trend in the volatility of spatio-temporal data is scarce. \citep{hansen_perception_2012} studied the change in the standard deviation (SD) of the surface temperature in the NASA Goddard Institute for Space Studies gridded temperature data set. In their analysis, for each geographical position, the mean of the temperature computed for the period 1951-1980 (called the base-period) at that position, is subtracted from the corresponding time series. Each time series is then divided by the standard deviation computed at each position and during the same time period. The distribution of the resulting data is then plotted for different periods. These distributions represent the deviation of the temperature for a specific period, from the mean in the base period, in units of the standard deviation in that period. The results showed that these distributions are widen for the resent time periods compared to 1951-1980.  \citep{huntingford_no_2013} took a similar approach in analysing the ERA-40 data set. However, in addition to the aforementioned method, they computed the distribution of the SDs in an alternative way: for each position and each time period, the deviation of the time-series at that position from the mean in that time period at that position was computed, and then divided by the SD of that position in the period before 1981. The results showed that there still is an increase in the SDs from 1958-1970 to 1991-2001, but this is much less than what is obtained from the method used in \citep{hansen_perception_2012}. The authors also computed the time-evolving global SD from the de-trended time-series at each position. The resulting curve suggested that the global SD has been stable.
 
@@ -86,123 +93,73 @@ These previous work (and other related research, e.g., \citep{rhines_frequent_20
 
 The main contribution of this work is to develop a new methodology for detecting the trend in the volatility of spatio-temporal data. In this methodology, the variance at each position and time, is considered as a hidden (un-observed) variable. The value of these hidden variables are then estimated by maximizing the likelihood of the observed data. We show that this formulation per se, is not appropriate for detecting the trend. To overcome this issue, we penalize the differences between the estimated variances of the observations which are temporally and/or spatially close to each other. This will result in an optimization problem called the \textit{generalized LASSO problem} \citep{tibshirani_solution_2011}. As we will see, the dimension of this optimization problem is very high and so the standard methods for solving the generalized LASSO cannot be applied directly. We investigate two methods for solving this optimization problem. In the first method, we adopt an optimization technique called alternative direction method of multipliers (ADMM) \citep{boyd_distributed_2011}, to divide the total problem into several sub-problems of much lower dimension and show how the total problem can be solved by iteratively solving these sub-problems. The second method, called the \textit{linearized ADMM algorithm} \citep{parikh_proximal_2014} solves the main problem by iteratively solving a linearized version of it. We will compare the benefits of each method.
 
+Also neuroscience.
 
-\section{Data Exploration}
-This section is devoted to exploring some of the properties of the ERA-40 surface temperature data set. The goal here is to demonstrate some of the difficulties in modeling the trend in the temperature volatility and motivate our methodology for doing so.
 
-\autoref{fig:cities_ts} shows the time-series of the temperature of three cities: Bloomington (USA), San Diego (USA) and Manaus (Brazil). The time-series of Bloomington and San Diego show clear cyclic behavior. However, while it seems (qualitatively) that these cycles can be modeled by a sinusoidal function for Bloomington, the same is not true for San Diego. Also, the amplitude of the cycles changes from some years to others. The time-series of Manaus does not show any regular cyclic behavior. This demonstrates the first difficulty in analyzing the variance of this data: to analyze the variance, we first need to remove the cyclic terms from all time-series. However, there is a lot of variations in the cyclic behavior of the time-series of different locations. In addition, some of these cycles cannot be easily modeled by a parametric function \footnote{One might try to model the cycles by the summation of sinusoidal terms with different frequencies. However, for some time-series this may need many terms to be included in the summation to achieve a reasonable level of accuracy. In addition, this model cannot capture the non-stationarity in the cycles.}. To overcome these issues, we will use a non-parametric approach to remove the cyclic terms from the time-series and de-trend them. This approach, called \textit{$\ell_1$-trend filtering} is explained in the next section.
+\subsection{Related work}
 
-\begin{figure}[ht]
-	\vskip 0.2in
-	\begin{center}
-		\centerline{\includegraphics[width=\columnwidth]{Figures/cities_ts}}
-		\caption{Time-series of the temperature (in Kelvin) of three cities.}
-		\label{fig:cities_ts}
-	\end{center}
-	\vskip -0.2in
-\end{figure} 
+Mention ~\citep{KimKoh2009,HallacPark2017}. Also, ~\citep{Tibshirani2014,TibshiraniTaylor2011}. Find Sharpnack Tibshirani. ARCH/GARCH.
 
-The right panel of \autoref{fig:bloom_detrended} shows the time-series of the temperature of Bloomington, after removing the cyclic terms and de-trending using the method explained in the next section. The goal is to investigate the trend in the variance of this signal. This figure, reveals another issue toward this goal: the variance of this signal, shows cyclic behavior. Also, the cycles are not regular and their amplitude and frequency change. Even if one can describe the behavior of the variance of all the time-series using a single parametric model (for example a variant of the GARCH models \citep{bollerslev_generalized_1986}), it is not clear how the trend in the variance should be investigated in this framework. These observations motivate the need to develop a non-parametric framework for the problem at hand.
+\citep{SadhanalaWang2017,LinSharpnack2017,WangSharpnack2016}~\citep{RamdasTibshirani2016}
 
-\begin{figure}[ht]
-	\vskip 0.2in
-	\begin{center}
-		\centerline{\includegraphics[width=\columnwidth]{Figures/bloom_trend_resid}}
-		\caption{Left: Time-series of the temperature of Bloomington (blue) and the estimated trend and cycles obtained from the $\ell_1$-trend filtering (red). Right: the same time-series after removing the cyclic terms and de-trending using $\ell_1$-trend filtering.}
-		\label{fig:bloom_detrended}
-	\end{center}
-	\vskip -0.2in
-\end{figure} 
+\subsection{Main contributions}
 
-\section{$\ell_1$-trend filtering for de-trending}
+\section{$\ell_1$-trend filtering for estimating variance of a time-series}
 
-$\ell_1$-trend filtering was proposed by \citep{kim_$ell_1$_2009} as a solution to the following problem: a time-series $y_t$, $t=1,...,T$ is observed and we believe that it consists of a smooth trend and a stochastic component and the goal is to estimate the trend. The estimated trend is desired to be smooth, but at the same time, we seek small estimated residuals (stochastic component). These two objectives cannot be achieved simultaneously and so a trade-off between them should be made. In $\ell_1$-trend filtering, this trade-off is formulated as the following convex optimization problem:
-
+$\ell_1$-trend filtering was proposed by \citep{kim_$ell_1$_2009} as a method for estimating a smooth, time-varying trend. It is formulated as the optimization problem
+% : a time-series $y_t$, $t=1,...,T$ is observed and we believe that it consists of a smooth trend and a stochastic component and the goal is to estimate the trend. The estimated trend is desired to be smooth, but at the same time, we seek small estimated residuals (stochastic component). These two objectives cannot be achieved simultaneously and so a trade-off between them should be made. In $\ell_1$-trend filtering, this trade-off is formulated as the following convex optimization problem:
 \begin{equation}
 \min_{\beta} \frac{1}{2} \sum_{t=1}^{T} (y_t-\beta_t)^2+\lambda \sum_{t=1}^{T-2} |\beta_t-2\beta_{t+1}+\beta_{t+2}|
 \end{equation}
-
 or equivalently:
-
 \begin{equation}
-\min_{\beta} \frac{1}{2} \lVert y-\beta \lVert_2^2+\lambda \lVert Dh \lVert_1
+\min_{\beta} \frac{1}{2} \lVert y-\beta \lVert_2^2+\lambda \lVert D\beta\lVert_1
 \label{eq:l1tf}
 \end{equation}
+ where $y_t$ is an observed time-series, $\beta$ is the smooth trend, $D$ is a $T-2\times T$ matrix, and $\lambda$ is a tuning parameter which balances fidelity to the data (small errors in the first term) with a desire for smoothness. 
+% The \textit{penalty matrix} is:
+% \begin{equation}
+% D=\begin{bmatrix}
+% 1 & -2 & 1 &  &  &  &\\ 
+% & 1 & -2 & 1 &  &  &\\ 
+% &  & \ddots & \ddots & \ddots  &  &\\ 
+% &  & & 1 & -2 & 1 &  \\ 
+% &  &  &   & 1 & -2 & 1 
+% \end{bmatrix}
+% \label{eq:d_matrix}
+% \end{equation}
+%The first term in \eqref{eq:l1tf} penalizes large residuals while the second term encourages smooth estimated $\beta$.
+With the penalty matrix $D$, the estimated $\beta$ will be piecewise linear. \citep{kim_$ell_1$_2009} proposed a specialized primal-dual interior point (PDIP) algorithm for solving \eqref{eq:l1tf}. From a statistical perspective, \eqref{eq:l1tf} is a constrained maximum likelihood problem with independent observations from a normal distribution with common variance, $y_t \sim \mbox{N}(\beta_t, \sigma^2)$, subject to a piecewise linear constraint on $\beta$.
 
- where $||u||_1$ is the $\ell_1$ norm of the vector $u$. Here, $\beta$ is the vector of the free parameters of the model and there is one parameter per observation. The \textit{penalty matrix} is:
+% The results of applying $\ell_1$-trend filtering on the Bloomington time-series are shown in \autoref{fig:bloom_detrended}. The left panel shows the original time-series (blue) together with the estimated $\beta$ (red) and the right panel shows the residuals $y_t-\beta_t$ (blue). As it can be seen, the estimated $\beta$s are piecewise linear. The number of linear segments is determined by the value of $\lambda$. Here, we chose $\lambda=500$. The choice of $\lambda$ is a model selection problem and we will return to it in the next section ???.
 
-\begin{equation}
-D=\begin{bmatrix}
-1 & -2 & 1 &  &  &  &\\ 
-& 1 & -2 & 1 &  &  &\\ 
-&  & \ddots & \ddots & \ddots  &  &\\ 
-&  & & 1 & -2 & 1 &  \\ 
-&  &  &   & 1 & -2 & 1 
-\end{bmatrix}
-\label{eq:d_matrix}
-\end{equation}
-
-The first term in \eqref{eq:l1tf} penalizes large residuals while the second term encourages smooth estimated $\beta$. Specifically, with the penalty matrix \eqref{eq:d_matrix}, the estimated $\beta$ will be piecewise linear \citep{kim_$ell_1$_2009}. The trade-off between the two aforementioned objectives is determined by the constant $\lambda$. \citep{kim_$ell_1$_2009} proposed a specialized primal-dual interior point (PDIP) method for solving the optimization problem \eqref{eq:l1tf} with the penalty matrix \eqref{eq:d_matrix}.
-
-The results of applying $\ell_1$-trend filtering on the Bloomington time-series are shown in \autoref{fig:bloom_detrended}. The left panel shows the original time-series (blue) together with the estimated $\beta$ (red) and the right panel shows the residuals $y_t-\beta_t$ (blue). As it can be seen, the estimated $\beta$s are piecewise linear. The number of linear segments is determined by the value of $\lambda$. Here, we chose $\lambda=500$. The choice of $\lambda$ is a model selection problem and we will return to it in the next section ???.
-
-\section{$\ell_1$-trend filtering for estimating variance of a time-series}
+\subsection{Extension to variance estimation}
 \label{sec:l1tf_var}
 
-%TODO: talk about the motivation for using non-parametric based on the figure of the residuals.
 
-
-In this section, inspired by the $\ell_1$-trend filtering algorithm, we propose a non-parametric model for estimating the variance of a time-series. To this end, we assume that at each time step $t$, there is a hidden variable $h_t$ such that conditioned on $h_t$ the observations $y_t$ are independent normal variables with zero mean and variance $\exp(h_t)$. The conditional log-likelihood of the observed data in this model is $l(y|h)=c-\sum_{t=1}^Th_t-y_t^2e^{-h_t}$, where $c$ is a constant that does not depend on $y$ and $h$. Crucially, we assume that the hidden variables $h_t$ vary smoothly. To impose this assumption, we estimate $h_t$ by solving the penalized conditional log-likelihood:
-
+Inspired by the $\ell_1$-trend filtering algorithm, we propose a non-parametric model for estimating the variance of a time-series. To this end, we assume that at each time step $t$, there is a hidden variable $h_t$ such that conditioned on $h_t$ the observations $y_t$ are independent normal variables with zero mean and variance $\exp(h_t)$. The negative log-likelihood of the observed data in this model is $l(y|h) \propto -\sum_{t=1}^Th_t - y_t^2e^{-h_t}$. Crucially, we assume that the hidden variables $h_t$ vary smoothly. To impose this assumption, we estimate $h_t$ by solving the penalized, negative log-likelihood:
 \begin{equation}
 \min_h -l(y|h)+\lambda \lVert Dh \lVert_1
 \label{eq:l1tf_var}
 \end{equation}
+ where $D$ has the same structure as above.
 
- where $D$ is the same as in \eqref{eq:d_matrix}.
+\alert{explain the objective more. give the AR(1) example. Explain what you loses by this assumption (ACF,forecasting). Also explain that the covariace matrix is diagonal so it cannot capture the covariance structure. But incontrast to spatial stat literature, it does not make any assumption on estimated variances. Compare to Hallac et al and Lingren et al.}
 
-%TODO: explain the objective more. give the AR(1) example. Explain what you loses by this assumption (ACF,forecasting). Also explain that the covariace matrix is diagonal so it cannot capture the covariance structure. But incontrast to spatial stat literature, it does not make any assumption on estimated variances. Compare to Hallac et al and Lingren et al.
-
-We solve this optimization problem using the PDIP method \footnote{We use PDIP implemented in the cvxopt Python package \citep{andersen_cvxopt:_2013}.}. First, we note that this is a generalized LASSO problem \citep{tibshirani_solution_2011}. The dual of a generalized LASSO with the objective $f(x)+\lambda \lVert Dx \lVert_1$ is:
-
+As with~\eqref{eq:l1tf}, one can solve~\eqref{eq:l1tf_var} using the PDIP algorithm (as in, e.g., \texttt{cvxopt}~\citep{andersen_cvxopt:_2013}). First, we note that this is a generalized LASSO problem \citep{tibshirani_solution_2011}. The dual of a generalized LASSO with the objective $f(x)+\lambda \lVert Dx \lVert_1$ is: 
+\begin{align}
+\min_\nu&\quad f^*(-D^\top\nu) \\
+\mbox{s.t.}&\quad \lVert \nu \lVert_\infty \le \lambda
+\end{align}
+ where $f^*(\cdot)$ is the Fenchel conjugate of $f$: $f^*(u)=\max_x u^tx-f(x)$. It is simple to show that 
 \begin{equation}
-\begin{aligned}
-\min_\nu f^*(-D^T\mathsf{\nu}) \\
-s.t. \,\,\, \lVert \mathsf{\nu} \lVert_\infty \le \lambda
-\end{aligned}
-\end{equation}
-
- where $D^t$ is the transpose of $D$, and $f^*(\cdot)$ is the \textit{conjugate} of $f$ defined by: $f^*(u)=\max_x u^tx-f(x)$. It is simple to show that the conjugate of $f(h)=-l(y|h)$ is:
-
-\begin{equation}
-f^*(\mathsf{u})=\sum_t (u_t-1)\log\frac{y_t^2}{1-u_t} + u_t-1
+f^*(\mathsf{u})=\sum_t (u_t-1)\log\frac{y_t^2}{1-u_t} + u_t-1.
 \label{eq:conj}
 \end{equation}
 
-The red curve in the left panel of \autoref{fig:bloom_estimatedSD} shows the estimated SD (which is $\exp(h_t/2)$) of the residuals of the time-series of Bloomington. To reduce the number of time-steps in this figure and in the remainder of the paper we work on the weekly averaged of the data. 
 
-The curve of the estimated SD captures the periodic variations in the SD of the signal. Just by looking at this curve, it is hard to say if the SD is decreasing or increasing. Therefore, we compute the average of the estimated SD for each year. The estimated SD together with this annual average is shown in the middle panel of \autoref{fig:bloom_estimatedSD}. As it can be seen, the annual trend is not smooth. This is because in the optimization problem \eqref{eq:l1tf_var}, the smoothness of the annual trend is not encouraged. To remedy this, we add the following long horizon penalty to \eqref{eq:l1tf_var}:
 
-\begin{equation}
-\sum_{i=1}^{N_{year}-2} \Big\arrowvert \sum_{t=1}^{52} h_{t_1}-2h_{t_2}+h_{t_3}  \Big\arrowvert
-\label{eq:lh_penalty}
-\end{equation}
-
- where $t_1=52(i-1)+t$, $t_2=52i+t$ and $t_3=52(i+1)+t$. Also, $N_{year}$ is the number of years over which we are performing our analysis (here $N_{year}=10$). Since we are working on the weekly averaged data, each year corresponds to 52 observations. In the matrix form, the penalty \eqref{eq:lh_penalty} adds $N_{year}$ rows to the matrix $D$. The estimated SDs using this penalty matrix is shown in the right panel of \autoref{fig:bloom_estimatedSD}. The annual average of the estimated SDs shows a linear trend with a positive slope.
-
-\begin{figure}[ht]
-	\vskip 0.2in
-	\begin{center}
-		\centerline{\includegraphics[width=\columnwidth]{Figures/bloom_estimatedSD}}
-		\caption{Left: The residuals of the time-series of Bloomington (averaged weekly) and the estimated SD obtained from the method of \autoref{sec:l1tf_var} (red). Middle: the estimated SDs (red) and their annual average (black) without imposing the long horizon penalty. Right: the same as middle panel but here the long horizon penalty is imposed. See the text for more details.}
-		\label{fig:bloom_estimatedSD}
-	\end{center}
-	\vskip -0.2in
-\end{figure} 
-
-%TODO: how to choose lambda? plot BIC as a function of lambda. 
-
-\section{Extension to spatio-temporal data}
+\subsection{Extension to spatio-temporal data}
 \label{sec:exten}
 
 The method in the previous section can be used to estimate the variance of a single time-series. In this section, we extend this method to the estimation of the variance of spatio-temporal data.
@@ -288,7 +245,7 @@ Obviously, the global variable in the problem \eqref{eq:l1tf_var_st} is $z=h$. T
 
 %TODO: re-write this part. it is very confusing.
 
-\begin{figure}[ht]
+\begin{figure}[tb]
 	\vskip 0.2in
 	\begin{center}
 		\centerline{\includegraphics[width=.5\columnwidth]{Figures/data_cube}}
@@ -437,83 +394,152 @@ Next we compute $\textbf{prox}_{\mu g_l}(u_l)$. The function $\rho \lambda_l |z_
 
 Therefore, both proximal operators in \eqref{eq:linADMM_steps} can be evaluated easily and so we can use the linearized ADMM algorithm to solve the optimization problem \eqref{eq:l1tf_var_st}.
 
-\section{Results}
-As it was mentioned before, the algorithm proposed in \autoref{sec:consOpt} is appropriate only if we parallelize it over multiple machines and so we do not pursue it further here. All the results reported in this section are obtained using the linearize ADMM algorithm of \autoref{sec:linADMM}. We applied this algorithm on a subset of the ERA-40 dataset. The data is the 2 meter temperature measured daily at 12 p.m from August 31 of 1992 to 2002. To reduce the noise we first computed the weekly average of this data. To further reduce the size of the data, we will only analyze the data of the locations inside a rectangle extended from (\ang{58},\ang{226}) to (\ang{22},\ang{302}). This rectangle covers the united states. All the computations were performed on a machine with four 3.20GHz Intel i5-3470 cores.
 
-\subsection{Convergence}
+\section{Empirical evaluation}
 
-\autoref{fig:loss_vs_iter} shows the value of the loss function \eqref{eq:l1tf_var_st_mat} as a function of iteration for $\lambda_t=1$ and $\lambda_s=0$. We used the following rule to determine when to stop the optimization: the optimization was stopped if the value of the loss did not improve by at least 0.1\% in 1000 trials. As we can see, the algorithm converged in about 2000 iterations. This took about 11 minutes. Our experiments showed that the convergence speed depends on the value of $\lambda_t$ and $\lambda_s$. Also, if we use the solution obtained for smaller values of these parameters as the initial value for the larger values (\textit{warm start}), the converges speed improves.
 
-\begin{figure}[ht]
-	\vskip 0.2in
+\subsection{Simulations}
+\label{sec:simulations}
+
+To analyze the proposed optimization methods, we first fit the model on some synthetic spatio-temporal data. The observations at all time steps and all locations were generated from independent Gaussian random variables with zero mean. However, the variance of these random variables changes smoothly in time and space. Specifically, the observation at time step $t$ and at location $(r,c)$ on the grid is generated from a Gaussian $N(0,\sigma^2(t,r,c))$, where:
+
+\begin{equation}
+\begin{aligned}
+\sigma(t,r,c) & =\sum_{s=1}^{S} W_s(t) \cdot \exp\bigg( \frac{(r-r_s)^2+(c-c_s)^2}{2\sigma_s^2} \bigg) \\
+W_s(t) & =\alpha_s \cdot t + \exp(\sin(2\pi\omega_s t+\phi_s)) 
+\label{eq:sourceVar}
+\end{aligned}
+\end{equation}
+
+In words, the variance at each time and location is computed as the weighted sum of $S$ bell-shaped functions where the weights are time-varying functions. Specifically, the weights consist of a linear trend $\alpha_s \cdot t$ and a periodic term $\beta_s \cdot \sin(2\pi\omega_s t+\phi_s)$. The bell-shaped functions impose the spatial smoothness, and the linear trend and the periodic terms enforce the temporal smoothness. We simulated the data on a 5 by 7 grid and for 780 time steps. We also used $S=4$. The parameters of the variance function are shown in  \autoref{tab:sim_params}. The value of the variance function for all locations on the grid and at $t=25$ and $t=45$ is shown in \autoref{fig:true_var_spatial}. Also, the variance for all time steps and at the location (0,0) on the grid is shown in \autoref{fig:true_fitted_var}. The linear trend and the period term can be seen clearly in this figure.
+
+\begin{table}[tb]
+	\caption{Parameters used to simulate data}
+	\label{tab:sim_params}
+	\vskip 0.15in
 	\begin{center}
-		\centerline{\includegraphics[width=1\columnwidth]{Figures/loss_vs_iter}}
-		\caption{Loss as a function of iteration for $\lambda_t=1$ and $\lambda_s=0$.}
-		\label{fig:loss_vs_iter}
+		\begin{small}
+			\begin{sc}
+				\begin{tabular}{ccccccc}
+					\hline
+
+					$s$ & $r_s$ & $c_s$ & $\sigma_s$ &$\alpha_s$ & $\omega_s$ & $\phi_s$\\
+					\hline
+					1 & 0 & 0 & 5 & 0.5 & 0.121 & 0 \\
+					2 & 0 & 5 & 5 & 0.1 & 0.121 & 0 \\
+					3 & 3 & 0 & 5 & -0.5 & 0.121 & $\pi/2$ \\
+					4 & 3 & 5 & 5 & -0.1 & 0.121 & $\pi/2$ \\
+					\hline
+				\end{tabular}
+			\end{sc}
+		\end{small}
 	\end{center}
-	\vskip -0.2in
+	\vskip -0.1in
+\end{table} 
+
+\begin{figure}[tb]
+	\centering	
+	\includegraphics[width=.7\linewidth]{Figures/true_var_spatial}		
+	
+	\caption{Variance function at $t=25$ (left) and $t=45$ (right)} \label{fig:true_var_spatial}
 \end{figure}
 
-\subsection{Model selection}
+The left panel of \autoref{fig:true_fitted_var} shows the convergence of the two algorithms. Each iteration of the linearized algorithm takes about 0.01 seconds on average while each iteration of the consensus ADMM takes about 20 seconds. 
+
+
+We estimated the linearized ADMM for all combinations of values of $\lambda_t$ and $\lambda_s$ from the sets $\lambda_t \in \{0,1,5,10,50,100\}$ and $\lambda_s \in \{0,0.05,0.1,0.2,0.3\}$. For each pair, we then compute the mean absolute error (MAE) between the estimated variance and the true variance at all locations and all time steps. For $\lambda_t=5$ and $\lambda_s=0.1$ MAE was minimized. The right panel of \autoref{fig:true_fitted_var} shows the true and the estimated standard deviation at location (0,0) using $\lambda_s=0.1$ and $\lambda_t=5$ (blue) and $\lambda_t=100$ (green). As we can see, larger than optimal value of $\lambda_t$ leads to estimated values which are ``too smooth". 
+
+\begin{figure}[!h]
+	\centering	
+	\includegraphics[width=.4\linewidth]{Figures/convergence}			
+	\includegraphics[width=.4\linewidth]{Figures/true_fitted_var}		
+	\caption{Left: Convergence speed of linearized and consensus ADMM. Right: The true (orange) and estimated standard deviation function at the location (0,0). The estimated values are obtained using linearized ADMM with $\lambda_s=0.1$ and two values of $\lambda_t$: $\lambda_t=5$ (blue) and $\lambda_t=100$ (green).} \label{fig:true_fitted_var}
+\end{figure}
+
+\subsection{Data analysis}
+As it was mentioned before, the algorithm proposed in \autoref{sec:consOpt} is appropriate only if we parallelize it over multiple machines and so we do not pursue it further here. All the results reported in this section are obtained using the linearize ADMM algorithm of \autoref{sec:linADMM}. We applied this algorithm on a subset of the ERA-40 dataset. The data is the 2 meter temperature measured daily at 12 p.m from August 31 of 1992 to 2002. To reduce the noise we first computed the weekly average of this data. To further reduce the size of the data, we will only analyze the data of the locations inside a rectangle extended from (\ang{58},\ang{226}) to (\ang{22},\ang{302}). This rectangle covers the united states. All the computations were performed on a machine with four 3.20GHz Intel i5-3470 cores.
+
+\paragraph{Data Exploration}
+The red curve in the left panel of \autoref{fig:bloom_estimatedSD} shows the estimated SD (which is $\exp(h_t/2)$) of the residuals of the time-series of Bloomington. To reduce the number of time-steps in this figure and in the remainder of the paper we work on the weekly averaged of the data. 
+
+The curve of the estimated SD captures the periodic variations in the SD of the signal. Just by looking at this curve, it is hard to say if the SD is decreasing or increasing. Therefore, we compute the average of the estimated SD for each year. The estimated SD together with this annual average is shown in the middle panel of \autoref{fig:bloom_estimatedSD}. As it can be seen, the annual trend is not smooth. This is because in the optimization problem \eqref{eq:l1tf_var}, the smoothness of the annual trend is not encouraged. To remedy this, we add the following long horizon penalty to \eqref{eq:l1tf_var}:
+
+\begin{equation}
+\sum_{i=1}^{N_{year}-2} \Big\arrowvert \sum_{t=1}^{52} h_{t_1}-2h_{t_2}+h_{t_3}  \Big\arrowvert
+\label{eq:lh_penalty}
+\end{equation}
+
+ where $t_1=52(i-1)+t$, $t_2=52i+t$ and $t_3=52(i+1)+t$. Also, $N_{year}$ is the number of years over which we are performing our analysis (here $N_{year}=10$). Since we are working on the weekly averaged data, each year corresponds to 52 observations. In the matrix form, the penalty \eqref{eq:lh_penalty} adds $N_{year}$ rows to the matrix $D$. The estimated SDs using this penalty matrix is shown in the right panel of \autoref{fig:bloom_estimatedSD}. The annual average of the estimated SDs shows a linear trend with a positive slope.
+
+\begin{figure}[tb]
+	\vskip 0.2in
+	\begin{center}
+		\centerline{\includegraphics[width=\columnwidth]{Figures/bloom_estimatedSD}}
+		\caption{Left: The residuals of the time-series of Bloomington (averaged weekly) and the estimated SD obtained from the method of \autoref{sec:l1tf_var} (red). Middle: the estimated SDs (red) and their annual average (black) without imposing the long horizon penalty. Right: the same as middle panel but here the long horizon penalty is imposed. See the text for more details.}
+		\label{fig:bloom_estimatedSD}
+	\end{center}
+	\vskip -0.2in
+\end{figure} 
+
+%TODO: how to choose lambda? plot BIC as a function of lambda. 
+
+
+This section is devoted to exploring some of the properties of the ERA-40 surface temperature data set. The goal here is to demonstrate some of the difficulties in modeling the trend in the temperature volatility and motivate our methodology for doing so.
+
+% \autoref{fig:cities_ts} shows the time-series of the temperature of three cities: Bloomington (USA), San Diego (USA) and Manaus (Brazil). The time-series of Bloomington and San Diego show clear cyclic behavior. However, while it seems (qualitatively) that these cycles can be modeled by a sinusoidal function for Bloomington, the same is not true for San Diego. Also, the amplitude of the cycles changes from some years to others. The time-series of Manaus does not show any regular cyclic behavior. This demonstrates the first difficulty in analyzing the variance of this data: to analyze the variance, we first need to remove the cyclic terms from all time-series. However, there is a lot of variations in the cyclic behavior of the time-series of different locations. In addition, some of these cycles cannot be easily modeled by a parametric function \footnote{One might try to model the cycles by the summation of sinusoidal terms with different frequencies. However, for some time-series this may need many terms to be included in the summation to achieve a reasonable level of accuracy. In addition, this model cannot capture the non-stationarity in the cycles.}. To overcome these issues, we will use a non-parametric approach to remove the cyclic terms from the time-series and de-trend them. This approach, called \textit{$\ell_1$-trend filtering} is explained in the next section.
+
+% \begin{figure}[tb]
+% 	\vskip 0.2in
+% 	\begin{center}
+% 		\centerline{\includegraphics[width=\columnwidth]{Figures/cities_ts}}
+% 		\caption{Time-series of the temperature (in Kelvin) of three cities.}
+% 		\label{fig:cities_ts}
+% 	\end{center}
+% 	\vskip -0.2in
+% \end{figure} 
+
+The right panel of \autoref{fig:bloom_detrended} shows the time-series of the temperature of Bloomington, after removing the cyclic terms and de-trending using the method explained in the next section. The goal is to investigate the trend in the variance of this signal. This figure, reveals another issue toward this goal: the variance of this signal, shows cyclic behavior. Also, the cycles are not regular and their amplitude and frequency change. Even if one can describe the behavior of the variance of all the time-series using a single parametric model (for example a variant of the GARCH models \citep{bollerslev_generalized_1986}), it is not clear how the trend in the variance should be investigated in this framework. These observations motivate the need to develop a non-parametric framework for the problem at hand.
+
+\begin{figure}[tb]
+	\vskip 0.2in
+	\begin{center}
+		\centerline{\includegraphics[width=\columnwidth]{Figures/bloom_trend_resid}}
+		\caption{Left: Time-series of the temperature of Bloomington (blue) and the estimated trend and cycles obtained from the $\ell_1$-trend filtering (red). Right: the same time-series after removing the cyclic terms and de-trending using $\ell_1$-trend filtering.}
+		\label{fig:bloom_detrended}
+	\end{center}
+	\vskip -0.2in
+\end{figure} 
+
+
+\paragraph{Convergence}
+
+We used the following rule to determine when to stop the optimization: the optimization was stopped if the value of the loss did not improve by at least 0.1\% in 1000 trials. As we can see, the algorithm converged in about 2000 iterations. This took about 11 minutes. Our experiments showed that the convergence speed depends on the value of $\lambda_t$ and $\lambda_s$. Also, if we use the solution obtained for smaller values of these parameters as the initial value for the larger values (\textit{warm start}), the converges speed improves.
+
+
+\paragraph{Model selection}
 One common method for choosing the penalty parameters in the Lasso problems is to find the solution for a range of the values of these parameters and then choose the values which minimize a model selection criterion. However, such analyses needs the computation of the degrees of freedom (df). Several previous work have investigated the df in generalized lasso problems \citep{tibshirani_degrees_2012,hu_dual_2015,zeng_geometry_2017}. However, all these studies have considered the linear regression problem and, to the best of our knowledge, the problem of computing the df for generalized lasso with general objective function has not been considered yet.
 
 Another approach is to choose the set of values which minimize an estimate of the expected prediction error obtained by k-fold cross-validation \citep{tibshirani_regression_1996} . Although this method is applicable for our problem, it needs k times more computation.
 
 In this paper, we use a heuristic method for choosing $\lambda_t$ and $\lambda_s$: we compute the optimal solution for a range of values of these parameters and choose the values which minimize $\mathscr{L}(\lambda_t,\lambda_s)=-l(y|h)+ \sum \lVert D_{total}h \lVert$. This objective is a compromise between the negative log likelihood ($-l(y|h)$) and the complexity of the solution ($\sum \lVert D_{total}h \lVert$). For smoother solutions the value of $\sum \lVert D_{total}h \lVert$ will be smaller but with the cost of larger $-l(y|h)$.
 
-We computed the optimal solution for all the combinations of the following sets of values: $\lambda_t \in \{1,5,10,20\} \, \, , \lambda_s \in \{0,.1,1,5,10\}$. The value of $\mathscr{L}(\lambda_t,\lambda_s)$ is shown in \autoref{fig:modelSelect}. This function is minimized at $\lambda_t=5$ and $\lambda_s=1$. All the analyses in the next section are performed on the solution for these values.
+We computed the optimal solution for all the combinations of the following sets of values: $\lambda_t \in \{1,5,10,20\} \, \, , \lambda_s \in \{0,.1,1,5,10\}$. The best combination based on a held out set was $\lambda_t=5$ and $\lambda_s=1$. All the analyses in the next section are performed on the solution for these values.
 
-\begin{figure}[ht]
-	\vskip 0.2in
-	\begin{center}
-		\centerline{\includegraphics[width=1\columnwidth]{Figures/modelSelect}}
-		\caption{Value of $\mathscr{L}(\lambda_t,\lambda_s)$ for several values of $\lambda_t$ and $\lambda_s$. }
-		\label{fig:modelSelect}
-	\end{center}
-	\vskip -0.2in
-\end{figure}
 
-\subsection{Analysis of trend of temperature volatility}
-\autoref{fig:estimatedSD} shows the detrended data, the estimated standard deviation and the yearly average of these estimates for two cities in the united states: Bloomington (left) and San Diego (right). The estimated SD captures the periodic behavior in the variance of the time-series. In addition, the number of linear segments changes adaptively in each time window depending on how fast the variance is changing. 
+\paragraph{Analysis of trend of temperature volatility}
 
-\begin{figure}[ht]
-	\vskip 0.2in
-	\begin{center}
-		\centerline{\includegraphics[width=1\columnwidth]{Figures/estimatedSD}}
-		\caption{Detrended data and the estimated SD for Bloomington (left) and San Diego (right).}
-		\label{fig:estimatedSD}
-	\end{center}
-	\vskip -0.2in
-\end{figure}
-
+The top row of \autoref{fig:avg_change_estimatedSD} shows the detrended data, the estimated standard deviation and the yearly average of these estimates for two cities in the US. The estimated SD captures the periodic behavior in the variance of the time-series. In addition, the number of linear segments changes adaptively in each time window depending on how fast the variance is changing. 
 The yearly average of the estimated SD captures the trend in the temperature volatility. For example, we can see that in Bloomington, there is a small positive trend. To determine how the volatility has changed in each location, we subtract the average of the estimated variance in 1992 from the average in the following years and compute their sum. The value of this change in the variance in each location is depicted in the right panel of \autoref{fig:avg_change_estimatedSD}. The left panel of this figure, shows the average estimated variance in each location.
 
-\begin{figure}[ht]
-	\begin{subfigure}
+\begin{figure}[tb]
 	  \centering
-	  \includegraphics[width=.5\linewidth]{Figures/avg_estimatedVar}
-	\end{subfigure}%
-	\begin{subfigure}
-	  \centering
-	  \includegraphics[width=.5\linewidth]{Figures/avg_change_estimatedVar}
-	\end{subfigure}%
-	\caption{Left: the average of the estimated variance in all locations in the grid over the united states. Right: the change in the variance from 1992 to 2002.}
+          \includegraphics[width=.9\columnwidth]{Figures/estimatedSD}\\
+	  \includegraphics[width=.45\linewidth]{Figures/avg_estimatedVar}
+	  \includegraphics[width=.45\linewidth]{Figures/avg_change_estimatedVar}
+	\caption{Top row: Detrended data and the estimated SD for Bloomington (left) and San Diego (right). Bottom: the average of the estimated variance over the US (left) and the change in the variance from 1992 to 2002 (right)}
 	\label{fig:avg_change_estimatedSD}
 \end{figure} 
-
 It is interesting to note that the trend in volatility is almost zero over the oceans. The most positive trend can be observed in the south-east and the most negative trend has happened in the north-east. 
-
-Finally, \autoref{fig:hist_avg_change} shows the histogram of the changes shown in the right panel of \autoref{fig:avg_change_estimatedSD}. As we can see, there are two peaks in this histogram: one for locations with no trend (which includes the points on the oceans), and one peak for locations with positive trend. The locations with negative trend form the long tail of the histogram.
-
-\begin{figure}[ht]
-	\vskip 0.2in
-	\begin{center}
-		\centerline{\includegraphics[width=1\columnwidth]{Figures/hist_avg_change}}
-		\caption{Histogram of the change in the estimated variances.}
-		\label{fig:hist_avg_change}
-	\end{center}
-	\vskip -0.2in
-\end{figure}
  
 
 \section{Discussion}
@@ -528,7 +554,8 @@ The goal of this paper, however, is not to make any conclusions about the trend 
 
 \bibliographystyle{abbrvnat}
 \small
-\bibliography{references}
+\bibliography{nips-references}
+
 
 \end{document} 
 
