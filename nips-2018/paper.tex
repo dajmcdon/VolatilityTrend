@@ -45,7 +45,9 @@
 
 
 \usepackage{xcolor}
-\newcommand{\alert}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\attn}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\one}{\mathbf{1}}
+\renewcommand{\algorithmiccomment}[1]{\hfill $\rhd$ #1}
 
 
 
@@ -144,7 +146,7 @@ Inspired by the $\ell_1$-trend filtering algorithm, we propose a non-parametric 
 \end{equation}
  where $D$ has the same structure as above.
 
-\alert{explain the objective more. give the AR(1) example. Explain what you loses by this assumption (ACF,forecasting). Also explain that the covariace matrix is diagonal so it cannot capture the covariance structure. But incontrast to spatial stat literature, it does not make any assumption on estimated variances. Compare to Hallac et al and Lingren et al.}
+\attn{explain the objective more. give the AR(1) example. Explain what you loses by this assumption (ACF,forecasting). Also explain that the covariace matrix is diagonal so it cannot capture the covariance structure. But incontrast to spatial stat literature, it does not make any assumption on estimated variances. Compare to Hallac et al and Lingren et al.}
 
 As with~\eqref{eq:l1tf}, one can solve~\eqref{eq:l1tf_var} using the PDIP algorithm (as in, e.g., \texttt{cvxopt}~\citep{andersen_cvxopt:_2013}). First, we note that this is a generalized LASSO problem \citep{tibshirani_solution_2011}. The dual of a generalized LASSO with the objective $f(x)+\lambda \lVert Dx \lVert_1$ is: 
 \begin{align}
@@ -156,7 +158,34 @@ As with~\eqref{eq:l1tf}, one can solve~\eqref{eq:l1tf_var} using the PDIP algori
 f^*(\mathsf{u})=\sum_t (u_t-1)\log\frac{y_t^2}{1-u_t} + u_t-1.
 \label{eq:conj}
 \end{equation}
-
+Writing
+\[
+  r_w(v,\mu_1,\mu_2):=
+  \begin{bmatrix}
+    \nabla f^*(-D^\top v) + D(v-\lambda \one)^\top \mu_1 -
+    D(v+\lambda \one)^\top \mu_2\\
+    -\mu_1(v-\lambda\one)+\mu_2(v + \lambda\one) -w^{-1}\one
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+  0\\0\end{bmatrix}
+\]
+for $w>0$, where $\mu_1$ and $\mu_2$ are dual variables for the $\ell_\infty$ constraint in the dual problem. As $w\rightarrow\infty$, the solution to this nonlinear system reduces to the KKT conditions. Therefore, the PDIP method takes Newton steps to solve the system for a series of increasing values of $w$. \autoref{alg:pdip} provides the details.
+\begin{algorithm}
+  \caption{PDIP for $\ell_1$ variance estimation}
+  \label{alg:pdip}
+  \begin{algorithmic}
+    \REQUIRE $\lambda>0$, $w>0$, $\nu\leftarrow 0$, $\mu_1\leftarrow 0$, $\mu_2\leftarrow 0$, $J\in\mathbb{Z}^+$, $\{w_k\}$ \COMMENT{Initialization}
+    \FOR[Central path]{$k=1,2,\ldots$}
+    \FOR[Newton updates]{$j=1,\ldots,J$}
+    \STATE Solve $A [\Delta\nu\; \Delta\mu_1\; \Delta\mu_2]^\top=r^j_{w_k}$ to find the search direction.
+    \STATE $\quad\quad A$ is the Jacobian of $r_w$.
+    \STATE Update $r^{j+1} \leftarrow r^j + [\Delta\nu\; \Delta\mu_1\; \Delta\mu_2]^\top$.
+    \ENDFOR
+   \ENDFOR
+   \RETURN $h=-D^\top\nu$ \attn{Is this right??}
+  \end{algorithmic}
+\end{algorithm}
 
 
 \subsection{Extension to spatio-temporal data}
@@ -195,6 +224,8 @@ D &  & \\
 \end{equation}
 
  where $D$ was defined in \eqref{eq:d_matrix}. The number of the diagonal blocks is equal to the grid size $n_r \times n_c$. Each row of the matrix $D_s$ corresponds to one spatial constraint in \eqref{eq:l1tf_var_st}. For example, the first $T$ rows correspond to $|h_{11t}-h_{21t}|$ for $t=1,...,T$, the next $T$ rows correspond to $|h_{11t}-h_{12t}|$, and so on.
+
+\attn{Detailed discussion of the PDIP to here}
 
 The dual of this problem is:
 
@@ -256,6 +287,8 @@ Obviously, the global variable in the problem \eqref{eq:l1tf_var_st} is $z=h$. T
 \end{figure} 
 
 By this definition of $x_i$, the update step for $x_i$ is the following optimization problem: $x_i^{m+1}:=\argmin_{x_i} ( f_i(x_i) + (u_i^m)^t x_i + (\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2)$.
+
+\attn{Redo the below and move to the section on PDIP above}
 
 We solve this using the PDIP method. To this end we first need to compute the dual of the problem. It can be shown that the dual of this problem is:
 
@@ -358,6 +391,8 @@ The optimization problem \eqref{eq:l1tf_var_st} can be put into the form \eqref{
 To perform the steps in \eqref{eq:linADMM_steps}, we need to evaluate $\textbf{prox}_{\mu f}$ and $\textbf{prox}_{\rho g}$. The proximal algorithms are feasible only if these proximal operators can be evaluated efficiently which, as we show next, is the case for our problem. 
 
 Let $\big(\textbf{prox}_{\mu f}(u)\big)_k$ be the $k^{th}$ entry of $\textbf{prox}_{\mu f}(u)$. From the \textit{separable sum} property of the proximal operators we have (see \citep{parikh_proximal_2014}, section 2.1):
+
+\attn{Make this a theorem}
 
 \begin{equation}
 \bigg(\textbf{prox}_{\mu f}(u)\bigg)_k = \textbf{prox}_{\mu f_k}(u_k)\\
