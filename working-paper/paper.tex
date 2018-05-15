@@ -248,16 +248,21 @@ In the next section, we develop an ADMM algorithm for solving this problem. The 
 \subsection{Consensus optimization}
 \label{sec:consOpt}
 
-A general form consensus optimization problem is in the form $\min_z \sum_i f_i(z)$, $z\in\mathbb{R}^n$. We can define a set of \textit{local variables} $x_i\in \mathbb{R}^{n_i}$ such that $\sum_i f_i(z)=\sum_i f_i(x_i)$. We follow the notation of \cite{boyd_distributed_2011} closely. Let $k=\mathscr{G}(i,j)$ which means that the $j^\text{th}$ entry of $x_i$ is $z_k$ (or $(x_i)_j=z_k$) and define $\tilde{z}_i \in \mathbb{R}^{n_i}$ by $(\tilde{z}_i)_j=(x_i)_j$. Then the original unconstrained optimization problem is equivalent to the following constrained optimization problem:
+Consider an optimization problem of the form $\min_z f(z)$, where $z\in\mathbb{R}^n$ is the \textit{global variable} and $f(z):\mathbb{R}^n \rightarrow \mathbb{R}\cup \{+\infty\}$ is convex. The goal in consensus optimization is to break this problem into several smaller sub-problems which can be solved independently in each iteration of optimization. 
+
+Assume that it is possible to define a set of \textit{local variables} $x_i \in \mathbb{R}^{n_i}$ such that $f(z)=\sum_i f_i(x_i)$, where each $x_i$ is a subset of the global variable $z$. More specifically, each entry of the local variables corresponds to an entry of the global variable. Therefore we can define a mapping $\mathscr{G}(i,j)$ from the local variables indices into the global variable indices: $k=\mathscr{G}(i,j)$ means that the $j^\text{th}$ entry of $x_i$ is $z_k$ (or $(x_i)_j=z_k$). For ease of notation, define $\tilde{z}_i \in \mathbb{R}^{n_i}$ as $(\tilde{z}_i)_j=z_{\mathscr{G}(i,j)}$. Then, the original optimization problem is equivalent to the following problem: 
 
 \begin{equation}
 \begin{aligned}
 \min_{\{x_1,...,x_N  \}} \sum_i f_i(x_i)\\
  s.t. \,\,\, \tilde{z}_i=x_i \,\,\,\,\,\,
 \end{aligned}
+\label{eq:consADMM}
 \end{equation}
 
-Now, we can apply ADMM to the \textit{augmented Lagrangian} of this problem. This results in the following ADMM updating steps at each iteration $m$:
+It is important to note that each entry of the global variable may correspond to several entries of the local variables and so the constraints $\tilde{z}_i=x_i$ enforce the consensus between the local variables corresponding to the same global variable. 
+
+The \textit{augmented Lagrangian} corresponding to the problem \ref{eq:consADMM} is $L_\rho(x,z,y)=\sum_i \big(f_i(x_i)+y_i^T(x_i-\tilde{z}_i) + (\rho/2) \lVert x_i-\tilde{z}_i \lVert_2^2 \big)$. Now, we can apply ADMM to $L_\rho$ which results in the following ADMM updating steps at each iteration $m$:
 
 \begin{equation}
 \begin{aligned}

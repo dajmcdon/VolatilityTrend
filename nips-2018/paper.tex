@@ -33,7 +33,7 @@
 \usepackage{mathrsfs}
 \DeclareMathOperator*{\argmin}{argmin}
 \usepackage{siunitx}
-
+\usepackage{comment}
 \usepackage{mathtools}
 \mathtoolsset{showonlyrefs}
 
@@ -91,6 +91,8 @@ words, words,
 
 
 \section{Introduction}
+
+\attn{Some equations do not have numbering and some have.}
 
 Nonparametric variance estimation for spatio-temporal data.
 
@@ -207,6 +209,8 @@ Mention ~\citep{KimKoh2009,HallacPark2017}. Also,
   time-series}
 \label{sec:ell_1-trend-filt}
 
+\attn{Arash: should't the title of this section be "...estimating variance of spatio-temporal data" or something similar?}
+
 $\ell_1$-trend filtering was proposed by \citep{kim_$ell_1$_2009} as a method for estimating a smooth, time-varying trend. It is formulated as the optimization problem
 % : a time-series $y_t$, $t=1,...,T$ is observed and we believe that
 % it consists of a smooth trend and a stochastic component and the
@@ -269,7 +273,7 @@ this end, we assume that at each time step $t$, there is a hidden
 variable $h_t$ such that conditioned on $h_t$ the observations $y_t$
 are independent normal variables with zero mean and variance
 $\exp(h_t)$. The negative log-likelihood of the observed data in this
-model is $l(y\given h) \propto -\sum_{t=1}^Th_t - y_t^2e^{-h_t}$. Crucially,
+model is $l(y\given h) \propto -\sum_{t=1}^T h_t - y_t^2e^{-h_t}$. Crucially,
 we assume that the hidden variables $h_t$ vary smoothly. To impose
 this assumption, we estimate $h_t$ by solving the penalized, negative
 log-likelihood: 
@@ -292,6 +296,7 @@ PDIP algorithm (as in, e.g.,
 this is a generalized LASSO problem
 \citep{tibshirani_solution_2011}. The dual of a generalized LASSO with
 the objective $f(x)+\lambda \norm{ Dx }_1$ is:  
+
 \begin{align}
 \min_\nu&\quad f^*(-D^\top\nu) & \mbox{s.t.}&\quad \norm{ \nu }_\infty \le \lambda
 \end{align}
@@ -314,6 +319,7 @@ Writing
   0\\0\end{bmatrix}
 \label{eq:resid}
 \end{equation}
+
 for $w>0$, where $\mu_1$ and $\mu_2$ are dual variables for the
 $\ell_\infty$ constraint, as $w\rightarrow\infty$,
 the solution to this nonlinear system reduces to the KKT
@@ -379,16 +385,16 @@ filtering on graphs~\citep{wang_trend_2016} which penalizes the difference
 between the estimated values of the signal on the connected
 nodes. As before, we can write
 \eqref{eq:l1tf_var_st} in matrix form where $h$ is an $T\times
-S$ vector and $D$ is replaced by $D_{TS}$. Then, as we
+S$ vector and $D$ is replaced by $D_{TS} \in \mathbb{R}^{(N_t+N_s) \times (T \cdot S)	}$, where $N_t=S \cdot (T-2)$ and $N_s=T \cdot (2n_rn_c-n_r)$ are the number of temporal and spatial constraints, respectively\footnote{$N_s$ is obtained by counting the number of unique constraints at each location and at all times.}. Then, as we
 have two different tuning parameters for the temporal and spatial
-components, we write $\lambda =\left[\lambda_1\one_T^\top,\;
-  \lambda_2\one_{S}^\top\right]^\top$ and $\Lambda =\texttt{diag}(\lambda)$ leading to 
+components, we write $\Lambda =\left[\lambda_1\one_{N_t}^\top,\;
+  \lambda_2\one_{N_s}^\top\right]^\top$ leading to \footnote{Throughout the paper, we use $|x|$ for both scalars and vectors. For vectors we use this to denote a vector obtained by taking the absolute value of each entry of $x$.}:
 % let $h$ be a
 % vector whose first $T$ entries are $h_{11t}$ for $t=1,...,T$, its next
 % $T$ entries are $h_{21t}$ and so on, then the optimization problem in
 % the matrix form is as
 \begin{equation}
-\min_h -l(y\given h)+ \norm{\Lambda D_{TS}h }_1.
+\min_h -y\given h)+ \Lambda^\top | D_{TS}h |
 \label{eq:l1tf_var_st_mat}
 \end{equation}
 % where $\Lambda = \mathbf{I}_{Tn_rn_c}\left[\lambda_1\one_T^\top,\;
@@ -412,10 +418,7 @@ components, we write $\lambda =\left[\lambda_1\one_T^\top,\;
 %  $|h_{11t}-h_{21t}|$ for $t=1,...,T$, the next $T$ rows correspond to
 %  $|h_{11t}-h_{12t}|$, and so on. 
 % \attn{Detailed discussion of the PDIP to here}
-The dual of this problem is 
-$\min_\nu f^*(-D_{ST}^\top\nu)$ subject to 
-$| \nu_k | \le \Lambda_{kk},\; k=1,\ldots,ST$,
- where $f^*$ is given in \eqref{eq:conj}.
+
 
 \attn{Add back the full form of $D$ above? It was too cumbersome
   before, but possibly necessary}
@@ -424,7 +427,7 @@ $| \nu_k | \le \Lambda_{kk},\; k=1,\ldots,ST$,
 \label{sec:prop-optim-meth}
 
 For a spatial grid of size $S$ and $T$ time steps, $D_{ST}$ will have
-$3n_rn_c+Tn_c+2Tn_r$ rows and $ST$ columns. For a $1^\circ\times
+$3Tn_rn_c-2n_rn_c-Tn_r$ rows and $ST$ columns. For a $1^\circ\times
 1^\circ$ grid over the
 entire northern hemisphere and daily data over 10 years, we have
 $n_r=90$, $n_c=180$, $T=3650$ and so $D_{ST}$ has approximately
@@ -449,6 +452,7 @@ second uses proximal methods to avoid matrix inversions.
 \subsection{Consensus optimization}
 \label{sec:consOpt}
 
+\begin{comment}
 General (unconstrained) optimization problems $\min_z
 \sum_i f_i(z)$, $z\in\mathbb{R}^n$ can be rewritten equivalently using a
 collection of local variables, $x_i\in \mathbb{R}^{n_i}$, and a
@@ -465,41 +469,80 @@ problem:
 \begin{align}
 x_i&\leftarrow \argmin_{x_i} f_i(x_i) + (u_i)^\top x_i +
      (\rho/2) \norm{ x_i-\tilde{z}_i }_2^2\\
-\label{eq:ADMM_steps}
+%\label{eq:ADMM_steps}
 z_k&\leftarrow (1/S_k)\sum_{\mathscr{G}(i,j)=k} (x_i)_j\\
 u_i&\leftarrow u_i + \rho (x_i-\tilde{z}_i)
 \end{align}
+\end{comment}
+
+Consider an optimization problem of the form $\min_h f(h)$, where $h\in\mathbb{R}^n$ is the \textit{global variable} and $f(h):\mathbb{R}^n \rightarrow \mathbb{R}\cup \{+\infty\}$ is convex. The goal in consensus optimization is to break this problem into several smaller sub-problems which can be solved independently in each iteration of optimization. 
+
+Assume that it is possible to define a set of \textit{local variables} $x_i \in \mathbb{R}^{n_i}$ such that $f(h)=\sum_i f_i(x_i)$, where each $x_i$ is a subset of the global variable $h$. More specifically, each entry of the local variables corresponds to an entry of the global variable. Therefore we can define a mapping $\mathscr{G}(i,j)$ from the local variables indices into the global variable indices: $k=\mathscr{G}(i,j)$ means that the $j^\text{th}$ entry of $x_i$ is $h_k$ (or $(x_i)_j=h_k$). For ease of notation, define $\tilde{h}_i \in \mathbb{R}^{n_i}$ as $(\tilde{h}_i)_j=h_{\mathscr{G}(i,j)}$. Then, the original optimization problem is equivalent to the following problem: 
+
+\begin{equation}
+\begin{aligned}
+\min_{\{x_1,...,x_N  \}} \sum_i f_i(x_i)\\
+ s.t. \,\,\, \tilde{h}_i=x_i \,\,\,\,\,\,
+\end{aligned}
+\label{eq:consADMM}
+\end{equation}
+
+It is important to note that each entry of the global variable may correspond to several entries of the local variables and so the constraints $\tilde{h}_i=x_i$ enforce the consensus between the local variables corresponding to the same global variable. 
+
+The \textit{augmented Lagrangian} corresponding to the problem \ref{eq:consADMM} is $L_\rho(x,h,y)=\sum_i \big(f_i(x_i)+u_i^\top(x_i-\tilde{h}_i) + (\rho/2) \lVert x_i-\tilde{h}_i \lVert_2^2 \big)$. Now, we can apply ADMM to $L_\rho$ which results in the following ADMM updating steps at each iteration $m$:
+
+\begin{equation}
+\begin{aligned}
+& x_i^{m+1}:=\argmin_{x_i} \bigg( f_i(x_i) + (u_i^m)^\top x_i + (\rho/2) \lVert x_i-\tilde{h}_i^m \lVert_2^2\bigg)\\
+& h_k^{m+1}:=(1/S_k)\sum_{\mathscr{G}(i,j)=k} (x_i^{m+1})_j\\
+& u_i^{m+1}:=u_i^m + \rho (x_i^{m+1}-\tilde{h}_i^{m+1})
+\end{aligned}
+\label{eq:ADMM_steps}
+\end{equation}
+
 Here, $S_k$ is the number of local variable entries that correspond to
-$z_k$, and $u_i$ are the Lagrange multipliers.  The $x$-update is
+$h_k$, and $u_i$ are the Lagrange multipliers.  
+
+\begin{comment}
+The $x$-update is
 often a simple modification as the original optimization, though over only a small
-partition, the $z$-update simply averages over collections of
+partition, the $h$-update simply averages over collections of
 analogous local variables while the $u$ update enforces sharing. Both
 the $x$ and $u$ updates are parallelizable over the partition of local
 variables.
+\end{comment}
+
 \attn{I don't much like this explanation or notation. Seems unclear}
 
+\attn{Arash: I re-wrote this section.}
+
 To solve the optimization problem \eqref{eq:l1tf_var_st_mat} or
-\eqref{eq:l1tf_var_st} using this method, we need to two address two
+\eqref{eq:l1tf_var_st} using this method, we need to address two
 questions: first, how to choose the 
 local variables $x_i$, and second, how to solve the optimization
 problem for updating these variables (the first line of
-\eqref{eq:ADMM_steps}).  
+\eqref{eq:ADMM_steps} which we will refer to it as \textit{x-update step}).  
 
-In \autoref{fig:data_cube}, the global variable $z$ is represented
-as a cube (using the subset of the US as an example). We decompose $z$
+In \autoref{fig:data_cube}, the global variable $h$ is represented
+as a cube (using the subset of the US as an example). We decompose $h$
 into sub-cubes as shown in the figure by white lines. It is easy to see
-that with this definition of $x_i$, the objective
+that by this definition of $x_i$, the objective
 \eqref{eq:l1tf_var_st_mat} decomposes as $\sum_i f_i(x_i)$ where
-$f_i(x_i)=-l(y_i\given x_i)+\norm{\Lambda_{(i)} D_{(i)}x_i}$, and
+$f_i(x_i)=-l(y_i\given x_i)+\Lambda_{(i)}^\top |D_{(i)}x_i|$, and
 $\Lambda_{(i)}$ and $D_{(i)}$ contain the temporal and spatial
-penalties corresponding to $x_i$ only.
-\attn{I would like to be able to write all this in terms of $h$
-  instead of $x$}
+penalties corresponding to $x_i$ only. The x-update step in \autoref{eq:ADMM_steps} is the following optimization problem: $x_i^{m+1}:=\argmin_{x_i} ( f_i(x_i) +
+(u_i^m)^\top x_i + (\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2)$.
+
+\attn{I would like to be able to write all this in terms of $h$ instead of $x$}
+
+\attn{Arash: now I'm using $h$ as the global variables. We cannot write the local variables in terms of $h$ since they are different from $h$.}
+  
+  
 
 \begin{figure}[tb]
   \centering
   \includegraphics[height=.2\textheight]{Figures/data_cube}
-    \caption{The cube represents the global variable $z$ in space and
+    \caption{The cube represents the global variable $h$ in space and
       time. The sub-cubes specified by the white lines are
       $x_i$. \attn{Can we use $h_i$ here instead of $x_i$?}}
     \label{fig:data_cube}
@@ -508,38 +551,9 @@ penalties corresponding to $x_i$ only.
 
 By this definition of $x_i$, the update step for $x_i$ is the
 following optimization problem: $x_i^{m+1}:=\argmin_{x_i} ( f_i(x_i) +
-(u_i^m)^t x_i + (\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2)$. 
+(u_i^m)^\top x_i + (\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2)$. We solve this using the PDIP method. As it was explained in \autoref{sec:l1tf_var}, to use PDIP we need to compute the dual problem, which in turn needs the computation of the Fenchel conjugate of the loss function. In addition, referring to \autoref{alg:pdip}, we need to compute the gradient and Jacobian of the conjugate functions. It is important to note that compare to the optimization problem \autoref{eq:l1tf_var}, the loss function in the x-update step in \autoref{eq:ADMM_steps} includes the quadratic term $(\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2$. This makes the computation more involved than \autoref{sec:l1tf_var}. The details of the computations are explained in Appendix 1.
 
-We solve this using the PDIP method. To this end we first need to
-compute the dual of the problem. It can be shown that the dual of this
-problem is: 
-%TODO: write the appendix
-\begin{align}
-\min_\nu &f_i^*(-D_i^t\nu_i) & s.t. &| (\nu_i)_j | \le (\Lambda_i)_j
-\label{eq:dual_x_update}
-\end{align}
- where:
-\begin{align}
-f^*_i(q)&=\sum_j (q_i)_j (w_i)_j -(w_i)_j-(y_i)_j^2 e^{-(w_i)_j} - 
-(\rho/2)((w_i)_j-(\alpha_i^m)_j)^2\\
-\alpha_i^m &=\hat{z}_i^m-u_i^m \label{eq:conj_x_update}\\
-(w_i)_j&=\mathscr{W}\bigg(\frac{(y_i)_j^2}{\rho}\exp
-         \bigg[\frac{1-q_j-\rho(\alpha_i^m)_j}{\rho}\bigg]\bigg)- 
-\frac{1-q_j-\rho(\alpha_i^m)_j}{\rho}
-\end{align}
-\attn{I'm not quite sure what's going on here. These need to match the
-  generic discussion in \eqref{eq:ADMM_steps}. Or are these just
-  defining some other variables for convenience? This needs to be
-  clarified and incorporated into \autoref{alg:ADMM}.}
-
-
-In these equations, $\mathscr{W}$ is the \textit{Lambert function}
-\citep{corless_lambertw_1996}. To use the PDIP method, we also need to
-compute the gradient and Hessian of $f_i^*(-D_i^t\nu_i)$. This
-involves computing the derivatives of the Lambert functions. The
-primal solution $x_i$ can be obtained from the dual solution $\nu_i$
-in \eqref{eq:dual_x_update} by setting $x_i=w_i$ where $w_i$ is
-defined in the last equation of \eqref{eq:conj_x_update}.  
+\attn{I'm not sure if we want to devote some space to write this as a separate algorithm. The steps are those mentioned in \ref{eq:ADMM_steps} and the x-update is now explained in the appendix. So we may want to remove algorithm \ref{alg:ADMM}.}
 
 The complete ADMM algorithm for estimating the variances is
 represented in \autoref{alg:ADMM}. All the computations in the three
@@ -614,7 +628,7 @@ iteration of the linearized ADMM
 algorithm~\citep{parikh_proximal_2014} for solving this problem 
 has the form
 \begin{align}
-x & \leftarrow \prox_{\mu f} \left(x - (\mu/\rho)D^T (D x - z + u )\right)\\
+x & \leftarrow \prox_{\mu f} \left(x - (\mu/\rho)D^\top (D x - z + u )\right)\\
 z & \leftarrow \prox_{\rho g} \left(z + u\right) \label{eq:linADMM_steps}\\
 u & \leftarrow u + D x - z
 \end{align}
@@ -634,7 +648,7 @@ Clearly,
 % \end{align}
 % where $y_k$ is the $k^{th}$ entry of the vector whose entries are
 % $y_{ijt}$, and $\lambda_l$ is the $l^{th}$ entry of the vector
-% $\Lambda^t=(\lambda_t\textbf{e}_{n_t}^t|\lambda_s\textbf{e}_{n_s}^t)$
+% $\Lambda^\top=(\lambda_t\textbf{e}_{n_t}^\top|\lambda_s\textbf{e}_{n_s}^\top)$
 % (see \autoref{sec:exten}). 
 To perform the steps in \eqref{eq:linADMM_steps}, we need to evaluate
 $\prox_{\mu f}$ and $\prox_{\rho g}$. Proximal
@@ -812,20 +826,14 @@ annual average is shown in the middle panel of
 is not smooth. This is because in the optimization problem
 \eqref{eq:l1tf_var}, the smoothness of the annual trend is not
 encouraged. To remedy this, we add the following long horizon penalty
-to \eqref{eq:l1tf_var}: 
+to \eqref{eq:l1tf_var}:
+ 
 \begin{equation}
 \sum_{i=1}^{N_{year}-2} \Big\arrowvert \sum_{t=1}^{52} h_{t_1}-2h_{t_2}+h_{t_3}  \Big\arrowvert
 \label{eq:lh_penalty}
 \end{equation}
- where $t_1=52(i-1)+t$, $t_2=52i+t$ and $t_3=52(i+1)+t$. Also,
- $N_{year}$ is the number of years over which we are performing our
- analysis (here $N_{year}=10$). Since we are working on the weekly
- averaged data, each year corresponds to 52 observations. In the
- matrix form, the penalty \eqref{eq:lh_penalty} adds $N_{year}$ rows
- to the matrix $D$. The estimated SDs using this penalty matrix is
- shown in the right panel of \autoref{fig:bloom_estimatedSD}. The
- annual average of the estimated SDs shows a linear trend with a
- positive slope. 
+
+where $t_1=52(i-1)+t$, $t_2=52i+t$ and $t_3=52(i+1)+t$. Also, $N_{year}$ is the number of years over which we are performing our analysis (here $N_{year}=10$). Since we are working on the weekly averaged data, each year corresponds to 52 observations. In the matrix form, the penalty \eqref{eq:lh_penalty} adds $N_{year}$ rows to the matrix $D$. The estimated SDs using this penalty matrix is shown in the right panel of \autoref{fig:bloom_estimatedSD}. The annual average of the estimated SDs shows a linear trend with a positive slope. 
 
 \begin{figure}[tb]
   \centering
@@ -1011,6 +1019,74 @@ the trend in variance of spatio-temporal signals using generalized
 lasso and to investigate the algorithms for solving the resulting
 optimization problem. 
 
+\section{Appendix}
+
+\attn{put this in nips appendix format}
+
+In this Appendix we give more details on performing the x-update step in \autoref{eq:ADMM_steps}. We need to solve the following optimization problem:
+
+\begin{equation}
+\hat{x}:=\argmin_{x} \bigg( \sum_{j=1}^{n_b} (x_j + y_j^2e^{-x_j}) + (\rho/2) \lVert x-\tilde{z} + u \lVert_2^2 + \Lambda^\top |D x| \bigg)
+\label{eq:x_update_opt}
+\end{equation}
+
+\noindent where $n_b$ is the number of local variables in each sub-cube in \autoref{fig:data_cube}, and for ease of notation we have dropped the subscript $i$ and superscript $m$. Let $f(x)=\sum_{j=1}^{n_b} (x_j + y_j^2e^{-x_j}) + (\rho/2) \lVert x-\tilde{z} + u \lVert_2^2$. As it was explained in \autoref{sec:l1tf_var}, the dual of this optimization problem is: $\min_\nu f^*(-D^\top\nu)$ with the constraints $|\nu_k| \le \Lambda_k$. So to use PDIP we first need to compute the conjugate function $f^*(\cdot)$. We have:
+
+
+\begin{align}
+f^*(\xi) & = \max_x \quad \xi^\top x - f(x)\\
+& =  \max_x \quad \sum_{j=1}^{n_b} (\xi_jx_j - x_j - y_j^2e^{-x_j} - (\rho/2)(x_j-\tilde{z}_j+u_j))
+\label{eq:conjugate}
+\end{align}
+
+Setting the derivative of the terms inside the summation to 0, we obtain:
+
+\begin{equation}
+\xi_j-y_j^2e^{-x_j^*}-\rho x_j^* + \rho (\tilde{z}_j-u_j)=0
+\label{eq:x_start}
+\end{equation}
+
+\noindent where $x^*$ is the maximizer in \ref{eq:conjugate}. Then, it can be shown that $x_j^*$ which satisfies \eqref{eq:x_start} can be obtained as follows:
+
+\begin{align}
+x^*_j & = \mathscr{W}\bigg(\frac{y_j^2}{\rho} e^{\phi_j} \bigg) - \phi_j \\
+\phi_j & =\frac{1-\xi_j-\rho(\tilde{z}_j-u_j)}{\rho}
+\end{align}
+
+In this equation, $\mathscr{W}(\cdot)$ is the \textit{Lambert function} \cite{corless_lambertw_1996}. Finally, the conjugate function is: $f^*(\xi) = \sum_{j=1}^{n_b} (\xi_jx^*_j - x^*_j - y_j^2e^{-x^*_j} - (\rho/2)(x^*_j-\tilde{z}_j+u_j))$.
+
+To use PDIP, we also need to evaluate $\nabla f^*$ and $\nabla^2 f^*$. First note that $\frac{\partial \mathscr{W}(q)}{\partial q} = \frac{\mathscr{W}(q)}{q(1+\mathscr{W}(q))}$ and $\frac{\partial^2 \mathscr{W}(q)}{\partial q^2} = - \frac{\mathscr{W}^2(q)(\mathscr{W}(q)+q)}{q^2(1+\mathscr{W}(q))^3}$. Using the chain rule we get:
+
+%\x^*_j + \xi_j + \frac{\partial \x^*_j}{\partial \xi_j}
+
+\begin{equation}
+\frac{\partial f^*(\xi)}{\partial \xi_j}  =  x^*_j  + \frac{\partial x^*_j}{\partial \xi_j} \bigg[ \xi_j -1 + y_j^2 e^{-x_j^*} + \rho (\tilde{z}_j - u_j - x_j^*) \bigg]
+\label{eq:d_f*_start}
+\end{equation}
+
+\noindent where we have:
+
+\begin{equation}
+\frac{\partial x_j^*}{\partial \xi_j} & = \frac{1}{\rho(1+\mathscr{W}((y_j^2/\rho) e^{-\phi_j} ))}
+\label{eq:d_x*_start}
+\end{equation}
+
+By some tedious but straightforward computation we can obtain the second derivatives:
+
+
+\begin{align}
+\frac{\partial^2 f^*(\xi)}{\partial \xi_j^2} & =  \frac{\partial x_j^*}{\partial \xi_j} - \rho \frac{\partial^2 x_j^*}{\partial \xi_j^2} \bigg[ \phi_j +x_j^* - \tilde{z}_j + u_j \bigg]\\
+& \quad + \frac{\partial x_j^*}{\partial \xi_j} \bigg[ 1-y_j^2 \frac{\partial x_j^*}{\partial \xi_j} e^{-x_j^*} -\rho \frac{\partial x_j^*}{\partial \xi_j} \bigg]
+\label{eq:d2_f*_start}
+\end{align}
+
+
+\begin{equation}
+\frac{\partial^2 x_j^*}{\partial \xi_j^2}  = \frac{\mathscr{W}((y_j^2/\rho) e^{-\phi_j} )}{\rho^2(1+\mathscr{W}((y_j^2/\rho) e^{-\phi_j} ))^3}
+\label{eq:d2_x*_start}
+\end{equation}
+
+Having computed the conjugate function and its gradient and Jacobian, now we can use a number of convex optimization software packages which have an implementation of PDIP to perform the x-update step inside the ADMM loop. We chose the python API of the \texttt{cvxopt}~\citep{andersen_cvxopt:_2013} package. 
 
 \bibliographystyle{abbrvnat}
 \small
