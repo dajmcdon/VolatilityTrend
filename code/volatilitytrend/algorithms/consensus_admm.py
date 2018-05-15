@@ -400,7 +400,7 @@ def consensusADMM_fit(dataMat,destDir,metadata,
     #===check the compatability of grid size with sub-blocks size===
     if (((n_rows-1)%(n_r_b-1)!=0) or ((n_cols-1)%(n_c_b-1)!=0)):
         msg='In current implementation, n_rows-1 and n_cols-1 should be'+\
-        'divisive to (n_r_b-1) and (n_c_b)-1, respectively.'
+        'divisable by (n_r_b-1) and (n_c_b)-1, respectively.'
         raise ValueError(msg)
     #===check the compatability of grid size with sub-blocks size===
     

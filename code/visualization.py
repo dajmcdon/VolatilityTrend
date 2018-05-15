@@ -2,7 +2,7 @@ from volatilitytrend.algorithms.base import LinearizedADMM
 from os.path import join
 import matplotlib.pyplot as plt
 
-lam_t=10;lam_s=10;mu=.01
+lam_t=200;lam_s=5;mu=.001
 dataset='north_hemisphere'
 #dataset='us'
 
@@ -10,14 +10,14 @@ dataset='north_hemisphere'
 if dataset=='us':
     data_fn='1992-08-31_to_2002-08-31_data_avg_us_detrended'
     metadata_fn='1992-08-31_to_2002-08-31_metadata_avg_us_detrended'
-    destDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/'+\
+    fittedModelsDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/'+\
     '19920831to20020831/Fitted_LinADMM_test'
+    
     
 elif dataset=='north_hemisphere':
     data_fn='1960-01-01_to_2010-12-31_data_avg_sub_north_detrended'
     metadata_fn='1960-01-01_to_2010-12-31_metadata_avg_sub_north_detrended'
-    destDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/'+\
-            'globe/Fitted_linADMM'
+    fittedModelsDir='/home/arash/datasets/ecmwf/Fitted_linADMM'
     saveFigDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/globe/Figures'
 
 #===load data===
@@ -29,7 +29,7 @@ la.loadData(data_fn,metadata_fn)#load data
 #===load data===
 
 #===analyse fitted value and compute var and ave. var===
-la.analyseFittedValues(join(destDir,'X_'+fn))
+la.analyseFittedValues(join(fittedModelsDir,'X_'+fn))
 #===analyse fitted value and compute var and ave. var===
 
 #===plot time series of temerature at different locations===
