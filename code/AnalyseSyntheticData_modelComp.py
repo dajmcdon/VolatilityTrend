@@ -15,8 +15,9 @@ from volatilitytrend.algorithms.base import LinearizedADMM
 from arch import arch_model
 import pandas as pd
 from time import ctime
+import matplotlib.pyplot as plt
 
-n_sim=50;#number of simulations
+n_sim=20;#number of simulations
 
 #===models parameters===
 #---linearizedADMM optimal---
@@ -37,7 +38,7 @@ gridsize=n_rows*n_cols
 
 #---specify sources properties---
 var_sources_centers=np.array([[0,0],[0,5],[3,0],[3,5]])
-var_sources_sigma=[5.]*4
+var_sources_sigma=[7.]*4
 #---specify sources properties---
 
 #---compute the weight of each source at wach time---
@@ -82,6 +83,7 @@ def computeMAE_ADMM(data_fn,metadata_fn,savedResultsDir,lam_t,lam_s,covMat):
     filepath=join(dstDir,'X_'+fn)
     X=np.fromfile(filepath).reshape((gridsize,T))
     return np.mean(np.abs(np.exp(X/2)-covMat))
+#    return np.mean(np.abs((X/2.)-np.log(covMat)))
 
 def computeMAE_GARCH(data_fn,metadata_fn,covMat):
     la = LinearizedADMM()#construct linearizedADMM object    
@@ -95,6 +97,8 @@ def computeMAE_GARCH(data_fn,metadata_fn,covMat):
         am=arch_model(y)
         res=am.fit()
         err.append(np.mean(np.abs(res.conditional_volatility-covMat[r,:])))
+#        err.append(np.mean(np.abs(np.log(res.conditional_volatility)-\
+#                                  np.log(covMat[r,:]))))
     return np.mean(err)
     
 
@@ -104,6 +108,7 @@ for i in range(n_sim):
     print(ctime()+'...simulation number {}'.format(i))
     
     #simulate data
+    var_sources_sigma=[4+3*np.random.rand()]*4
     simulateSpatioTemporalData(dstDir,n_rows,n_cols,T,var_sources_centers,
                                var_sources_weight_mat,var_sources_sigma)
     covMat = np.fromfile(join(savedResultsDir,'covMat')).\
@@ -127,7 +132,12 @@ for i in range(n_sim):
 
 errors=pd.DataFrame({'admm_opt':MAE_opt,'admm_temp':MAE_temp,'admm_sp':MAE_sp,
            'garch':MAE_ga})
+    
+errors.to_csv(join(dstDir,'modelComp_MAE.csv'),index=False)
+fig=plt.figure()
 errors.boxplot()
+plt.ylabel('MAE')
+fig.savefig(join(saveFigDir,'modelComp_MAE.pdf'))
 #===simulation and model fitting===
     
     

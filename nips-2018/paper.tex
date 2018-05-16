@@ -322,10 +322,11 @@ Writing
 
 for $w>0$, where $\mu_1$ and $\mu_2$ are dual variables for the
 $\ell_\infty$ constraint, as $w\rightarrow\infty$,
-the solution to this nonlinear system reduces to the KKT
+the solution to this nonlinear system reduces to the Karush–Kuhn–Tucker (KKT)
 conditions. Therefore, the PDIP method takes Newton steps to solve the
 system for a series of increasing values of $w$. \autoref{alg:pdip}
 provides the details. 
+
 \begin{algorithm}[tb]
   \caption{PDIP for $\ell_1$ variance estimation}
   \label{alg:pdip}
@@ -551,7 +552,7 @@ penalties corresponding to $x_i$ only. The x-update step in \autoref{eq:ADMM_ste
 
 By this definition of $x_i$, the update step for $x_i$ is the
 following optimization problem: $x_i^{m+1}:=\argmin_{x_i} ( f_i(x_i) +
-(u_i^m)^\top x_i + (\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2)$. We solve this using the PDIP method. As it was explained in \autoref{sec:l1tf_var}, to use PDIP we need to compute the dual problem, which in turn needs the computation of the Fenchel conjugate of the loss function. In addition, referring to \autoref{alg:pdip}, we need to compute the gradient and Jacobian of the conjugate functions. It is important to note that compare to the optimization problem \autoref{eq:l1tf_var}, the loss function in the x-update step in \autoref{eq:ADMM_steps} includes the quadratic term $(\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2$. This makes the computation more involved than \autoref{sec:l1tf_var}. The details of the computations are explained in Appendix 1.
+(u_i^m)^\top x_i + (\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2)$. We solve this using the PDIP method. As it was explained in \autoref{sec:l1tf_var}, to use PDIP we need to compute the dual problem, which in turn needs the computation of the Fenchel conjugate of the loss function. In addition, referring to \autoref{alg:pdip}, we need to compute the gradient and Jacobian of the conjugate functions. It is important to note that compare to the optimization problem \autoref{eq:l1tf_var}, the loss function in the x-update step in \autoref{eq:ADMM_steps} includes the quadratic term $(\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2$. This makes the computation more involved than \autoref{sec:l1tf_var}. The details of the computations are explained in \autoref{sec:app_consADMM}.\attn{change this to appendix}
 
 \attn{I'm not sure if we want to devote some space to write this as a separate algorithm. The steps are those mentioned in \ref{eq:ADMM_steps} and the x-update is now explained in the appendix. So we may want to remove algorithm \ref{alg:ADMM}.}
 
@@ -673,7 +674,7 @@ problem.
     \exp\bigg(\frac{1-\mu u_k}{\mu}\bigg) \bigg) + \frac{1-\mu u_k}{\mu},\\
     \prox_{\rho g}(u) &= S_{\rho\lambda}(u)
   \end{align}
-where $[S_{\alpha}(u)]_k = \sign(u_k)(|u_k| -\alpha_k)_+$ and
+where $\mathscr{W}(\cdot)$ is the \textit{Lambert function} \cite{corless_lambertw_1996},  $[S_{\alpha}(u)]_k = \sign(u_k)(|u_k| -\alpha_k)_+$ and
 $(v)_+=v\vee 0$.
 \end{theorem}
 \begin{proof}
@@ -1027,8 +1028,14 @@ the trend in variance of spatio-temporal signals using generalized
 lasso and to investigate the algorithms for solving the resulting
 optimization problem. 
 
-\section{Appendix}
+\section{Appendix A}
+\label{sec:app_l1tf_var}
 
+In this appendix we provide more details on how to solve the optimization problem \ref{eq:l1tf_var}
+
+
+\section{Appendix B}
+\label{sec:app_consADMM}
 \attn{put this in nips appendix format}
 
 In this Appendix we give more details on performing the x-update step in \autoref{eq:ADMM_steps}. We need to solve the following optimization problem:
