@@ -92,7 +92,9 @@ words, words,
 
 \section{Introduction}
 
-\attn{Some equations do not have numbering and some have.}
+\attn{Arash: Some equations do not have numbering and some have.}
+
+\attn{Arash: fix appendicies and the references to them.}
 
 Nonparametric variance estimation for spatio-temporal data.
 
@@ -292,41 +294,12 @@ log-likelihood:
 
 As with~\eqref{eq:l1tf}, one can solve~\eqref{eq:l1tf_var} using the
 PDIP algorithm (as in, e.g.,
-\texttt{cvxopt}~\citep{andersen_cvxopt:_2013}). First, we note that
-this is a generalized LASSO problem
-\citep{tibshirani_solution_2011}. The dual of a generalized LASSO with
-the objective $f(x)+\lambda \norm{ Dx }_1$ is:  
+\texttt{cvxopt}~\citep{andersen_cvxopt:_2013}). In each iteration of PDIP we need to compute a \textit{search direction} by taking a Newton step on a system of nonlinear equations. Appendix B provides details on how this computation can be performed for the objective function \ref{eq:l1tf_var}.
 
-\begin{align}
-\min_\nu&\quad f^*(-D^\top\nu) & \mbox{s.t.}&\quad \norm{ \nu }_\infty \le \lambda
-\end{align}
- where $f^*(\cdot)$ is the Fenchel conjugate of $f$: $f^*(u)=\max_x
- u^\top x-f(x)$. It is simple to show that 
-\begin{equation}
-f^*(u)=\sum_t (u_t-1)\log\frac{y_t^2}{1-u_t} + u_t-1.
-\label{eq:conj}
-\end{equation}
-Writing
-\begin{equation}
-  r_w(v,\mu_1,\mu_2):=
-  \begin{bmatrix}
-    \nabla f^*(-D^\top v) + D(v-\lambda \one)^\top \mu_1 -
-    D(v+\lambda \one)^\top \mu_2\\
-    -\mu_1(v-\lambda\one)+\mu_2(v + \lambda\one) -w^{-1}\one
-  \end{bmatrix}
-  =
-  \begin{bmatrix}
-  0\\0\end{bmatrix}
-\label{eq:resid}
-\end{equation}
+\attn{Arash: I think we should remove Algorithm 1. There are other steps in PDIP which involve adapting the algorithm parameter $w$ and doing Backtracking line search. Also there is only one loop in PDIP.}
 
-for $w>0$, where $\mu_1$ and $\mu_2$ are dual variables for the
-$\ell_\infty$ constraint, as $w\rightarrow\infty$,
-the solution to this nonlinear system reduces to the Karush–Kuhn–Tucker (KKT)
-conditions. Therefore, the PDIP method takes Newton steps to solve the
-system for a series of increasing values of $w$. \autoref{alg:pdip}
-provides the details. 
 
+\begin{comment}
 \begin{algorithm}[tb]
   \caption{PDIP for $\ell_1$ variance estimation}
   \label{alg:pdip}
@@ -337,17 +310,19 @@ provides the details.
     \FOR[Central path]{$k=1,2,\ldots$}
     \FOR[Newton updates]{$j=1,\ldots,J$}
     \STATE Solve $A [\Delta\nu\; \Delta\mu_1\; \Delta\mu_2]^\top=r_{w_k}$ to find the search direction.
-    \STATE $\quad\quad A$ is the Jacobian of $r_w$ in \eqref{eq:resid}.
+    \STATE $\quad\quad A$ is given in \ref{eq:delta_r}
     \STATE Update $[\nu^{j+1}\; \mu^{j+1}_1\; \mu^{j+1}_2] \leftarrow
     [\nu^{j}\; \mu^{j}_1\; \mu^{j}_2] + [\Delta\nu\; \Delta\mu_1\;
     \Delta\mu_2]$. 
     \ENDFOR
    \ENDFOR
-   \RETURN $h=\log\frac{y^2}{1+D^\top\nu}$ \attn{Is this right?
-     Explicit form of $A$}
+   \RETURN $h=\log\frac{y^2}{1+D^\top\nu}$ 
+   \\
+   \attn{Is this right? Explicit form of $A$}\\
+   \attn{Arash: see appendix A}
   \end{algorithmic}
 \end{algorithm}
-
+\end{comment}
 
 \subsection{Adding spatial constraints}
 \label{sec:exten}
@@ -395,7 +370,7 @@ components, we write $\Lambda =\left[\lambda_1\one_{N_t}^\top,\;
 % $T$ entries are $h_{21t}$ and so on, then the optimization problem in
 % the matrix form is as
 \begin{equation}
-\min_h -y\given h)+ \Lambda^\top | D_{TS}h |
+\min_h -l(y\given h)+ \Lambda^\top | D_{TS}h |
 \label{eq:l1tf_var_st_mat}
 \end{equation}
 % where $\Lambda = \mathbf{I}_{Tn_rn_c}\left[\lambda_1\one_T^\top,\;
@@ -427,28 +402,18 @@ components, we write $\Lambda =\left[\lambda_1\one_{N_t}^\top,\;
 \section{Proposed optimization methods}
 \label{sec:prop-optim-meth}
 
-For a spatial grid of size $S$ and $T$ time steps, $D_{ST}$ will have
-$3Tn_rn_c-2n_rn_c-Tn_r$ rows and $ST$ columns. For a $1^\circ\times
-1^\circ$ grid over the
-entire northern hemisphere and daily data over 10 years, we have
-$n_r=90$, $n_c=180$, $T=3650$ and so $D_{ST}$ has approximately
-$10^8$ columns and $10^8$
-rows. In each
-step of \autoref{alg:pdip}, we need to solve a linear system of
-equations in $A$ which depends on $D_{ST}^\top D_{ST}$ (see \citep{boyd_convex_2004}
-equation 11.54). Therefore, 
-applying the PDIP directly is infeasible for our data.\footnote{We note that this
-  is a highly structured and sparse matrix, but, unlike trend
-  filtering alone, it is not banded. We are unaware of general
-  linear algebra techniques for inverting such matrix, despite our
-  best efforts.} 
+For a spatial grid of size $S$ and $T$ time steps, $D_{ST}$ will have $3Tn_rn_c-2n_rn_c-Tn_r$ rows and $ST$ columns. For a $1^\circ\times 1^\circ$ grid over the entire northern hemisphere and daily data over 10 years, we have $n_r=90$, $n_c=180$, $T=3650$ and so $D_{ST}$ has approximately $10^8$ columns and $10^8$ rows. In each step of the PDIP algorithm, we need to solve a linear system of equations in $A$ which depends on $D_{ST}^\top D_{ST}$ (see appendix A and B). Therefore, applying the PDIP directly is infeasible for our data.\footnote{We note that this is a highly structured and sparse matrix, but, unlike trend filtering alone, it is not banded. We are unaware of general linear algebra techniques for inverting such matrix, despite our best efforts.} 
 
 In the next section, we develop two ADMM algorithms for solving this
 problem efficiently. The first casts the problem as a
 so-called consensus optimization problem~\citep{boyd_distributed_2011}
 which solves smaller sub-problems using PDIP and then recombines the results. The
-second uses proximal methods to avoid matrix inversions. 
+second uses proximal methods to avoid matrix inversions.
+ 
 \attn{We note that stochastic gradient descent could be used but...}
+
+\attn{Arash: The primal objective is not differentiable and so we cannot use SGD. The dual has constriants and so the plane SGD cannot be used. We can use projected SGD but I think it would converge slowly. Since other papers on LASSO have not considered SGD I don't think we need to justify why we did not use it.}
+
 
 \subsection{Consensus optimization}
 \label{sec:consOpt}
@@ -554,7 +519,7 @@ By this definition of $x_i$, the update step for $x_i$ is the
 following optimization problem: $x_i^{m+1}:=\argmin_{x_i} ( f_i(x_i) +
 (u_i^m)^\top x_i + (\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2)$. We solve this using the PDIP method. As it was explained in \autoref{sec:l1tf_var}, to use PDIP we need to compute the dual problem, which in turn needs the computation of the Fenchel conjugate of the loss function. In addition, referring to \autoref{alg:pdip}, we need to compute the gradient and Jacobian of the conjugate functions. It is important to note that compare to the optimization problem \autoref{eq:l1tf_var}, the loss function in the x-update step in \autoref{eq:ADMM_steps} includes the quadratic term $(\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2$. This makes the computation more involved than \autoref{sec:l1tf_var}. The details of the computations are explained in \autoref{sec:app_consADMM}.\attn{change this to appendix}
 
-\attn{I'm not sure if we want to devote some space to write this as a separate algorithm. The steps are those mentioned in \ref{eq:ADMM_steps} and the x-update is now explained in the appendix. So we may want to remove algorithm \ref{alg:ADMM}.}
+\attn{I'm not sure if we want to devote some space to write this as a separate algorithm. The steps are those mentioned in \ref{eq:ADMM_steps} and the x-update is now explained in the appendix. So we may want to remove algorithm \ref{alg:ADMM}. }
 
 The complete ADMM algorithm for estimating the variances is
 represented in \autoref{alg:ADMM}. All the computations in the three
@@ -1031,7 +996,65 @@ optimization problem.
 \section{Appendix A}
 \label{sec:app_l1tf_var}
 
-In this appendix we provide more details on how to solve the optimization problem \ref{eq:l1tf_var}
+In this appendix we provide more details on how to solve the optimization problem \ref{eq:l1tf_var} using PDIP. The objective function is convex but not differentiable. Therefore, to be able to use PDIP we first need to derive the dual of this problem. We note that this is a generalized LASSO problem \citep{tibshirani_solution_2011}. The dual of a generalized LASSO with the objective $f(x)+\lambda \norm{ Dx }_1$ is:  
+
+\begin{align}
+\min_\nu&\quad f^*(-D^\top\nu) & \mbox{s.t.}&\quad \norm{ \nu }_\infty \le \lambda
+\end{align}
+
+where $f^*(\cdot)$ is the Fenchel conjugate of $f$: $f^*(u)=\max_x u^\top x-f(x)$. It is simple to show that 
+
+\begin{equation}
+f^*(u)=\sum_t (u_t-1)\log\frac{y_t^2}{1-u_t} + u_t-1.
+\label{eq:conj}
+\end{equation}
+
+Each iteration of PDIP involves computing a search direction by taking a Newton step for the system of nonlinear equations $r_w(v,\mu_1,\mu_2)=0$, where $w>0$ is a parameter and
+
+\begin{equation}
+  r_w(v,\mu_1,\mu_2):=
+	\begin{bmatrix}
+	r_{dual}\\
+	r_{cent}	
+	\end{bmatrix}=
+  \begin{bmatrix}
+    \nabla f^*(-D^\top v) + \mu_1 - \mu_2\\
+    -\mu_1(v-\lambda\one)+\mu_2(v + \lambda\one) -w^{-1}\one
+  \end{bmatrix}
+\label{eq:resid}
+\end{equation}
+
+for $w>0$, where $\mu_1$ and $\mu_2$ are dual variables for the $\ell_\infty$ constraint. Let $A=[\nabla r_{dual}^\top , \nabla r_{cent}^\top]^\top$. The newton step takes the following form
+
+\begin{equation}
+r_w(v,\mu_1,\mu_2)+A
+\begin{bmatrix}
+	\nabla v\\
+	\nabla \mu_1\\
+	\nabla \mu_2	
+	\end{bmatrix}= 0
+\label{eq:newton_step}
+\end{equation}
+
+
+We have:
+
+\begin{equation}
+A=
+\begin{bmatrix}
+	\nabla^2 f^*(-D^\top v) & I & -I\\
+	-\mathbf{diag(\mu_1)}\one & -v+\lambda\one & \mathbf{0}\\
+	\mathbf{diag(\mu_2)}\one & v+\lambda\one & \mathbf{0}
+	\end{bmatrix}
+\label{eq:delta_r}
+\end{equation}
+
+Therefore, to perform the Newton step we need to compute $\nabla f^*(-D^\top v)$ and $\nabla^2 f^*(-D^\top v)$. It is straightforward to show that
+
+\begin{align}
+\nabla f^*(-D^\top v) = -\nabla_u f^*(u) D^\top ,\quad u=-D^\top v, \quad (\nabla_u f^*(u))_j=\log\bigg(\frac{y_j^2}{1-u_j}\bigg) \\
+\nabla^2 f^*(-D^\top v)=D\nabla_u^2 f^*(u)D^\top, \quad (\nabla_u^2 f^*(u))_j=\mathbf{diag}\bigg(\frac{1}{1-u_j}\bigg)
+\end{align}
 
 
 \section{Appendix B}
