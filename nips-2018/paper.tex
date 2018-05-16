@@ -627,18 +627,26 @@ where $x\in \mathbb{R}^n$ and $D\in \mathbb{R}^{m\times n}$. Each
 iteration of the linearized ADMM
 algorithm~\citep{parikh_proximal_2014} for solving this problem 
 has the form
+
 \begin{align}
 x & \leftarrow \prox_{\mu f} \left(x - (\mu/\rho)D^\top (D x - z + u )\right)\\
 z & \leftarrow \prox_{\rho g} \left(z + u\right) \label{eq:linADMM_steps}\\
 u & \leftarrow u + D x - z
 \end{align}
- where $z,u\in \mathbb{R}^m$ and the proximal operator is defined as
+
+\noindent where the algorithm parameters $\mu$ and $\rho$ satisfy $0 < \mu < \rho/\norm{D}_2^2$, $z,u\in \mathbb{R}^m$ and the proximal operator is defined as
+
 \begin{equation}
  \prox_{\alpha f}(u) = \min_x \,\, \alpha \cdot f(x)+\frac{1}{2} \norm{ x-u}_2^2.
 \label{eq:linADMM_prox}
 \end{equation}
-Clearly,
-\eqref{eq:l1tf_var_st} has this form.\attn{What are $\mu$ and $\rho$?}
+
+\attn{What are $\mu$ and $\rho$?}
+
+\attn{Arash: I explained it above. They are algorithm parameters.}
+
+
+Clearly, \eqref{eq:l1tf_var_st} has this form necessary for using this algorithm.
 % The optimization problem 
 % form \eqref{eq:linADMM_opt} by defining
 % \begin{align}
