@@ -63,7 +63,7 @@ var_sources_weight_mat=np.concatenate((var_sources_weight1,
 dstDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/Simulated data'
 savedResultsDir='/home/arash/datasets/ecmwf/Fits_to_simulated_data/'+\
 'LinADMM_withTrend'
-saveFigDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Reports/051218/Figures'
+saveFigDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/globe/Figures'
 
 data_fn=join(dstDir,'simulated_data')
 metadata_fn=join(dstDir,'metadata')

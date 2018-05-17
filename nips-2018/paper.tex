@@ -739,6 +739,7 @@ To further examine the performance of the proposed model, we next compare it to 
 
 
 \subsection{Data analysis}
+\label{sec:data}
 
 \autoref{alg:ADMM} is appropriate only if
 we parallelize it over multiple machines, and it is significantly
@@ -751,37 +752,11 @@ dataset available from the \href{European Center for Medium-Range
 the 2 meter temperature measured daily at 12 p.m from January 1, 1960
 to December 24, 2010. 
 
-
-???
-
-To remedy this, we add the following long horizon penalty
-to \eqref{eq:l1tf_var}:
- 
-\begin{equation}
-\sum_{i=1}^{N_{year}-2} \Big\arrowvert \sum_{t=1}^{52} h_{t_1}-2h_{t_2}+h_{t_3}  \Big\arrowvert
-\label{eq:lh_penalty}
-\end{equation}
-
-where $t_1=52(i-1)+t$, $t_2=52i+t$ and $t_3=52(i+1)+t$. Also, $N_{year}$ is the number of years over which we are performing our analysis (here $N_{year}=10$). Since we are working on the weekly averaged data, each year corresponds to 52 observations. In the matrix form, the penalty \eqref{eq:lh_penalty} adds $N_{year}$ rows to the matrix $D$. The estimated SDs using this penalty matrix is shown in the right panel of \autoref{fig:bloom_estimatedSD}. The annual average of the estimated SDs shows a linear trend with a positive slope. 
-
-
-
-
-\attn{From here down needs to be cut down and corrected with the right numbers.}
-
-
-
+In Appendix D, we investigate some properties of the time-series of different locations on earth. We also explain how each time-series is detrended using $\ell_1$-trend filtering method explained in \autoref{sec:ell_1-trend-filt}. \autoref{fig:bloom_estimatedSD} shows a time-series after detrending using this method. The variance of this time-series have a cyclic behavior. The cycles are not regular and their amplitude and frequency change. In addition, the time-series of other locations show different patterns. These observations motivate the need to develop a non-parametric framework for the problem at hand. In this figure, the estimate SD obtained from the method of \autoref{sec:l1tf_var} is also shown. Sine the estimated SD captures the periodic behavior of volatility, it is hard to see the trend in volatility based on these estimated values. Therefore, we compute the annual average of these estimates. However, as this figure shows, the annual trend is not smooth. This is because in the optimization problem \eqref{eq:l1tf_var}, the smoothness of the annual trend is not encouraged. Therefore, in Appendix D we propose a simple method to encourage the smoothness of the annual average trend. The estimated SDs using this method is shown in the right panel of \autoref{fig:bloom_estimatedSD}. The annual average of the estimated SDs shows a linear trend with a positive slope. 
 
 \paragraph{Convergence}
 
-We used the following rule to determine when to stop the optimization:
-the optimization was stopped if the value of the loss did not improve
-by at least 0.1\% in 1000 trials. As we can see, the algorithm
-converged in about 2000 iterations. This took about 11 minutes. Our
-experiments showed that the convergence speed depends on the value of
-$\lambda_t$ and $\lambda_s$. Also, if we use the solution obtained for
-smaller values of these parameters as the initial value for the larger
-values (\textit{warm start}), the converges speed improves. 
+We used the following rule to determine when to stop the optimization: the optimization was stopped if the value of the loss did not improve by at least 0.1\% in 1000 trials. Our experiments showed that the convergence speed depends on the value of $\lambda_t$ and $\lambda_s$. Also, if we use the solution obtained for smaller values of these parameters as the initial value for the larger values (\textit{warm start}), the converges speed improves. 
 
 
 \paragraph{Model selection}
@@ -815,9 +790,7 @@ $-l(y|h)$.
 
 We computed the optimal solution for all the combinations of the
 following sets of values: $\lambda_t \in \{0,2,4,8,10,15,200,1000\} \, \, ,
-\lambda_s \in \{0,.1,.5,2,5,10\}$. The best combination based on a held
-out set was $\lambda_t=4$ and $\lambda_s=2$. All the analyses in the
-next section are performed on the solution for these values. 
+\lambda_s \in \{0,.1,.5,2,5,10\}$. The best combination was $\lambda_t=4$ and $\lambda_s=2$. All the analyses in the next section are performed on the solution for these values. 
 
 
 \paragraph{Analysis of trend of temperature volatility}
@@ -1092,11 +1065,7 @@ The blue curve in the left panel of \autoref{fig:bloom_estimatedSD} shows the ti
 
 The red curve in the left panel of \autoref{fig:bloom_estimatedSD}
 shows the estimated SD (which is $\exp(h_t/2)$) of the residuals of
-the time-series of Bloomington. To reduce the number of time-steps in
-this figure and in the remainder of the paper we work on the weekly
-averaged of the data.  
-
-The curve of the estimated SD captures the periodic variations in the
+the time-series of Bloomington obtained from out proposed model. To reduce the number of time-steps we work on the weekly averaged of the data. The curve of the estimated SD captures the periodic variations in the
 SD of the signal. Just by looking at this curve, it is hard to say if
 the SD is decreasing or increasing. Therefore, we compute the average
 of the estimated SD for each year. The estimated SD together with this
@@ -1104,7 +1073,15 @@ annual average is shown in the middle panel of
 \autoref{fig:bloom_estimatedSD}. As it can be seen, the annual trend
 is not smooth. This is because in the optimization problem
 \eqref{eq:l1tf_var}, the smoothness of the annual trend is not
-encouraged. To remedy this, we proposed a method to encourage the smoothness of the annual average trend. The estimated SDs using this method is shown in the right panel of \autoref{fig:bloom_estimatedSD}. The annual average of the estimated SDs shows a linear trend with a positive slope. 
+encouraged. To remedy this, we add the following long horizon penalty to \eqref{eq:l1tf_var}:
+ 
+\begin{equation}
+\sum_{i=1}^{N_{year}-2} \Big\arrowvert \sum_{t=1}^{52} h_{t_1}-2h_{t_2}+h_{t_3}  \Big\arrowvert
+\label{eq:lh_penalty}
+\end{equation}
+
+where $t_1=52(i-1)+t$, $t_2=52i+t$ and $t_3=52(i+1)+t$. Also, $N_{year}$ is the number of years over which we are performing our analysis (here $N_{year}=10$). Since we are working on the weekly averaged data, each year corresponds to 52 observations. In the matrix form, the penalty \eqref{eq:lh_penalty} adds $N_{year}$ rows to the matrix $D$. The estimated SDs using this penalty matrix is shown in the right panel of \autoref{fig:bloom_estimatedSD}. The annual average of the estimated SDs shows a linear trend with a positive slope.
+
 
  
 
