@@ -3,7 +3,7 @@ from os.path import join
 import matplotlib.pyplot as plt
 import numpy as np
 
-lam_t_vec=[0,2,4,8,10,15,200]
+lam_t_vec=[0,2,4,8,10,15,200,1000]
 lam_s_vec=[0,.1,.5,2,5,10]
 mu_vec=[.01]*6+[.001]*3
 dataset='north_hemisphere'

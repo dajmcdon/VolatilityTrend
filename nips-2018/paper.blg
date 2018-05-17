@@ -1,46 +1,46 @@
-This is BibTeX, Version 0.99d (TeX Live 2015)
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: paper.aux
 The style file: abbrvnat.bst
 Database file #1: nips-references.bib
 You've used 30 entries,
             2773 wiz_defined-function locations,
-            807 strings with 10968 characters,
-and the built_in function-call counts, 16022 in all, are:
-= -- 1462
+            806 strings with 11014 characters,
+and the built_in function-call counts, 16096 in all, are:
+= -- 1475
 > -- 999
 < -- 14
 + -- 337
 - -- 305
-* -- 1450
-:= -- 2489
+* -- 1463
+:= -- 2497
 add.period$ -- 114
 call.type$ -- 30
-change.case$ -- 186
+change.case$ -- 187
 chr.to.int$ -- 28
 cite$ -- 60
 duplicate$ -- 654
-empty$ -- 1212
+empty$ -- 1217
 format.name$ -- 347
-if$ -- 3314
+if$ -- 3329
 int.to.chr$ -- 3
 int.to.str$ -- 1
-missing$ -- 30
+missing$ -- 29
 newline$ -- 179
 num.names$ -- 124
-pop$ -- 317
+pop$ -- 312
 preamble$ -- 1
 purify$ -- 157
 quote$ -- 0
 skip$ -- 493
 stack$ -- 0
-substring$ -- 729
-swap$ -- 75
+substring$ -- 745
+swap$ -- 76
 text.length$ -- 3
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 325
+type$ -- 330
 warning$ -- 0
-while$ -- 142
+while$ -- 144
 width$ -- 0
-write$ -- 442
+write$ -- 443

@@ -2,7 +2,7 @@ from volatilitytrend.algorithms.base import LinearizedADMM
 from os.path import join
 import matplotlib.pyplot as plt
 
-lam_t=200;lam_s=5;mu=.001
+lam_t=4;lam_s=2;mu=.01
 dataset='north_hemisphere'
 #dataset='us'
 

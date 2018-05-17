@@ -622,16 +622,3 @@
   year =          {1996},
 }
 
-@article{arnold_efficient_2016,
-	title = {Efficient {Implementations} of the {Generalized} {Lasso} {Dual} {Path} {Algorithm}},
-	volume = {25},
-	number = {1},
-	journal = {Journal of Computational and Graphical Statistics},
-	author = {Arnold, Taylor B. and Tibshirani, Ryan J.},
-	month = jan,
-	year = {2016},
-	pages = {1--27},
-	file = {Snapshot:/home/arash/Zotero/storage/PD8TR9I3/10618600.2015.html:text/html}
-}
-
-

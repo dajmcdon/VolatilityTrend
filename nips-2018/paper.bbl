@@ -12,17 +12,19 @@ M.~S. Andersen, J.~Dahl, and L.~Vandenberghe.
   6.
 \newblock \emph{Available at cvxopt. org 54}, 2013.
 
+\bibitem[Arnold and Tibshirani(2016)]{arnold_efficient_2016}
+T.~B. Arnold and R.~J. Tibshirani.
+\newblock Efficient {Implementations} of the {Generalized} {Lasso} {Dual}
+  {Path} {Algorithm}.
+\newblock \emph{Journal of Computational and Graphical Statistics}, 25\penalty0
+  (1):\penalty0 1--27, Jan. 2016.
+
 \bibitem[Bollerslev(1986)]{bollerslev_generalized_1986}
 T.~Bollerslev.
 \newblock Generalized autoregressive conditional heteroskedasticity.
 \newblock \emph{Journal of Econometrics}, 31\penalty0 (3):\penalty0 307--327,
   Apr. 1986.
 \newblock ISSN 0304-4076.
-
-\bibitem[Boyd and Vandenberghe(2004)]{boyd_convex_2004}
-S.~Boyd and L.~Vandenberghe.
-\newblock \emph{Convex optimization}.
-\newblock Cambridge university press, 2004.
 
 \bibitem[Boyd et~al.(2011)Boyd, Parikh, Chu, Peleato, and
   Eckstein]{boyd_distributed_2011}

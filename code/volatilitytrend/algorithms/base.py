@@ -272,7 +272,8 @@ class LinearizedADMM(BaseAlgorithmClass):
                 X=self.fittedVar.reshape((-1,1))
                 
                 NLL=np.sum(X + o2*np.exp(-X))
-                df=np.sum(np.abs(D.dot(X))>.005)#or: np.sum(np.abs(D.dot(X)))
+#                df=np.sum(np.abs(D.dot(X))>.005)
+                df = np.sum(np.abs(D.dot(X)))
                 self.AIC[i,j] =  NLL + 2*df
                 self.BIC[i,j] =  NLL + np.log(X.size)*df
         #===compute loss for all combinations of values===
