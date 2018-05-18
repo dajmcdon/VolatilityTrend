@@ -1,46 +1,48 @@
-This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2015)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: paper.aux
 The style file: abbrvnat.bst
 Database file #1: nips-references.bib
-You've used 30 entries,
+Warning--I didn't find a database entry for "kim_$ell_1$_2009"
+You've used 26 entries,
             2773 wiz_defined-function locations,
-            806 strings with 11014 characters,
-and the built_in function-call counts, 16096 in all, are:
-= -- 1475
-> -- 999
-< -- 14
-+ -- 337
-- -- 305
-* -- 1463
-:= -- 2497
-add.period$ -- 114
-call.type$ -- 30
-change.case$ -- 187
-chr.to.int$ -- 28
-cite$ -- 60
-duplicate$ -- 654
-empty$ -- 1217
-format.name$ -- 347
-if$ -- 3329
-int.to.chr$ -- 3
+            770 strings with 9797 characters,
+and the built_in function-call counts, 13901 in all, are:
+= -- 1241
+> -- 890
+< -- 12
++ -- 298
+- -- 272
+* -- 1245
+:= -- 2144
+add.period$ -- 82
+call.type$ -- 26
+change.case$ -- 164
+chr.to.int$ -- 26
+cite$ -- 52
+duplicate$ -- 572
+empty$ -- 1061
+format.name$ -- 308
+if$ -- 2877
+int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 29
-newline$ -- 179
-num.names$ -- 124
-pop$ -- 312
+missing$ -- 25
+newline$ -- 139
+num.names$ -- 108
+pop$ -- 293
 preamble$ -- 1
-purify$ -- 157
+purify$ -- 138
 quote$ -- 0
-skip$ -- 493
+skip$ -- 441
 stack$ -- 0
-substring$ -- 745
-swap$ -- 76
+substring$ -- 655
+swap$ -- 65
 text.length$ -- 3
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 330
+type$ -- 286
 warning$ -- 0
-while$ -- 144
+while$ -- 124
 width$ -- 0
-write$ -- 443
+write$ -- 351
+(There was 1 warning)

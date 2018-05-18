@@ -1,4 +1,4 @@
-\begin{thebibliography}{30}
+\begin{thebibliography}{26}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -11,20 +11,6 @@ M.~S. Andersen, J.~Dahl, and L.~Vandenberghe.
 \newblock {CVXOPT}: {A} {Python} package for convex optimization, version 1.1.
   6.
 \newblock \emph{Available at cvxopt. org 54}, 2013.
-
-\bibitem[Arnold and Tibshirani(2016)]{arnold_efficient_2016}
-T.~B. Arnold and R.~J. Tibshirani.
-\newblock Efficient {Implementations} of the {Generalized} {Lasso} {Dual}
-  {Path} {Algorithm}.
-\newblock \emph{Journal of Computational and Graphical Statistics}, 25\penalty0
-  (1):\penalty0 1--27, Jan. 2016.
-
-\bibitem[Bollerslev(1986)]{bollerslev_generalized_1986}
-T.~Bollerslev.
-\newblock Generalized autoregressive conditional heteroskedasticity.
-\newblock \emph{Journal of Econometrics}, 31\penalty0 (3):\penalty0 307--327,
-  Apr. 1986.
-\newblock ISSN 0304-4076.
 
 \bibitem[Boyd et~al.(2011)Boyd, Parikh, Chu, Peleato, and
   Eckstein]{boyd_distributed_2011}
@@ -46,7 +32,6 @@ R.~M. Corless, G.~H. Gonnet, D.~E.~G. Hare, D.~J. Jeffrey, and D.~E. Knuth.
 E.~M. Fischer, U.~Beyerle, and R.~Knutti.
 \newblock Robust spatially aggregated projections of climate extremes.
 \newblock \emph{Nature Climate Change}, 3:\penalty0 1033---1038, 2013.
-\newblock URL \url{http://dx.doi.org/10.1038/nclimate2051}.
 
 \bibitem[Hallac et~al.(2017)Hallac, Park, Boyd, and Leskovec]{HallacPark2017}
 D.~Hallac, Y.~Park, S.~Boyd, and J.~Leskovec.
@@ -54,8 +39,6 @@ D.~Hallac, Y.~Park, S.~Boyd, and J.~Leskovec.
 \newblock In \emph{Proceedings of the 23rd ACM SIGKDD International Conference
   on Knowledge Discovery and Data Mining}, KDD '17, pages 205--213, New York,
   NY, USA, 2017. ACM.
-\newblock \doi{10.1145/3097983.3098037}.
-\newblock URL \url{http://doi.acm.org/10.1145/3097983.3098037}.
 
 \bibitem[Hansen et~al.(2012)Hansen, Sato, and Ruedy]{hansen_perception_2012}
 J.~Hansen, M.~Sato, and R.~Ruedy.
@@ -76,26 +59,11 @@ C.~Huntingford, P.~D. Jones, V.~N. Livina, T.~M. Lenton, and P.~M. Cox.
 \newblock No increase in global temperature variability despite changing
   regional patterns.
 \newblock \emph{Nature}, 500\penalty0 (7462):\penalty0 327--330, Aug. 2013.
-\newblock ISSN 0028-0836.
 
-\bibitem[Kim et~al.(2009{\natexlab{a}})Kim, Koh, Boyd, and
-  Gorinevsky]{kim_$ell_1$_2009}
-S.~Kim, K.~Koh, S.~Boyd, and D.~Gorinevsky.
-\newblock \${\textbackslash}ell\_1\$ {Trend} {Filtering}.
-\newblock \emph{SIAM Review}, 51\penalty0 (2):\penalty0 339--360, May
-  2009{\natexlab{a}}.
-\newblock ISSN 0036-1445.
-\newblock \doi{10.1137/070690274}.
-\newblock URL \url{http://epubs.siam.org/doi/abs/10.1137/070690274}.
-
-\bibitem[Kim et~al.(2009{\natexlab{b}})Kim, Koh, Boyd, and
-  Gorinevsky]{KimKoh2009}
+\bibitem[Kim et~al.(2009)Kim, Koh, Boyd, and Gorinevsky]{KimKoh2009}
 S.-J. Kim, K.~Koh, S.~Boyd, and D.~Gorinevsky.
 \newblock $\ell_1$ trend filtering.
-\newblock \emph{SIAM Review}, 51\penalty0 (2):\penalty0 339--360,
-  2009{\natexlab{b}}.
-\newblock \doi{10.1137/070690274}.
-\newblock URL \url{https://doi.org/10.1137/070690274}.
+\newblock \emph{SIAM Review}, 51\penalty0 (2):\penalty0 339--360, 2009.
 
 \bibitem[Lin et~al.(2017)Lin, Sharpnack, Rinaldo, and
   Tibshirani]{LinSharpnack2017}
@@ -106,8 +74,6 @@ K.~Lin, J.~L. Sharpnack, A.~Rinaldo, and R.~J. Tibshirani.
   S.~Vishwanathan, and R.~Garnett, editors, \emph{Advances in Neural
   Information Processing Systems 30}, pages 6884--6893. Curran Associates,
   Inc., 2017.
-\newblock URL \url{http://papers.nips.cc/paper/
-  7264-a-sharp-error-analysis-for-the-fused-lasso-with-application-to-approximate-changepoint-screening.pdf}.
 
 \bibitem[Parikh and Boyd(2014)]{parikh_proximal_2014}
 N.~Parikh and S.~Boyd.
@@ -137,15 +103,12 @@ V.~Sadhanala, Y.-X. Wang, J.~L. Sharpnack, and R.~J. Tibshirani.
   S.~Vishwanathan, and R.~Garnett, editors, \emph{Advances in Neural
   Information Processing Systems 30}, pages 5800--5810. Curran Associates,
   Inc., 2017.
-\newblock URL \url{http://papers.nips.cc/paper/
-  7162-higher-order-total-variation-classes-on-grids-minimax-theory-and-trend-filtering-methods.pdf}.
 
 \bibitem[Screen(2014)]{Screen2014}
 J.~A. Screen.
 \newblock Arctic amplification decreases temperature variance in northern mid-
   to high-latitudes.
 \newblock \emph{Nature Climate Change}, 4:\penalty0 577---582, 2014.
-\newblock URL \url{http://dx.doi.org/10.1038/nclimate2268}.
 
 \bibitem[Staten et~al.(2016)Staten, Kahn, Schreier, and
   Heidinger]{StatenKahn2016}
@@ -154,7 +117,6 @@ P.~W. Staten, B.~H. Kahn, M.~M. Schreier, and A.~K. Heidinger.
   properties from {AVHRR}.
 \newblock \emph{Journal of Atmospheric and Oceanic Technology}, 33\penalty0
   (7):\penalty0 1519--1538, 2016.
-\newblock \doi{10.1175/JTECH-D-15-0187.1}.
 
 \bibitem[Tibshirani(1996)]{tibshirani_regression_1996}
 R.~Tibshirani.
@@ -171,7 +133,6 @@ R.~J. Tibshirani.
 R.~J. Tibshirani.
 \newblock Adaptive piecewise polynomial estimation via trend filtering.
 \newblock \emph{Annals of Statistics}, 42:\penalty0 285--323, 2014.
-\newblock URL \url{http://www.stat.cmu.edu/~ryantibs/papers/trendfilter.pdf}.
 
 \bibitem[Tibshirani and Taylor(2011)]{TibshiraniTaylor2011}
 R.~J. Tibshirani and J.~Taylor.
@@ -192,7 +153,6 @@ K.~E. Trenberth, Y.~Zhang, J.~T. Fasullo, and S.~Taguchi.
   radiation and temperatures on earth.
 \newblock \emph{Journal of Geophysical Research: Atmospheres}, 120\penalty0
   (9):\penalty0 3642--3659, 2014.
-\newblock \doi{10.1002/2014JD022887}.
 
 \bibitem[Uppala et~al.(2005)Uppala, KÅllberg, Simmons, Andrae, and
   al]{uppala_era-40_2005}
@@ -209,23 +169,13 @@ D.~A. Vasseur, J.~P. DeLong, B.~Gilbert, H.~S. Greig, C.~D.~G. Harley, K.~S.
   climate warming.
 \newblock \emph{Proceedings of the Royal Society of London B: Biological
   Sciences}, 281\penalty0 (1779), 2014.
-\newblock \doi{10.1098/rspb.2013.2612}.
 
-\bibitem[Wang et~al.(2016{\natexlab{a}})Wang, Sharpnack, Smola, and
+\bibitem[Wang et~al.(2016)Wang, Sharpnack, Smola, and
   Tibshirani]{WangSharpnack2016}
 Y.-X. Wang, J.~Sharpnack, A.~J. Smola, and R.~J. Tibshirani.
 \newblock Trend filtering on graphs.
 \newblock \emph{Journal of Machine Learning Research}, 17\penalty0
-  (105):\penalty0 1--41, 2016{\natexlab{a}}.
-\newblock URL \url{http://jmlr.org/papers/v17/15-147.html}.
-
-\bibitem[Wang et~al.(2016{\natexlab{b}})Wang, Sharpnack, Smola, and
-  Tibshirani]{wang_trend_2016}
-Y.-X. Wang, J.~Sharpnack, A.~J. Smola, and R.~J. Tibshirani.
-\newblock Trend {Filtering} on {Graphs}.
-\newblock \emph{Journal of Machine Learning Research}, 17\penalty0
-  (105):\penalty0 1--41, 2016{\natexlab{b}}.
-\newblock URL \url{http://jmlr.org/papers/v17/15-147.html}.
+  (105):\penalty0 1--41, 2016.
 
 \bibitem[Zeng et~al.(2017)Zeng, Hu, and Li]{zeng_geometry_2017}
 P.~Zeng, Q.~Hu, and X.~Li.
@@ -233,6 +183,5 @@ P.~Zeng, Q.~Hu, and X.~Li.
   {Generalized} {Lasso}.
 \newblock \emph{Scandinavian Journal of Statistics}, 44\penalty0 (4):\penalty0
   989--1008, Nov. 2017.
-\newblock ISSN 0303-6898.
 
 \end{thebibliography}
