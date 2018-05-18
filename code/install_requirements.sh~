@@ -1,0 +1,10 @@
+#!/bin/bash/
+
+echo "******installing basemap******"
+conda install -y -c conda-forge basemap
+
+echo "******installing pygrib******"
+conda install -y -c conda-forge pygrib
+
+
+

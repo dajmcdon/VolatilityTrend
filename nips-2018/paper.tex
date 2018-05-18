@@ -79,7 +79,7 @@
  Department of Statistics\\
  Indiana University\\
  Bloomington, IN 47408 \\
- \texttt{dajmcdon@indiana.cmu.edu}}
+ \texttt{dajmcdon@indiana.edu}}
 
 
 \begin{document} 
@@ -94,7 +94,7 @@ spatio-temporal volatility. We give two algorithms for computing our
 estimator which are tailored for dense, gridded observations over both
 space and time, though these can be easily extended to other
 structures (time-varying network flows, neuroimaging). We motivate our
-methodology using by applying it to a massive climate dataset and
+methodology by applying it to a massive climate dataset and
 discuss the implications for climate analysis.
 \end{abstract}
 
@@ -123,7 +123,7 @@ fundamental misunderstanding of the relationship between climate (the global
 distribution of weather over the long run) and weather (observed
 short-term, localized behavior) leads to public misunderstanding of climate
 change. In fact, increased frequency of extreme cold events in the
-northern hemisphere is can be partially attributed to increases in
+northern hemisphere can be partially attributed to increases in
 mean climate but is also due to increases in temperature
 variance~\citep{Screen2014,FischerBeyerle2013,TrenberthZhang2014}. 
 
@@ -144,7 +144,7 @@ position, which suggests that the global SD has been
 stable. 
 
 These and other related research, e.g.,
-\citep{rhines_frequent_2013}) have several shortcomings. First, no
+\citep{rhines_frequent_2013}, have several shortcomings. First, no
 statistical analysis has been performed to examine if the changes in
 the SD are statistically significant. Second, the methodologies for
 computing the SDs are highly sensitive to the choice of base period. Third,
@@ -302,7 +302,7 @@ PDIP algorithm (as in, e.g.,
 \texttt{cvxopt}~\citep{andersen_cvxopt:_2013}). In each iteration of
 PDIP we need to compute a search direction by taking a Newton
 step on a system of nonlinear equations. Due to space limitations, we
-defer details to Appendix B in the Supplement.
+defer details to Appendix A in the Supplement, where we show how to derive the dual of this optimization problem and compute the first and second derivatives of the dual objective function. 
 
 
 \begin{comment}
@@ -354,7 +354,7 @@ by solving the following optimization problem:
 +\lambda_1 \sum_{i,j} \sum_{t=1}^{T-2} \left|h_{ijt}-2h_{ij(t+1)}+h_{ij(t+2)}\right|\\
 &\quad+\lambda_2 \sum_{t,j} \sum_{i=1}^{n_r-1} \left|h_{ijt}-h_{(i+1)jt}\right|
 +\lambda_2 \sum_{t,i} \sum_{j=1}^{n_c-1} \left|h_{ijt}-h_{i(j+1)t}\right|
-\label{eq:l1tf_var_st}
+\label{eq:l1tf_var_st}.
 \end{align}
 
 The first term in the objective is proportional to the negative
@@ -363,22 +363,7 @@ time-series at each location $(i,j)$, while the third and fourth,
 penalize the difference between the estimated variance of two
 vertically and horizontally adjacent points, respectively. The spatial
 component of this
-penalty is a special case of trend
-filtering on graphs~\citep{WangSharpnack2016} which penalizes the difference
-between the estimated values of the signal on the connected
-nodes. As before, we can write
-\eqref{eq:l1tf_var_st} in matrix form where $h$ is an $T\times
-S$ vector and $D$ is replaced by $D_{ST} \in \mathbb{R}^{(N_t+N_s)
-  \times (T \cdot S)	}$, where $N_t=S \cdot (T-2)$ and $N_s=T \cdot
-(2n_rn_c-n_r)$ are the number of temporal and spatial constraints,
-respectively\footnote{$N_s$ is obtained by counting the number of
-  unique constraints at each location and at all times.}. Then, as we 
-have two different tuning parameters for the temporal and spatial
-components, we write $\Lambda =\left[\lambda_1\one_{N_t}^\top,\;
-  \lambda_2\one_{N_s}^\top\right]^\top$ leading
-to:\footnote{Throughout the paper, we use $|x|$ for both scalars and
-  vectors. For vectors we use this to denote a vector obtained by
-  taking the absolute value of each entry of $x$.} 
+penalty is a special case of trend filtering on graphs~\citep{WangSharpnack2016} which penalizes the difference between the estimated values of the signal on the connected nodes. As before, we can write \eqref{eq:l1tf_var_st} in matrix form where $h$ is an $T\times S$ vector and $D$ is replaced by $D_{ST} \in \mathbb{R}^{(N_t+N_s) \times (T \cdot S)	}$, where $N_t=S \cdot (T-2)$ and $N_s=T \cdot (2n_rn_c-n_r)$ are the number of temporal and spatial constraints, respectively\footnote{$N_s$ is obtained by counting the number of unique constraints at each location and at all times.}. The exact form of this matrix in clarified in Appendix A in the Supplement. Then, as we have two different tuning parameters for the temporal and spatial components, we write $\Lambda =\left[\lambda_1\one_{N_t}^\top,\;  \lambda_2\one_{N_s}^\top\right]^\top$ leading to:\footnote{Throughout the paper, we use $|x|$ for both scalars and vectors. For vectors we use this to denote a vector obtained by taking the absolute value of each entry of $x$.} 
 % let $h$ be a
 % vector whose first $T$ entries are $h_{11t}$ for $t=1,...,T$, its next
 % $T$ entries are $h_{21t}$ and so on, then the optimization problem in
@@ -387,32 +372,6 @@ to:\footnote{Throughout the paper, we use $|x|$ for both scalars and
 \min_h -l(y\given h)+ \Lambda^\top | D_{ST}h |.
 \label{eq:l1tf_var_st_mat}
 \end{equation}
-\attn{equations should have proper punctuation as if they were a sentence.}
-% where $\Lambda = \mathbf{I}_{Tn_rn_c}\left[\lambda_1\one_T^\top,\;
-%   \lambda_2\one_{n_rn_c}^\top\right]$ and 
-% $D_{total}^t=[D_{t}^t|D_{s}^t]$, where $n_t$ and $n_s$ are the number
-% of rows of $D_{t}$ and $D_{s}$, respectively (see below). The matrix
-% $D_t$ is the following block-diagonal matrix and corresponds to the
-% temporal penalty: 
-% \begin{equation}
-% D_t=\begin{bmatrix}
-% D &  & \\ 
-%  & \ddots & \\
-%  &  & D
-% \end{bmatrix}
-% \label{eq:d_t_matrix}
-% \end{equation}
-%  where $D$ was defined in \eqref{eq:d_matrix}. The number of the
-%  diagonal blocks is equal to the grid size $n_r \times n_c$. Each row
-%  of the matrix $D_s$ corresponds to one spatial constraint in
-%  \eqref{eq:l1tf_var_st}. For example, the first $T$ rows correspond to
-%  $|h_{11t}-h_{21t}|$ for $t=1,...,T$, the next $T$ rows correspond to
-%  $|h_{11t}-h_{12t}|$, and so on. 
-% \attn{Detailed discussion of the PDIP to here}
-
-
-% \attn{Add back the full form of $D$ above? It was too cumbersome
-%   before, but possibly necessary}
 
 \section{Proposed optimization methods}
 \label{sec:prop-optim-meth}
@@ -420,9 +379,9 @@ to:\footnote{Throughout the paper, we use $|x|$ for both scalars and
 For a spatial grid of size $S$ and $T$ time steps, $D_{ST}$ will have
 $3Tn_rn_c-2n_rn_c-Tn_r$ rows and $ST$ columns. For a $1^\circ\times
 1^\circ$ grid over the entire northern hemisphere and daily data over
-10 years, we have $n_r=90$, $n_c=180$, $T=3650$ and so $D_{ST}$ has
+10 years, we have $n_r=90$, $n_c=360$, $T=3650$ and so $D_{ST}$ has
 approximately $10^8$ columns and $10^8$ rows. In each step of the PDIP
-algorithm, we need to solve a linear system of equations in $A$ which
+algorithm, we need to solve a linear system of equations which
 depends on $D_{ST}^\top D_{ST}$ (see appendix A and B). Therefore,
 applying the PDIP directly is infeasible for our data.\footnote{We
   note that this is a highly structured and sparse matrix, but, unlike
@@ -463,8 +422,8 @@ u_i&\leftarrow u_i + \rho (x_i-\tilde{z}_i)
 \end{align}
 \end{comment}
 
-Given an optimization problem of the form $\min_h f(h)$, where
-$h\in\mathbb{R}^n$ is the global variable and
+Consider an optimization problem of the form $\min_h f(h)$, where
+$h\in\mathbb{R}^n$ is the \textit{global variable} and
 $f(h):\mathbb{R}^n \rightarrow \mathbb{R}\cup \{+\infty\}$ is
 convex. Consensus optimization breaks this problem
 into several smaller sub-problems that can be solved independently in
@@ -492,10 +451,10 @@ It is important to note that each entry of the global variable may
 correspond to several entries of the local variables and so the
 constraints $\tilde{h}_i=x_i$ enforce the consensus between the local
 variables corresponding to the same global variable.  
-The augmented Lagrangian corresponding to 
+The \textit{augmented Lagrangian} corresponding to 
 \eqref{eq:consADMM} is $L_\rho(x,h,y)=\sum_i
 \big(f_i(x_i)+u_i^\top(x_i-\tilde{h}_i) + (\rho/2) \lVert
-x_i-\tilde{h}_i \lVert_2^2 \big)$. Now, we can apply ADMM to $L_\rho$.
+x_i-\tilde{h}_i \lVert_2^2 \big)$. Now, we can apply ADMM to $L_\rho$. This results in solving $N$ independent optimization problems followed by a step to achieve consensus among the solutions in each iteration.
 % which results in the following ADMM updates:
 % \begin{align}
 % x_i&\leftarrow\argmin_{x_i} f_i(x_i) + (u_i)^\top x_i +
@@ -514,7 +473,7 @@ questions: first, how to choose the
 local variables $x_i$, and second, how to the update them.
 \begin{figure}[tb]
   \centering
-  \includegraphics[height=.2\textheight]{Figures/data_cube}
+  \includegraphics[height=.13\textheight]{Figures/data_cube}
   \caption{The cube represents the global variable $h$ in space and
     time. The sub-cubes specified by the white lines are
     $x_i$.}
@@ -523,31 +482,13 @@ local variables $x_i$, and second, how to the update them.
 
 
 In \autoref{fig:data_cube}, the global variable $h$ is represented
-as a cube (using the subset of the US as an example). We decompose $h$
-into sub-cubes as shown by white lines. With
+as a cube. We decompose $h$
+into sub-cubes as shown by white lines. Each local variable inside the sub-cubes corresponds to only one global variable. The local variables on the border (white lines), however, correspond to more than one global variable. With
 this definition of $x_i$, the objective
 \eqref{eq:l1tf_var_st_mat} decomposes as $\sum_i f_i(x_i)$ where
 $f_i(x_i)=-l(y_i\given x_i)+\Lambda_{(i)}^\top |D_{(i)}x_i|$, and
 $\Lambda_{(i)}$ and $D_{(i)}$ contain the temporal and spatial
-penalties corresponding to $x_i$ only. 
-% The $x$-update step in
-% \eqref{eq:ADMM_steps} is the following optimization problem:
-% $x_i^{m+1}:=\argmin_{x_i} ( f_i(x_i) + 
-% (u_i^m)^\top x_i + (\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2)$.
-Thus, with this choice of the local variables $x_i$, we solve the
-$x$-update using the PDIP method. 
-% As it 
-% was explained in \autoref{sec:l1tf_var}, to use PDIP we need to
-% compute the dual problem, which in turn needs the computation of the
-% Fenchel conjugate of the loss function. In addition, referring to
-% \autoref{alg:pdip}, we need to compute the gradient and Jacobian of
-% the conjugate functions. It is important to note that compare to the
-% optimization problem \autoref{eq:l1tf_var}, the loss function in the
-% x-update step in \autoref{eq:ADMM_steps} includes the quadratic term
-% $(\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2$. This makes the
-% computation more involved than \autoref{sec:l1tf_var}. 
-\autoref{alg:conADMM} gives the general version of this algorithm. A
-more detailed discussion of the is in the Supplement. 
+penalties corresponding to $x_i$ only in one sub-cube. Thus, we now need to use PDIP to solve $N$ problems each of size $n_i$, which is feasible for small enough $n_i$. \autoref{alg:conADMM} gives the general version of this algorithm. A more detailed discussion of this is in Appendix B of the Supplement where we show how to compute the dual and the derivatives of the augmented Lagrangian. 
 
 \begin{algorithm}[tb]
   \caption{Consensus ADMM }
@@ -621,10 +562,7 @@ x & \leftarrow \prox_{\mu f} \left(x - (\mu/\rho)D^\top (D x - z + u )\right)\\
 z & \leftarrow \prox_{\rho g} \left(z + u\right) \label{eq:linADMM_steps}\\
 u & \leftarrow u + D x - z
 \end{align}
-where the algorithm parameters $\mu$ and $\rho$ satisfy $0 < \mu < \rho/\norm{D}_2^2$, $z,u\in \mathbb{R}^m$ and the proximal operator is defined as
-$
- \prox_{\alpha f}(u) = \min_x \,\, \alpha \cdot f(x)+\frac{1}{2} \norm{ x-u}_2^2.
-$
+where the algorithm parameters $\mu$ and $\rho$ satisfy $0 < \mu < \rho/\norm{D}_2^2$, $z,u\in \mathbb{R}^m$ and the proximal operator is defined as $\prox_{\alpha f}(u) = \min_x \,\, \alpha \cdot f(x)+\frac{1}{2} \norm{ x-u}_2^2$. Proximal algorithms are feasible when these proximal operators can be evaluated efficiently which, as we show next, is the case for our problem. 
 
 %Clearly, \eqref{eq:l1tf_var_st} has this form necessary for using this algorithm.
 % The optimization problem 
@@ -640,10 +578,7 @@ $
 % (see \autoref{sec:exten}). 
 % To perform the steps in \eqref{eq:linADMM_steps}, we need to evaluate
 % $\prox_{\mu f}$ and $\prox_{\rho g}$. 
-Proximal
-algorithms are feasible when these proximal operators can be
-evaluated efficiently which, as we show next, is the case for our
-problem.  
+ 
 
 
 \begin{lemma}
@@ -742,7 +677,10 @@ left panel of \autoref{fig:true_fitted_var} shows the true and the
 estimated standard deviation at location (0,0) using $\lambda_s=0.1$
 and $\lambda_t=5$ (blue) and $\lambda_t=100$ (green). As we can see,
 larger than optimal value of $\lambda_t$ leads to estimated values
-which are ``too smooth".  
+which are ``too smooth". The middle panel of \autoref{fig:true_fitted_var} shows the
+convergence of both methods. Each iteration of the linearized
+algorithm takes 0.01 seconds on average while each iteration of the
+consensus ADMM takes about 20 seconds. 
 
 \begin{figure}[tb]
   \centering	
@@ -756,16 +694,12 @@ which are ``too smooth".
     $\lambda_t=100$ (green). Middle: Convergence speed of linearized and consensus ADMM. Right: MAE for four models: admm\_opt: the proposed model with optimal values of $\lambda_t$ and $\lambda_s$, admm\_temp: no spatial penalty, admm\_sp: no temporal penalty.} \label{fig:true_fitted_var}
 \end{figure}
 
-The middle panel of \autoref{fig:true_fitted_var} shows the
-convergence of both methods. Each iteration of the linearized
-algorithm takes 0.01 seconds on average while each iteration of the
-consensus ADMM takes about 20 seconds. 
+
 
 To further examine the performance of the proposed model, we next
 compare it to three alternatives: a model which does not consider the
 spatial smoothness (equivalent to fitting the model in
-\autoref{sec:l1tf_var} to each time-series separately), a model which
-does not consider imposes only spatial smoothness, and a GARCH(1,1) model. We
+\autoref{sec:l1tf_var} to each time-series separately), a model which only imposes spatial smoothness, and a GARCH(1,1) model. We
 simulated 100 datasets using the method explained above with $\sigma_s
 \sim \mathsf{uniform}(4,7)$. The right panel of
 \autoref{fig:true_fitted_var} shows the boxplot of the MAE for these
@@ -785,11 +719,9 @@ applied this algorithm to the northern hemisphere of the ERA-20C
 dataset available from the \href {https://www.ecmwf.int}{European Center for Medium-Range
   Weather Forecasts}. The data are
 the 2 meter temperature measured daily at 12 p.m from January 1, 1960
-to December 24, 2010. 
-
-The Supplement explains some preprocessing and investigates some
+to December 24, 2010. The Supplement explains some preprocessing and investigates some
 properties of the time-series of different locations on
-earth. \autoref{fig:bloom_estimatedSD} a processed time-series for a
+earth. \autoref{fig:bloom_estimatedSD} shows a processed time-series for a
 single location.
 The variance of this time-series has an irregular cyclic
 behavior. Additionally, the time-series of other locations show 
@@ -826,16 +758,14 @@ converges speed improves.
 One common method for choosing the penalty parameters in the Lasso
 problems is to find the solution for a range of the values of these
 parameters and then choose the values which minimize a model selection
-criterion. However, such analyses needs the computation of the degrees
+criterion. However, such analysis needs the computation of the degrees
 of freedom. Several previous work have investigated the df in
 generalized lasso problems
 \citep{tibshirani_degrees_2012,hu_dual_2015,zeng_geometry_2017}. However,
 all these studies have considered the linear regression problem and,
 to the best of our knowledge, the problem of computing the df for
 generalized lasso with general objective function has not been
-considered yet.
-
-In this paper, we use a heuristic method for choosing $\lambda_t$ and
+considered yet. In this paper, we use a heuristic method for choosing $\lambda_t$ and
 $\lambda_s$: we compute the optimal solution for a range of values of
 these parameters and choose the values which minimize
 $\mathscr{L}(\lambda_t,\lambda_s)=-l(y|h)+ \sum \lVert D_{total}h
@@ -843,9 +773,7 @@ $\mathscr{L}(\lambda_t,\lambda_s)=-l(y|h)+ \sum \lVert D_{total}h
 likelihood ($-l(y|h)$) and the complexity of the solution ($\sum
 \lVert D_{total}h \lVert$). For smoother solutions the value of $\sum
 \lVert D_{total}h \lVert$ will be smaller but with the cost of larger
-$-l(y|h)$. 
-
-We computed the optimal solution for all the combinations of the
+$-l(y|h)$. We computed the optimal solution for all the combinations of the
 following sets of values: $\lambda_t \in \{0,2,4,8,10,15,200,1000\} \, \, ,
 \lambda_s \in \{0,.1,.5,2,5,10\}$. The best combination was
 $\lambda_t=4$ and $\lambda_s=2$. All the analyses in the next section
@@ -856,7 +784,7 @@ are performed on the solution for these values.
 
 \begin{figure}[tb]
   \centering
-  \includegraphics[width=.9 \columnwidth]{Figures/ts_estimatedVar}\\
+  \includegraphics[width=.8 \columnwidth]{Figures/ts_estimatedVar}\\
   \caption{Detrended data and the estimated SD for
     a small midwestern city (left) and San Diego (right).} 
   \label{fig:avg_change_estimatedSD}
@@ -883,7 +811,7 @@ The yearly average of the estimated SD captures the trend in the
 temperature volatility. For example, we can see that the variance in
 the midwestern city displays a small positive trend. To determine how the volatility has
 changed in each location, we subtract the average of the estimated
-variance in \attn{1992} from the average in the following years and compute
+variance in 1961 from the average in the following years and compute
 their sum. The value of this change in the variance in each location
 is depicted in the right panel of
 \autoref{fig:avg_chg}. The left panel of this
@@ -962,7 +890,7 @@ each sub-problem can be solved using linearized ADMM.
 
 
  
-
+\newpage
 \bibliographystyle{abbrvnat}
 \small
 \bibliography{nips-references}

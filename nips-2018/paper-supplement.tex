@@ -149,11 +149,23 @@ Therefore, to perform the Newton step we need to compute $\nabla f^*(-D^\top v)$
 \nabla^2 f^*(-D^\top v)=D\nabla_u^2 f^*(u)D^\top, \quad (\nabla_u^2 f^*(u))_j=\mathbf{diag}\bigg(\frac{1}{1-u_j}\bigg)
 \end{align}
 
+The matrix $D$ in these equations have the following form:  $D_{total}^t=[D_{t}^t|D_{s}^t]$. The matrix $D_t$ is the following block-diagonal matrix and corresponds to the temporal penalty: 
+ \begin{equation}
+ D_t=\begin{bmatrix}
+ D &  & \\ 
+  & \ddots & \\
+  &  & D
+ \end{bmatrix}
+ \label{eq:d_t_matrix}
+ \end{equation}
+
+where $D$ was defined in Section 2 of the main text. The number of the diagonal blocks is equal to the grid size $n_r \times n_c$. Each row of the matrix $D_s$ corresponds to one spatial constraint in Equation \eqref{eq:l1tf_var_st} in the text. For example, the first $T$ rows correspond to $|h_{11t}-h_{21t}|$ for $t=1,...,T$, the next $T$ rows correspond to $|h_{11t}-h_{12t}|$, and so on. 
+
 
 \section{Appendix B}
 \label{sec:app_consADMM}
 
-In this Appendix we give more details on performing the x-update step in \autoref{eq:ADMM_steps}. We need to solve the following optimization problem:
+In this Appendix we give more details on performing the x-update step in Algorithm 1. We need to solve the following optimization problem:
 
 \begin{equation}
 \hat{x}:=\argmin_{x} \bigg( \sum_{j=1}^{n_b} (x_j + y_j^2e^{-x_j}) + (\rho/2) \lVert x-\tilde{z} + u \lVert_2^2 + \Lambda^\top |D x| \bigg)
@@ -224,8 +236,7 @@ variance function obtained from there parameters at $t=25$ (left) and
 $t=45$ (center). 
 
 \begin{table}[tb]
-  \caption{Parameters used to simulate data. \attn{Any ideas to take
-      up less space with this info?}}
+  \caption{Parameters used to simulate data.}
   \label{tab:sim_params}
   \begin{center}
     \begin{tabular}{ccccccc}
@@ -257,7 +268,7 @@ $t=45$ (center).
 
 In this appendix we examine some of the properties of the time-series of the temperature in ERA-20C dataset. The goal here is to demonstrate some of the difficulties in modeling the trend in the temperature volatility and motivate our methodology.
 
-\autoref{fig:cities_ts} shows the time-series of the temperature of three cities: Bloomington (USA), San Diego (USA) and Manaus (Brazil). The time-series of Bloomington and San Diego show clear cyclic behavior. However, while it seems (qualitatively) that these cycles can be modeled by a sinusoidal function for Bloomington, the same is not true for San Diego. Also, the amplitude of the cycles changes from some years to others. The time-series of Manaus does not show any regular cyclic behavior. This demonstrates the first difficulty in analyzing the variance of this data: to analyze the variance, we first need to remove the cyclic terms from all time-series. However, there is a lot of variations in the cyclic behavior of the time-series of different locations. In addition, some of these cycles cannot be easily modeled by a parametric function \footnote{One might try to model the cycles by the summation of sinusoidal terms with different frequencies. However, for some time-series this may need many terms to be included in the summation to achieve a reasonable level of accuracy. In addition, this model cannot capture the non-stationarity in the cycles.}. To overcome these issues, we use a non-parametric approach to remove the cyclic terms from the time-series and de-trend them. This approach, called \textit{$\ell_1$-trend filtering} is explained in Section 2 of the text. We detrended each time-series separately using this method. For each time-series, we found the optimal value of the penalty parameter using \textit{k-fold cross-validation} with $k=5$. We used the R package \textbf{genlasso} to perform these computations \cite{arnold_efficient_2016}. 
+Figure \autoref{fig:cities_ts} shows the time-series of the temperature of three cities: Bloomington (USA), San Diego (USA) and Manaus (Brazil). The time-series of Bloomington and San Diego show clear cyclic behavior. However, while it seems (qualitatively) that these cycles can be modeled by a sinusoidal function for Bloomington, the same is not true for San Diego. Also, the amplitude of the cycles changes from some years to others. The time-series of Manaus does not show any regular cyclic behavior. This demonstrates the first difficulty in analyzing the variance of this data: to analyze the variance, we first need to remove the cyclic terms from all time-series. However, there is a lot of variations in the cyclic behavior of the time-series of different locations. In addition, some of these cycles cannot be easily modeled by a parametric function \footnote{One might try to model the cycles by the summation of sinusoidal terms with different frequencies. However, for some time-series this may need many terms to be included in the summation to achieve a reasonable level of accuracy. In addition, this model cannot capture the non-stationarity in the cycles.}. To overcome these issues, we use a non-parametric approach to remove the cyclic terms from the time-series and de-trend them. This approach, called \textit{$\ell_1$-trend filtering} is explained in Section 2 of the text. We detrended each time-series separately using this method. For each time-series, we found the optimal value of the penalty parameter using \textit{k-fold cross-validation} with $k=5$. We used the R package \textbf{genlasso} to perform these computations \cite{arnold_efficient_2016}. 
 
 
 \begin{figure}[tb]
@@ -267,7 +278,7 @@ In this appendix we examine some of the properties of the time-series of the tem
  	\label{fig:cities_ts}
 \end{figure} 
 
-The blue curve in the left panel of \autoref{fig:bloom_estimatedSD} shows the time-series of the temperature of Bloomington after detrending using this method. This figure, reveals another difficulty in estimating the trend of volatility in this data: the variance of this signal, shows cyclic behavior. Also, the cycles are not regular and their amplitude and frequency change. Even if one can describe the behavior of the variance of the time-series at all locations using a single parametric model (for example a variant of the GARCH models \citep{bollerslev_generalized_1986}), it is not clear how the trend in the variance should be investigated in this framework. These observations motivate the need to develop a non-parametric framework for the problem at hand.
+The blue curve in the left panel of Figure \autoref{fig:bloom_estimatedSD} shows the time-series of the temperature of Bloomington after detrending using this method. This figure, reveals another difficulty in estimating the trend of volatility in this data: the variance of this signal, shows cyclic behavior. Also, the cycles are not regular and their amplitude and frequency change. Even if one can describe the behavior of the variance of the time-series at all locations using a single parametric model (for example a variant of the GARCH models \citep{bollerslev_generalized_1986}), it is not clear how the trend in the variance should be investigated in this framework. These observations motivate the need to develop a non-parametric framework for the problem at hand.
 
 \begin{figure}[tb]
   \centering
@@ -282,7 +293,7 @@ The blue curve in the left panel of \autoref{fig:bloom_estimatedSD} shows the ti
 \end{figure} 
 
 
-The red curve in the left panel of \autoref{fig:bloom_estimatedSD}
+The red curve in the left panel of Figure \autoref{fig:bloom_estimatedSD}
 shows the estimated SD (which is $\exp(h_t/2)$) of the residuals of
 the time-series of Bloomington obtained from out proposed model. To reduce the number of time-steps we work on the weekly averaged of the data. The curve of the estimated SD captures the periodic variations in the
 SD of the signal. Just by looking at this curve, it is hard to say if
