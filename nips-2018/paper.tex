@@ -89,134 +89,143 @@
 
 
 \begin{abstract}
-words, words,
-
+In this paper, we present methodology for estimating trends in
+spatio-temporal volatility. We give two algorithms for computing our
+estimator which are tailored for dense, gridded observations over both
+space and time, though these can be easily extended to other
+structures (time-varying network flows, neuroimaging). We motivate our
+methodology using by applying it to a massive climate dataset and
+discuss the implications for climate analysis.
 \end{abstract}
 
 
 
 \section{Introduction}
 
-\attn{Arash: Some equations do not have numbering and some have.}
+Estimating smooth trends over time for large collections of time
+series is a common problem in economics, finance, meteorology,
+neuroscience and more. Most of this work focuses on analyzing trends
+(or removing trends) in the temporal average, but trends in variance
+can be more relevant, especially for financial data but also for
+climate science.
 
-\attn{Arash: fix appendicies and the references to them.}
-
-Nonparametric variance estimation for spatio-temporal data.
-
-\subsection{Motivating applications}
-
-\attn{cut this down}
-
-There is a considerable interest in determining if there is an
-increasing trend in the climate variability
-\citep{hansen_perception_2012,huntingford_no_2013}. An increase in the
+Trends in terrestrial temperature variability are perhaps more relavant for species
+viability than trends in mean
+temperature~\citep{huntingford_no_2013},
+because, an increase in the
 temperature variability will increase the probability of extreme hot
-outliers. It might be harder for the society to adapt to these
+outliers~\citep{VasseurDeLong2014}. Recent climate literature
+suggests that it is more difficult for society to adapt to these
 extremes than to the gradual increase in the mean temperature
-\citep{huntingford_no_2013}. 
+\citep{hansen_perception_2012,huntingford_no_2013}. Furthermore, the willingness of popular media to
+emphasize the prevalence extreme cold events coupled with a
+fundamental misunderstanding of the relationship between climate (the global
+distribution of weather over the long run) and weather (observed
+short-term, localized behavior) leads to public misunderstanding of climate
+change. In fact, increased frequency of extreme cold events in the
+northern hemisphere is can be partially attributed to increases in
+mean climate but is also due to increases in temperature
+variance~\citep{Screen2014,FischerBeyerle2013,TrenberthZhang2014}. 
 
-In this paper, we consider the problem of detecting the trend in the
-temperature volatility. All analyses are performed on a sub-set of the
-European Centre for Medium-Range Weather Forecasts (ECMWF) ERA-20C
-dataset \citep{uppala_era-40_2005}. This dataset include the
-temperature measurements over a grid over the earth from 1957 to
-2002.~\citep{VasseurDeLong2014,TrenberthZhang2014,StatenKahn2016,Screen2014,FischerBeyerle2013} 
-
-Research on analyzing the trend in the volatility of spatio-temporal
-data is scarce. \citep{hansen_perception_2012} studied the change in
+Nevertheless, research examining trends in the volatility of
+spatio-temporal climate data is scarce. \citep{hansen_perception_2012} studied the change in
 the standard deviation (SD) of the surface temperature in the NASA
-Goddard Institute for Space Studies gridded temperature data set. In
-their analysis, for each geographical position, the mean of the
-temperature computed for the period 1951-1980 (called the base-period)
-at that position, is subtracted from the corresponding time
-series. Each time series is then divided by the standard deviation
-computed at each position and during the same time period. The
-distribution of the resulting data is then plotted for different
-periods. These distributions represent the deviation of the
-temperature for a specific period, from the mean in the base period,
-in units of the standard deviation in that period. The results showed
-that these distributions are widen for the resent time periods
-compared to 1951-1980.  \citep{huntingford_no_2013} took a similar
-approach in analysing the ERA-40 data set. However, in addition to the
-aforementioned method, they computed the distribution of the SDs in an
-alternative way: for each position and each time period, the deviation
-of the time-series at that position from the mean in that time period
-at that position was computed, and then divided by the SD of that
-position in the period before 1981. The results showed that there
+Goddard Institute for Space Studies gridded temperature data set by
+examining the empirical SD at each spatial location relative to that
+location's SD over a base period, and showed
+that these estimates are increasing.
+\citep{huntingford_no_2013} took a similar
+approach in analyzing the ERA-40 data set. Their results showed that there
 still is an increase in the SDs from 1958-1970 to 1991-2001, but this
 is much less than what is obtained from the method used in
 \citep{hansen_perception_2012}. The authors also computed the
 time-evolving global SD from the de-trended time-series at each
-position. The resulting curve suggested that the global SD has been
+position, which suggests that the global SD has been
 stable. 
 
-These previous work (and other related research, e.g.,
+These and other related research, e.g.,
 \citep{rhines_frequent_2013}) have several shortcomings. First, no
-statistical analysis has been performed to examine if the change in
-the SD is statistically significant. Second, the methodologies for
-computing the SDs are rather arbitrary. The deviation of each
-time-series in a given period, is computed from either the mean of a
-base-period (as in \citep{hansen_perception_2012}), or from the given
-period (as in \citep{rhines_frequent_2013,huntingford_no_2013}). These
-deviations are then normalized using the SD of the base-period or the
-given period. No justification is provided for these choices. Third,
-the correlation between the observations is ignored. The observations
-in subsequent days and close geographical positions could be highly
-correlated. Without considering these correlations, any conclusion
-based on the averaged data could be flawed. 
-
-The main contribution of this work is to develop a new methodology for
-detecting the trend in the volatility of spatio-temporal data. In this
-methodology, the variance at each position and time, is considered as
-a hidden (un-observed) variable. The value of these hidden variables
-are then estimated by maximizing the likelihood of the observed
-data. We show that this formulation per se, is not appropriate for
-detecting the trend. To overcome this issue, we penalize the
-differences between the estimated variances of the observations which
-are temporally and/or spatially close to each other. This will result
-in an optimization problem called the \textit{generalized LASSO
-  problem} \citep{tibshirani_solution_2011}. As we will see, the
-dimension of this optimization problem is very high and so the
-standard methods for solving the generalized LASSO cannot be applied
-directly. We investigate two methods for solving this optimization
-problem. In the first method, we adopt an optimization technique
-called alternative direction method of multipliers (ADMM)
-\citep{boyd_distributed_2011}, to divide the total problem into
-several sub-problems of much lower dimension and show how the total
-problem can be solved by iteratively solving these sub-problems. The
-second method, called the \textit{linearized ADMM algorithm}
-\citep{parikh_proximal_2014} solves the main problem by iteratively
-solving a linearized version of it. We will compare the benefits of
-each method. 
-
-Also neuroscience.
+statistical analysis has been performed to examine if the changes in
+the SD are statistically significant. Second, the methodologies for
+computing the SDs are highly sensitive to the choice of base period. Third,
+and most importantly, temporal and spatial correlations between the
+observations are ignored.  
 
 
 \subsection{Related work}
 
-Mention ~\citep{KimKoh2009,HallacPark2017}. Also,
-~\citep{Tibshirani2014,TibshiraniTaylor2011}. ARCH/GARCH. 
+Variance estimation for financial time series has a lengthy history,
+focused especially on parametric models like the generalized
+autoregressive conditional heteroskedasticity (GARCH) process~\citep{engle2002dynamic} and
+stochastic volatility models~\citep{HarveyRuiz1994}. These models (and
+related AR processes) are specifically for parametric modelling of
+short ``bursts'' of high volatility, behavior typical of financial
+instruments. Parametric models for spatial data go back at least
+to~\citep{besag1974spatial} who proposed a conditional probability
+model on the lattice for examining plant ecology.
 
-\citep{SadhanalaWang2017,LinSharpnack2017,WangSharpnack2016}~\citep{RamdasTibshirani2016}
+More recently, nonparametric models for both spatial and temporal data
+have focused on using $\ell_1$-regularization for trend
+estimation. \citep{KimKoh2009} proposed $\ell_1$-trend filtering for
+univariate time series, which forms the basis of our methods. These
+methods have been generalized to higher order temporal smoothness
+~\citep{Tibshirani2014}, graph dependencies~\citep{WangSharpnack2016},
+and, most recently, small, time-varying
+graphs~\citep{HallacPark2017}. Our methodology is similar in flavor
+to~\citep{HallacPark2017}, though it uses a different likelihood
+function to emphasize variance estimation rather than trends in mean
+signal. Furthermore, the focus is in high-dimensional, regular data
+rather than a small number of changing graphs.
 
 \subsection{Main contributions}
 
-\begin{itemize}
-\item We propose a model for non-parametric variance estimation for a
-  spatio-temporal process (~\autoref{sec:ell_1-trend-filt}).
-\item We derive two algorithms to fit our estimator when applied to
-  very large data (~\autoref{sec:prop-optim-meth}).
+The main contribution of this work is to develop a new methodology for
+detecting the trend in the volatility of spatio-temporal data. In this
+methodology, the variance at each position and time is considered as
+a hidden variable. The values of these hidden variables
+are then estimated by maximizing the likelihood of the observed
+data. We show that this formulation is not appropriate for
+detecting the trend, so, following ~\citep{Tibshirani2014}, we penalize the
+differences between the estimated variances which
+are temporally and spatially ``close'', resulting
+in a generalized LASSO problem. % However, the
+% dimension of this optimization problem is very high and so the
+% standard methods solvers are inadequate. We develop two algorithms
+% which are computationally feasible. In the first method, we adopt an optimization technique
+% called alternative direction method of multipliers (ADMM)
+% \citep{boyd_distributed_2011}, to divide the total problem into
+% several sub-problems of much lower dimension and show how the total
+% problem can be solved by iteratively solving these sub-problems. The
+% second method, called the \textit{linearized ADMM algorithm}
+% \citep{parikh_proximal_2014} solves the main problem by iteratively
+% solving a linearized version of it. We will compare the benefits of
+% each method. 
+
+Our main contributions are as follows:
+\begin{enumerate}
+\item We propose a model for nonparametric variance estimation for a
+  spatio-temporal process (\autoref{sec:ell_1-trend-filt}).
+\item We derive two alternating direction method of multiplier
+  algorithms (ADMM) to fit our estimator when applied to 
+  very large data (\autoref{sec:prop-optim-meth}). We give situations
+  under which each algorithm is most likely to be useful.
 \item We illustrate our methods on a large global temperature dataset
   with the goal of tracking world-wide trends in variance as well as a
   simulation constructed to mimic these data's features
-  (~\autoref{sec:empirical-evaluation}). 
-\end{itemize}
+  (\autoref{sec:empirical-evaluation}). 
+\end{enumerate}
+
+While we motivate and illustrate our methods on large, gridded climate
+data, we note that our algorithms are also applicable to neuroimaging
+data or large collections of financial instruments.
 
 \section{Estimating the variance of spatio-temporal data}
 \label{sec:ell_1-trend-filt}
 
 
-$\ell_1$-trend filtering was proposed by \citep{KimKoh2009} as a method for estimating a smooth, time-varying trend. It is formulated as the optimization problem
+$\ell_1$-trend filtering was proposed by \citep{KimKoh2009} as a
+method for estimating a smooth, time-varying trend. It is formulated
+as the optimization problem 
 % : a time-series $y_t$, $t=1,...,T$ is observed and we believe that
 % it consists of a smooth trend and a stochastic component and the
 % goal is to estimate the trend. The estimated trend is desired to be
@@ -225,10 +234,10 @@ $\ell_1$-trend filtering was proposed by \citep{KimKoh2009} as a method for esti
 % simultaneously and so a trade-off between them should be made. In
 % $\ell_1$-trend filtering, this trade-off is formulated as the
 % following convex optimization problem: 
-\begin{equation}
+$
 \min_{\beta} \frac{1}{2} \sum_{t=1}^{T} (y_t-\beta_t)^2+\lambda
 \sum_{t=1}^{T-2} \left|\beta_t-2\beta_{t+1}+\beta_{t+2}\right| 
-\end{equation}
+$
 or equivalently:
 \begin{equation}
 \min_{\beta} \frac{1}{2} \norm{ y-\beta }_2^2+\lambda \norm{ D\beta}_1
@@ -359,7 +368,7 @@ filtering on graphs~\citep{WangSharpnack2016} which penalizes the difference
 between the estimated values of the signal on the connected
 nodes. As before, we can write
 \eqref{eq:l1tf_var_st} in matrix form where $h$ is an $T\times
-S$ vector and $D$ is replaced by $D_{TS} \in \mathbb{R}^{(N_t+N_s)
+S$ vector and $D$ is replaced by $D_{ST} \in \mathbb{R}^{(N_t+N_s)
   \times (T \cdot S)	}$, where $N_t=S \cdot (T-2)$ and $N_s=T \cdot
 (2n_rn_c-n_r)$ are the number of temporal and spatial constraints,
 respectively\footnote{$N_s$ is obtained by counting the number of
@@ -375,7 +384,7 @@ to:\footnote{Throughout the paper, we use $|x|$ for both scalars and
 % $T$ entries are $h_{21t}$ and so on, then the optimization problem in
 % the matrix form is as
 \begin{equation}
-\min_h -l(y\given h)+ \Lambda^\top | D_{TS}h |.
+\min_h -l(y\given h)+ \Lambda^\top | D_{ST}h |.
 \label{eq:l1tf_var_st_mat}
 \end{equation}
 \attn{equations should have proper punctuation as if they were a sentence.}
@@ -483,30 +492,26 @@ It is important to note that each entry of the global variable may
 correspond to several entries of the local variables and so the
 constraints $\tilde{h}_i=x_i$ enforce the consensus between the local
 variables corresponding to the same global variable.  
-
 The augmented Lagrangian corresponding to 
 \eqref{eq:consADMM} is $L_\rho(x,h,y)=\sum_i
 \big(f_i(x_i)+u_i^\top(x_i-\tilde{h}_i) + (\rho/2) \lVert
-x_i-\tilde{h}_i \lVert_2^2 \big)$. Now, we can apply ADMM to $L_\rho$
-which results in the following ADMM updates:
-\begin{align}
-x_i&\leftarrow\argmin_{x_i} f_i(x_i) + (u_i)^\top x_i +
-     (\rho/2)  \norm{ x_i-\tilde{h}_i }_2^2\\
-h_k&\leftarrow (1/S_k)\sum_{\mathscr{G}(i,j)=k} (x_i)_j \label{eq:ADMM_steps}\\
-u_i&\leftarrow u_i + \rho (x_i-\tilde{h}_i).
-\end{align}
-\attn{If you hate the left arrow, that's fine. But change it
-  everywhere, and use $=$. The $:=$ notation means that ``thing on
-  left is defined to be thing on right'' and isn't really appropriate here.}
-Here, $S_k$ is the number of local variable entries that correspond to
-$h_k$, and $u_i$ are the Lagrange multipliers.  
-
+x_i-\tilde{h}_i \lVert_2^2 \big)$. Now, we can apply ADMM to $L_\rho$.
+% which results in the following ADMM updates:
+% \begin{align}
+% x_i&\leftarrow\argmin_{x_i} f_i(x_i) + (u_i)^\top x_i +
+%      (\rho/2)  \norm{ x_i-\tilde{h}_i }_2^2\\
+% h_k&\leftarrow (1/S_k)\sum_{\mathscr{G}(i,j)=k} (x_i)_j \label{eq:ADMM_steps}\\
+% u_i&\leftarrow u_i + \rho (x_i-\tilde{h}_i).
+% \end{align}
+% \attn{If you hate the left arrow, that's fine. But change it
+%   everywhere, and use $=$. The $:=$ notation means that ``thing on
+%   left is defined to be thing on right'' and isn't really appropriate here.}
+% Here, $S_k$ is the number of local variable entries that correspond to
+% $h_k$, and $u_i$ are the Lagrange multipliers.  
 To solve the optimization problem \eqref{eq:l1tf_var_st_mat} using
 this method, we need to address two 
 questions: first, how to choose the 
-local variables $x_i$, and second, how to the update in the first line of
-\eqref{eq:ADMM_steps}.
-
+local variables $x_i$, and second, how to the update them.
 \begin{figure}[tb]
   \centering
   \includegraphics[height=.2\textheight]{Figures/data_cube}
@@ -541,36 +546,32 @@ $x$-update using the PDIP method.
 % x-update step in \autoref{eq:ADMM_steps} includes the quadratic term
 % $(\rho/2) \lVert x_i-\tilde{z}_i^m \lVert_2^2$. This makes the
 % computation more involved than \autoref{sec:l1tf_var}. 
-The details of the remaining computations
-the computations are explained in the Supplement.
+\autoref{alg:conADMM} gives the general version of this algorithm. A
+more detailed discussion of the is in the Supplement. 
+
+\begin{algorithm}[tb]
+  \caption{Consensus ADMM }
+  \label{alg:conADMM}
+  \begin{algorithmic}
+    \STATE {\bfseries Input:} data $y$, penalty matrix $D$, 
+    $\epsilon, \rho,\lambda_t,\lambda_s >0$.
+    \STATE {\bf Set:} $h\leftarrow 0$, $z\leftarrow 0$, $u\leftarrow
+    0$. \COMMENT{Initialization} 
+    \REPEAT
+    \STATE $x_i\leftarrow\argmin_{x_i} -l(y_i\given
+    x_i)+\Lambda_{(i)}^\top |D_{(i)}x_i|$
+    \STATE $\quad\quad\quad+ (u_i)^\top x_i +
+    (\rho/2)  \lVert x_i-\tilde{h}_i \rVert_2^2$. \COMMENT{Update local
+      vars using PDIP}
+    \STATE $h_k\leftarrow (1/S_k)\sum_{\mathscr{G}(i,j)=k} (x_i)_j
+    $. \COMMENT{Global update.}
+    \STATE $ u_i\leftarrow u_i + \rho (x_i-\tilde{h}_i)$. \COMMENT{Dual update}
+    \UNTIL {$\norm{h^{m+1}-h^m}_2^2\ < \epsilon$}
+    \STATE {\bf Return:} $h$.
+  \end{algorithmic}
+\end{algorithm}
 
 
-% The complete ADMM algorithm for estimating the variances is
-% represented in \autoref{alg:ADMM}. All the computations in the three
-% updating steps \eqref{eq:ADMM_steps} can be performed in parallel. The
-% number of rows and columns of the sub-cubes should be chosen so that
-% the updating of $x_i$ could be performed in one processor. We choose
-% $3\times3\times521$ sub-cubes. 
-
-% \begin{algorithm}[tb]
-%   \caption{ADMM for sparse estimation of variance of spatio-temporal
-%     data \attn{Fix this}}
-%   \label{alg:ADMM}
-%   \begin{algorithmic}
-%     \STATE {\bfseries Input:} data $y$, mapping $\mathscr{G}(i,j)$,
-%     $\rho,\lambda_t,\lambda_s$ 
-%     \STATE Initialization: $x_i^0=z^0=u_i^0=\textbf{0}$.
-%     \FOR{$m=1,2,...$ }
-%     \FOR{$i=1$ {\bfseries to} $N_{sub-cubes}$}
-%     \STATE compute $\nu_i$ from \eqref{eq:dual_x_update}
-%     \STATE compute $w_i$ from \eqref{eq:conj_x_update}
-%     \STATE set $x_i^m:=w_i$
-%     \ENDFOR
-%     \STATE Compute $z^m$ from  \eqref{eq:ADMM_steps}
-%     \STATE Compute $u_i^m$ from  \eqref{eq:ADMM_steps}
-%     \ENDFOR
-%   \end{algorithmic}
-% \end{algorithm}
 
 Because consensus ADMM breaks the large optimization into
 sub-problems that can be solved independently, it is amenable to a
@@ -621,11 +622,9 @@ z & \leftarrow \prox_{\rho g} \left(z + u\right) \label{eq:linADMM_steps}\\
 u & \leftarrow u + D x - z
 \end{align}
 where the algorithm parameters $\mu$ and $\rho$ satisfy $0 < \mu < \rho/\norm{D}_2^2$, $z,u\in \mathbb{R}^m$ and the proximal operator is defined as
-\begin{equation}
+$
  \prox_{\alpha f}(u) = \min_x \,\, \alpha \cdot f(x)+\frac{1}{2} \norm{ x-u}_2^2.
-\label{eq:linADMM_prox}
-\end{equation}
-
+$
 
 %Clearly, \eqref{eq:l1tf_var_st} has this form necessary for using this algorithm.
 % The optimization problem 
@@ -689,7 +688,7 @@ the same problem.
       u_k}{\mu}\quad k=1,\ldots TS$. \COMMENT{Primal update}
     \STATE $z\leftarrow S_{\rho\lambda}(u)$. \COMMENT{Elementwise soft thresholding}
     \STATE $u\leftarrow u + Dh-z$. \COMMENT{Dual update}
-    \UNTIL {$\max\{\norm{h-z}_2^2,\; \norm{z^{m+1}-z^m}_2^2\} < epsilon$}
+    \UNTIL {$\max\{\norm{h-z}_2^2,\; \norm{z^{m+1}-z^m}_2^2\} < \epsilon$}
     \STATE {\bf Return:} $z$.
   \end{algorithmic}
 \end{algorithm}
@@ -727,12 +726,11 @@ bell-shaped functions impose the spatial smoothness, and the linear
 trend and the periodic terms enforce the temporal smoothness similar
 to the seasonal component in the real climate data. We simulated the
 data on a 5 by 7 grid and for 780 time steps with $S=4$. 
-\attn{The
-parameters of the variance function are shown in
-\autoref{tab:sim_params} in the Supplement. For reference, we plot the
+Specific parameter choices of the variance function are shown in
+\autoref{tab:sim_params} in the Supplement. For illustration, we also plot the
 variance function for all locations at $t=25$ and $t=45$ in as well as
 the variance across time at $(0,0)$ in \autoref{fig:true_var_spatial}
-in Appendix C.}
+in the Supplement.
 
 We estimated the linearized ADMM for all combinations of values of
 $\lambda_t$ and $\lambda_s$ from the sets $\lambda_t \in
@@ -854,7 +852,7 @@ $\lambda_t=4$ and $\lambda_s=2$. All the analyses in the next section
 are performed on the solution for these values.  
 
 
-\paragraph{Analysis of trend of temperature volatility}
+\paragraph{Analysis of trend in temperature volatility}
 
 \begin{figure}[tb]
   \centering
@@ -907,9 +905,12 @@ particularly in south-east Asia.
 \autoref{fig:hist} shows the
 histogram of change in the estimated SD across the northern
 hemisphere. The SD in most locations on the northern
-hemisphere had a negative trend in this time period.  
-
-
+hemisphere had a negative trend in this time period, though spatially,
+this decreasing pattern is localized mainly toward the extreme
+northern latitudes and over oceans. In many ways, this is consistent
+with climate change predictions: oceans tend to operate as a local
+thermostat, regulating deviations in local temperature, while warming polar
+regions display fewer days of extreme cold.
 
 
 
@@ -944,20 +945,20 @@ to combine these two algorithms in the following way: the problem
 should be split into the sub-problems (as in the consensus ADMM) but
 each sub-problem can be solved using linearized ADMM. 
 
-\attn{We did not do this. Change the below.}
-We applied the linearized ADMM algorithm to the surface temperature
-data on a grid over the united states, for years 1992-2002. The
-results showed that in many locations the variance of the temperature
-has increased about 1 unit in 10 years. 
+% \attn{We did not do this. Change the below.}
+% We applied the linearized ADMM algorithm to the surface temperature
+% data on a grid over the united states, for years 1992-2002. The
+% results showed that in many locations the variance of the temperature
+% has increased about 1 unit in 10 years. 
 
-The goal of this paper, however, is not to make any conclusions about
-the trend in the variance because we solved the problem only for a
-grid over the united states and for 10 years of the data. A thorough
-analysis, needs the full solution over the globe and for a longer time
-period. The goal of the paper, was to propose the idea of estimating
-the trend in variance of spatio-temporal signals using generalized
-lasso and to investigate the algorithms for solving the resulting
-optimization problem. 
+% The goal of this paper, however, is not to make any conclusions about
+% the trend in the variance because we solved the problem only for a
+% grid over the united states and for 10 years of the data. A thorough
+% analysis, needs the full solution over the globe and for a longer time
+% period. The goal of the paper, was to propose the idea of estimating
+% the trend in variance of spatio-temporal signals using generalized
+% lasso and to investigate the algorithms for solving the resulting
+% optimization problem. 
 
 
  

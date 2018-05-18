@@ -1,4 +1,4 @@
-\begin{thebibliography}{26}
+\begin{thebibliography}{22}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -11,6 +11,12 @@ M.~S. Andersen, J.~Dahl, and L.~Vandenberghe.
 \newblock {CVXOPT}: {A} {Python} package for convex optimization, version 1.1.
   6.
 \newblock \emph{Available at cvxopt. org 54}, 2013.
+
+\bibitem[Besag(1974)]{besag1974spatial}
+J.~Besag.
+\newblock Spatial interaction and the statistical analysis of lattice systems.
+\newblock \emph{Journal of the Royal Statistical Society. Series B
+  (Methodological)}, pages 192--236, 1974.
 
 \bibitem[Boyd et~al.(2011)Boyd, Parikh, Chu, Peleato, and
   Eckstein]{boyd_distributed_2011}
@@ -27,6 +33,13 @@ R.~M. Corless, G.~H. Gonnet, D.~E.~G. Hare, D.~J. Jeffrey, and D.~E. Knuth.
 \newblock On the {LambertW} function.
 \newblock \emph{Advances in Computational Mathematics}, 5\penalty0
   (1):\penalty0 329--359, Dec. 1996.
+
+\bibitem[Engle(2002)]{engle2002dynamic}
+R.~Engle.
+\newblock Dynamic conditional correlation: A simple class of multivariate
+  generalized autoregressive conditional heteroskedasticity models.
+\newblock \emph{Journal of Business \& Economic Statistics}, 20\penalty0
+  (3):\penalty0 339--350, 2002.
 
 \bibitem[Fischer et~al.(2013)Fischer, Beyerle, and Knutti]{FischerBeyerle2013}
 E.~M. Fischer, U.~Beyerle, and R.~Knutti.
@@ -45,6 +58,12 @@ J.~Hansen, M.~Sato, and R.~Ruedy.
 \newblock Perception of climate change.
 \newblock \emph{Proceedings of the National Academy of Sciences}, 109\penalty0
   (37), Sept. 2012.
+
+\bibitem[Harvey et~al.(1994)Harvey, Ruiz, and Shephard]{HarveyRuiz1994}
+A.~Harvey, E.~Ruiz, and N.~Shephard.
+\newblock Multivariate stochastic variance models.
+\newblock \emph{The Review of Economic Studies}, 61\penalty0 (2):\penalty0
+  247--264, 1994.
 
 \bibitem[Hu et~al.(2015)Hu, Zeng, and Lin]{hu_dual_2015}
 Q.~Hu, P.~Zeng, and L.~Lin.
@@ -65,27 +84,11 @@ S.-J. Kim, K.~Koh, S.~Boyd, and D.~Gorinevsky.
 \newblock $\ell_1$ trend filtering.
 \newblock \emph{SIAM Review}, 51\penalty0 (2):\penalty0 339--360, 2009.
 
-\bibitem[Lin et~al.(2017)Lin, Sharpnack, Rinaldo, and
-  Tibshirani]{LinSharpnack2017}
-K.~Lin, J.~L. Sharpnack, A.~Rinaldo, and R.~J. Tibshirani.
-\newblock A sharp error analysis for the fused lasso, with application to
-  approximate changepoint screening.
-\newblock In I.~Guyon, U.~V. Luxburg, S.~Bengio, H.~Wallach, R.~Fergus,
-  S.~Vishwanathan, and R.~Garnett, editors, \emph{Advances in Neural
-  Information Processing Systems 30}, pages 6884--6893. Curran Associates,
-  Inc., 2017.
-
 \bibitem[Parikh and Boyd(2014)]{parikh_proximal_2014}
 N.~Parikh and S.~Boyd.
 \newblock Proximal {Algorithms}.
 \newblock \emph{Foundations and Trends® in Optimization}, 1\penalty0
   (3):\penalty0 127--239, Jan. 2014.
-
-\bibitem[Ramdas and Tibshirani(2016)]{RamdasTibshirani2016}
-A.~Ramdas and R.~J. Tibshirani.
-\newblock Fast and flexible admm algorithms for trend filtering.
-\newblock \emph{Journal of Computational and Graphical Statistics}, 25\penalty0
-  (3):\penalty0 839--858, 2016.
 
 \bibitem[Rhines and Huybers(2013)]{rhines_frequent_2013}
 A.~Rhines and P.~Huybers.
@@ -94,35 +97,11 @@ A.~Rhines and P.~Huybers.
 \newblock \emph{Proceedings of the National Academy of Sciences}, 110\penalty0
   (7):\penalty0 E546--E546, Feb. 2013.
 
-\bibitem[Sadhanala et~al.(2017)Sadhanala, Wang, Sharpnack, and
-  Tibshirani]{SadhanalaWang2017}
-V.~Sadhanala, Y.-X. Wang, J.~L. Sharpnack, and R.~J. Tibshirani.
-\newblock Higher-order total variation classes on grids: Minimax theory and
-  trend filtering methods.
-\newblock In I.~Guyon, U.~V. Luxburg, S.~Bengio, H.~Wallach, R.~Fergus,
-  S.~Vishwanathan, and R.~Garnett, editors, \emph{Advances in Neural
-  Information Processing Systems 30}, pages 5800--5810. Curran Associates,
-  Inc., 2017.
-
 \bibitem[Screen(2014)]{Screen2014}
 J.~A. Screen.
 \newblock Arctic amplification decreases temperature variance in northern mid-
   to high-latitudes.
 \newblock \emph{Nature Climate Change}, 4:\penalty0 577---582, 2014.
-
-\bibitem[Staten et~al.(2016)Staten, Kahn, Schreier, and
-  Heidinger]{StatenKahn2016}
-P.~W. Staten, B.~H. Kahn, M.~M. Schreier, and A.~K. Heidinger.
-\newblock Subpixel characterization of {HIRS} spectral radiances using cloud
-  properties from {AVHRR}.
-\newblock \emph{Journal of Atmospheric and Oceanic Technology}, 33\penalty0
-  (7):\penalty0 1519--1538, 2016.
-
-\bibitem[Tibshirani(1996)]{tibshirani_regression_1996}
-R.~Tibshirani.
-\newblock Regression {Shrinkage} and {Selection} via the {Lasso}.
-\newblock \emph{Journal of the Royal Statistical Society. Series B
-  (Methodological)}, 58\penalty0 (1):\penalty0 267--288, 1996.
 
 \bibitem[Tibshirani(2011)]{tibshirani_solution_2011}
 R.~J. Tibshirani.
@@ -133,12 +112,6 @@ R.~J. Tibshirani.
 R.~J. Tibshirani.
 \newblock Adaptive piecewise polynomial estimation via trend filtering.
 \newblock \emph{Annals of Statistics}, 42:\penalty0 285--323, 2014.
-
-\bibitem[Tibshirani and Taylor(2011)]{TibshiraniTaylor2011}
-R.~J. Tibshirani and J.~Taylor.
-\newblock The solution path of the generalized lasso.
-\newblock \emph{Annals of Statistics}, 39\penalty0 (3):\penalty0 1335--1371,
-  2011.
 
 \bibitem[Tibshirani and Taylor(2012)]{tibshirani_degrees_2012}
 R.~J. Tibshirani and J.~Taylor.
@@ -153,13 +126,6 @@ K.~E. Trenberth, Y.~Zhang, J.~T. Fasullo, and S.~Taguchi.
   radiation and temperatures on earth.
 \newblock \emph{Journal of Geophysical Research: Atmospheres}, 120\penalty0
   (9):\penalty0 3642--3659, 2014.
-
-\bibitem[Uppala et~al.(2005)Uppala, KÅllberg, Simmons, Andrae, and
-  al]{uppala_era-40_2005}
-S.~M. Uppala, P.~W. KÅllberg, A.~J. Simmons, U.~Andrae, and e.~al.
-\newblock The {ERA}-40 re-analysis.
-\newblock \emph{Quarterly Journal of the Royal Meteorological Society},
-  131\penalty0 (612):\penalty0 2961--3012, Oct. 2005.
 
 \bibitem[Vasseur et~al.(2014)Vasseur, DeLong, Gilbert, Greig, Harley, McCann,
   Savage, Tunney, and O{\textquoteright}Connor]{VasseurDeLong2014}
