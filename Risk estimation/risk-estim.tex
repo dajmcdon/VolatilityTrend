@@ -1,0 +1,192 @@
+\documentclass[11pt]{article}
+
+% Include statements
+\usepackage{graphicx}
+\usepackage{amsfonts,amssymb,amsmath,amsthm}
+\usepackage[numbers,square,sort]{natbib}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,nohead]{geometry}
+\usepackage{pdfsync}
+\usepackage{multirow}
+\usepackage{enumitem}
+\setlist{nosep}
+\usepackage{hyperref}
+\hypersetup{backref,colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue}
+\usepackage{algorithm,algorithmic}
+% \SetKw{KwSet}{Set}
+% \SetKw{KwSolve}{Solve}
+\def\algorithmautorefname{Algorithm}
+
+\usepackage{titlesec}
+\titlespacing\section{0pt}{6pt plus 4pt minus 2pt}{6pt plus
+  4pt minus 2pt}
+\titlespacing\subsection{0pt}{6pt plus 4pt minus 2pt}{6pt plus
+  4pt minus 2pt}
+\titlespacing\paragraph{0pt}{6pt plus 4pt minus 2pt}{2pt plus
+  2pt minus 0pt}
+
+
+\usepackage[showonlyrefs]{mathtools}
+%\usepackage{autonum}
+
+% Bibliography
+
+\renewcommand*{\figureautorefname}{Figure}%
+\renewcommand*{\tableautorefname}{Table}%
+\renewcommand*{\partautorefname}{Part}%
+\renewcommand*{\chapterautorefname}{Chapter}%
+\renewcommand*{\sectionautorefname}{Section}%
+\renewcommand*{\subsectionautorefname}{Section}%
+\renewcommand*{\subsubsectionautorefname}{Section}% 
+
+
+% Macros
+\DeclareMathOperator*{\argmin}{argmin}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\one}{\mathbf{1}}
+%\renewcommand{\S}{\mathcal{S}}
+\newcommand{\Expect}[1]{\E\left[#1\right]}
+\newcommand{\given}{\mbox{ }\vert\mbox{ }}
+\renewcommand{\hat}{\widehat}
+\DeclareMathOperator*{\trace}{tr}
+\DeclareMathOperator*{\diag}{diag}
+\renewcommand{\tilde}{\widetilde}
+\newcommand{\Expectwrt}[2]{\mathbb{E}_{ #1 }\left[ #2 \right]}
+\usepackage{xspace}
+\makeatletter
+\newcommand*{\iid}{%
+    \@ifnextchar{.}%
+        {i.i.d.}%
+        {i.i.d.\@\xspace}%
+}
+\makeatother
+
+\newcommand{\Pnd}{P_{\mathcal{N}(D)}}
+
+
+
+\newtheorem{result}{Result}
+\newtheorem{theorem}{Theorem}[result]
+\renewcommand*{\sectionautorefname}{Section}%
+
+\renewcommand{\P}{\mathbb{P}}
+\DeclareMathOperator*{\argmax}{argmax}
+\def\indep{\perp\!\!\!\perp}
+
+\newcommand{\makeHeader}{\begin{center} 
+DJM \hfill Risk estimation for Gen-Gen Lasso \hfill \today
+
+
+\rule{\textwidth}{1pt}
+\end{center}
+}
+
+
+\begin{document}
+\makeHeader
+
+
+This document combines a number of threads for model selection in our
+problem (and other related optimization problems). First, we consider
+estimating the degrees of freedom. Then we give two results which can
+be used to select models.
+
+\section{Degrees of freedom for Gen-Gen Lasso}
+\label{sec:degrees-freedom-gen}
+
+Suppose we are minimizing the negative log likelihood from a natural
+exponential family subject to the generalized lasso penalty. That is,
+given $Y_i \sim p(y \given \eta_i(\tau))$ for $\tau \in \R^p$, $i=1,\ldots,n$, our goal is to solve
+\begin{equation}
+  \label{eq:1}
+  \hat\tau = \argmin_\tau \sum_{i=1}^n \phi(\eta_i(\tau)) - \langle y_i,\
+  \eta_i(\tau)\rangle + \lambda\norm{D\tau}_1,
+\end{equation}
+where $D\in \R^{q\times p}$.
+
+This generalizes the various standard models. For example,
+$\ell_1$-trend filtering has $\phi(x) = x^2/2$, $\eta_i(x)=x_i$, and
+$D$ the first-order discrete difference operator. Variance estimation
+in our context has $\phi(x) = x$, $y_i = z^2_i$ (where $z_i\sim
+N(0,\exp(-h)$) and $\eta_i(x) = -e^{-\tau_i}$. Logistic loss also
+falls into this category.
+
+We first consider the case that $\eta_i(\tau) = \eta_i(\tau_i)$, i.e.,
+$\tau \in \R^n$ and $p(y_i \given \tau) = p(y_i \given \tau_i)$.
+
+\begin{theorem}
+  The divergence of $\hat\tau(y)$ is given by
+  \begin{equation}
+    \label{eq:2}
+    \trace\left(D \hat\tau(y)\right) = -\Pnd \left(\Pnd
+      \diag\left(\frac{d^2}{d\tau_i^2}\ell
+        \vert_{y_i,\hat{\eta}_i}\right) \Pnd\right)^\dagger \Pnd
+      \diag\left(\frac{d^2}{d\tau_i d y_i} \ell \vert_{y_i,\hat{\eta}_i}\right),
+    \end{equation}
+    where $\ell = \ell(y,\eta(\tau_i)) = \sum_{i=1}^n \phi(\eta_i(\tau_i)) - \langle y_i,\
+    \eta_i(\tau_i)\rangle$, $\hat{\eta_i} = \eta_i(\hat\tau_i)$, and 
+    \begin{equation}
+      \label{eq:3}
+      \Pnd = I_n - D_S^\top (D_S^\top D_S)^\dagger D_S
+    \end{equation}
+    is the projection onto the null-space of $D_S$, where $S = \{j \in
+    [q] : D\hat\tau = 0\}$, and the notation $D_S$ means the rows of
+    $D$ whose indices are in $S$.
+\end{theorem}
+
+
+\paragraph{Special cases:}
+\begin{enumerate}
+\item If we are interested in the natural exponential family (that is
+  $\eta_i(\tau_i)=\tau_i$), then $\frac{d^2}{d\tau_i d y_i} \ell = -1$
+  and $\frac{d^2}{d\tau_i^2}\phi_i(\eta_i(\tau_i)) = \textrm{Var}[y_i]$.
+\item For Gaussian likelihood, $\frac{d^2}{d\tau_i^2}\ell = 1$
+  and $\frac{d^2}{d\tau_i d y_i} \ell = -1$, so the divergence is the
+  dimension of $\mathcal{N}(D_S)$ as shown in
+  \citet{TibshiraniTaylor2012}. 
+\item For logistic loss, $\frac{d^2}{d\tau_i^2}\ell =
+  e^{\tau_i}/(1+e^{\tau_i})^2$ and 
+  $\frac{d^2}{d\tau_i d y_i} \ell = -1$.
+\item For the case of variance estimation, we have $\frac{d^2}{d\tau_i^2}\ell =
+  y^2_ie^{-h}$ and 
+  $\frac{d^2}{d\tau_i d y_i} \ell = -e^{-h}$.
+\end{enumerate}
+
+Now we generalize to the regression setting. Define
+$\mu_i = x_i^\top \beta$. Furthermore, write
+\begin{equation}
+  \label{eq:4}
+  \hat\beta = \argmin_\tau \sum_{i=1}^n \phi(\mu_i(\beta)) - \langle y_i,\
+  \mu_i(\beta)\rangle + \lambda\norm{D\beta}_1.
+\end{equation}
+
+
+\begin{theorem}
+  The divergence of $\hat\mu(y)$ is given by
+  \begin{equation}
+    \label{eq:5}
+    \trace\left(D \hat\mu(y)\right) = -X_P \left(X^\top_P
+      \diag\left(\frac{d^2}{d\mu_i^2}\ell
+        \vert_{y_i,\hat{\mu}_i}\right) X_P\right)^\dagger X^\top_P
+      \diag\left(\frac{d^2}{d\mu_i d y_i} \ell \vert_{y_i,\hat{\mu}_i}\right),
+    \end{equation}
+    where $\ell = \ell(y,\eta(\mu_i)) = \sum_{i=1}^n \phi(\eta_i(\mu_i)) - \langle y_i,\
+    \mu_i\rangle$, $\hat{\eta_i} = \eta_i(x_i^\top\hat\beta)$, and 
+    \begin{equation}
+      \label{eq:6}
+      X_P =( I_n - D_S^\top (D_S^\top D_S)^\dagger D_S) X
+    \end{equation}
+    is the projection of $X$ onto the null-space of $D_S$.
+\end{theorem}
+
+\begin{proof}
+  This follows mainly from Theorem 2 in~\citep{VaiterDeledalle2017},
+  though the conditions are non-trivial. To be expanded.
+\end{proof}
+
+
+\bibliographystyle{mybibsty}
+\bibliography{AllReferences}
+\end{document}
+
