@@ -25,7 +25,7 @@
   2pt minus 0pt}
 
 
-\usepackage[showonlyrefs]{mathtools}
+
 %\usepackage{autonum}
 
 % Bibliography
@@ -50,6 +50,7 @@
 \newcommand{\given}{\mbox{ }\vert\mbox{ }}
 \renewcommand{\hat}{\widehat}
 \DeclareMathOperator*{\trace}{tr}
+\DeclareMathOperator*{\Cov}{Cov}
 \DeclareMathOperator*{\diag}{diag}
 \renewcommand{\tilde}{\widetilde}
 \newcommand{\Expectwrt}[2]{\mathbb{E}_{ #1 }\left[ #2 \right]}
@@ -62,17 +63,35 @@
 }
 \makeatother
 
-\newcommand{\Pnd}{P_{\mathcal{N}(D)}}
+\newcommand{\Pnd}{P_{\mathcal{N}(G)}}
 
 
 
-\newtheorem{result}{Result}
-\newtheorem{theorem}{Theorem}[result]
-\renewcommand*{\sectionautorefname}{Section}%
+
+\usepackage{aliascnt}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newaliascnt{lemma}{theorem}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+\providecommand*{\lemmaautorefname}{Lemma}
+\newaliascnt{cor}{theorem}
+\newtheorem{corollary}[cor]{Corollary}
+\aliascntresetthe{cor}
+\providecommand*{\corautorefname}{Corollary}
+\newaliascnt{def}{theorem}
+\newtheorem{definition}[def]{Definition}
+\aliascntresetthe{def}
+\providecommand*{\defautorefname}{Definition}
+\newtheorem{example}{Example}
 
 \renewcommand{\P}{\mathbb{P}}
 \DeclareMathOperator*{\argmax}{argmax}
 \def\indep{\perp\!\!\!\perp}
+
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs}
+
 
 \newcommand{\makeHeader}{\begin{center} 
 DJM \hfill Risk estimation for Gen-Gen Lasso \hfill \today
@@ -95,89 +114,107 @@ be used to select models.
 \section{Degrees of freedom for Gen-Gen Lasso}
 \label{sec:degrees-freedom-gen}
 
-Suppose we are minimizing the negative log likelihood from a natural
-exponential family subject to the generalized lasso penalty. That is,
-given $Y_i \sim p(y \given \eta_i(\tau))$ for $\tau \in \R^p$, $i=1,\ldots,n$, our goal is to solve
+Consider a random vector $Y \in \R^n$ with distribution in the
+exponential family with independent
+components. Specifically, write the density of $Y$ as
+\begin{equation}
+  \label{eq:4}
+  p(Y \given \theta) = \left(\prod_{i=1}^n h(y_i)\right)\exp\left\{
+    \sum_{i=1}^n w(y_i) \mu_i(\theta) -\psi_i(\theta) \right\}.
+\end{equation}
+We will consider estimation of $\theta$ subject to the generalized lasso penalty. That is,
+our goal is to solve 
 \begin{equation}
   \label{eq:1}
-  \hat\tau = \argmin_\tau \sum_{i=1}^n \phi(\eta_i(\tau)) - \langle y_i,\
-  \eta_i(\tau)\rangle + \lambda\norm{D\tau}_1,
+  \hat\theta(y) = \argmin_\theta \ell(y | \theta) +
+  \lambda\norm{G\theta}_1 = \argmin_\theta\sum_{i=1}^n \psi_i(\theta) - w(y_i)\mu_i(\theta) + \lambda\norm{G\theta}_1,
 \end{equation}
-where $D\in \R^{q\times p}$.
+where $G\in \R^{q\times p}$ and $\theta\in\R^p$.
 
-This generalizes the various standard models. For example,
-$\ell_1$-trend filtering has $\phi(x) = x^2/2$, $\eta_i(x)=x_i$, and
-$D$ the first-order discrete difference operator. Variance estimation
-in our context has $\phi(x) = x$, $y_i = z^2_i$ (where $z_i\sim
-N(0,\exp(-h)$) and $\eta_i(x) = -e^{-\tau_i}$. Logistic loss also
-falls into this category.
+This generalizes many standard models. For example,
+$\ell_1$-trend filtering has $p=n$, $\psi_i(x) = x_i^2/2$,
+$\mu_i(x)=x_i$, $w(x)=2$, and
+$G$ the first-order discrete difference operator. Variance estimation
+in our context has $\psi_i(x) = x_i$, $w(x) = y^2_i$ and $\mu_i(x) = e^{-x_i}$. Logistic loss also
+falls into this category. We use $G$ rather than the more common
+choice of $D$ to avoid confusion with the differential operator that
+we will require below.
 
-We first consider the case that $\eta_i(\tau) = \eta_i(\tau_i)$, i.e.,
-$\tau \in \R^n$ and $p(y_i \given \tau) = p(y_i \given \tau_i)$.
+\paragraph{Notation} For a vector-valued function $f:\R^p\rightarrow
+\R^q$, we use the notation $Df$ to denote the Jacobian matrix
+and $\nabla f$ to be the gradient. 
+
+
+
+We first consider the case that $\theta \in\R^n$ and that $\psi_i$ and
+$\mu_i$ operate component-wise on
+$\theta$. That is $p(y \given \theta) = \prod_{i=1}^n p(y_i \given \theta_i)$.
 
 \begin{theorem}
-  The divergence of $\hat\tau(y)$ is given by
+\label{thm:simple-divergence}
+  Suppose $p(y \given \theta) = \prod_{i=1}^n p(y_i \given \theta_i)$
+  and that $\hat{\theta}$ is a solution of \eqref{eq:1}. Then, the
+  divergence of $\hat\theta(y)$ is given by 
   \begin{equation}
     \label{eq:2}
-    \trace\left(D \hat\tau(y)\right) = -\Pnd \left(\Pnd
-      \diag\left(\frac{d^2}{d\tau_i^2}\ell
-        \vert_{y_i,\hat{\eta}_i}\right) \Pnd\right)^\dagger \Pnd
-      \diag\left(\frac{d^2}{d\tau_i d y_i} \ell \vert_{y_i,\hat{\eta}_i}\right),
+    \trace\left(D \hat\theta(y)\right) = -\Pnd \left(\Pnd
+      \diag\left(\frac{d^2}{d\theta_i^2}\ell
+        \bigg\vert_{y_i,\hat{\theta}_i}\right) \Pnd\right)^\dagger \Pnd
+      \diag\left(\frac{d^2}{d\theta_i d y_i} \ell \bigg\vert_{y_i,\hat{\theta}_i}\right),
     \end{equation}
-    where $\ell = \ell(y,\eta(\tau_i)) = \sum_{i=1}^n \phi(\eta_i(\tau_i)) - \langle y_i,\
-    \eta_i(\tau_i)\rangle$, $\hat{\eta_i} = \eta_i(\hat\tau_i)$, and 
+    where 
     \begin{equation}
       \label{eq:3}
-      \Pnd = I_n - D_S^\top (D_S^\top D_S)^\dagger D_S
+      \Pnd = I_n - G_S^\top (G_S^\top G_S)^\dagger G_S
     \end{equation}
-    is the projection onto the null-space of $D_S$, where $S = \{j \in
-    [q] : D\hat\tau = 0\}$, and the notation $D_S$ means the rows of
-    $D$ whose indices are in $S$.
+    is the projection onto the null-space of $G_S$, where $S = \{j \in
+    [q] : G\hat\theta = 0\}$, and the notation $G_S$ means the rows of
+    $G$ whose indices are in $S$.
 \end{theorem}
 
 
 \paragraph{Special cases:}
 \begin{enumerate}
 \item If we are interested in the natural exponential family (that is
-  $\eta_i(\tau_i)=\tau_i$), then $\frac{d^2}{d\tau_i d y_i} \ell = -1$
-  and $\frac{d^2}{d\tau_i^2}\phi_i(\eta_i(\tau_i)) = \textrm{Var}[y_i]$.
-\item For Gaussian likelihood, $\frac{d^2}{d\tau_i^2}\ell = 1$
-  and $\frac{d^2}{d\tau_i d y_i} \ell = -1$, so the divergence is the
-  dimension of $\mathcal{N}(D_S)$ as shown in
+  $\mu_i(\theta)=\theta_i$ and $w(y_i)=y_i$), then $\frac{d^2}{d\theta_i d y_i} \ell = -1$
+  and $\frac{d^2}{d\theta_i^2}\psi_i(\theta_i) = \textrm{Var}[Y_i]$.
+\item In particular, if $p(y_i \given \theta_i) = \mbox{N}(\theta_i, \sigma^2)$, then $\frac{d^2}{d\theta_i^2}\ell = \sigma^2$
+  and $\frac{d^2}{d\tau_i d y_i} \ell = -1$, so the divergence is
+  $\sigma^2$ times the
+  dimension of $\mathcal{N}(G_S)$ as shown in
   \citet{TibshiraniTaylor2012}. 
-\item For logistic loss, $\frac{d^2}{d\tau_i^2}\ell =
-  e^{\tau_i}/(1+e^{\tau_i})^2$ and 
+\item For logistic loss, $\frac{d^2}{d\theta_i^2}\ell =
+  e^{\theta_i}/(1+e^{\theta_i})^2$ and 
   $\frac{d^2}{d\tau_i d y_i} \ell = -1$.
-\item For the case of variance estimation, we have $\frac{d^2}{d\tau_i^2}\ell =
-  y^2_ie^{-h}$ and 
-  $\frac{d^2}{d\tau_i d y_i} \ell = -e^{-h}$.
+\item For the case of variance estimation, we have $\frac{d^2}{d\theta_i^2}\ell =
+  y^2_ie^{-\theta}$ and 
+  $\frac{d^2}{d\theta_i d y_i} \ell = -e^{-\theta}$.
 \end{enumerate}
 
 Now we generalize to the regression setting. Define
-$\mu_i = x_i^\top \beta$. Furthermore, write
+$\theta_i = x_i^\top \beta$, $\beta \in \R^p$. And let
 \begin{equation}
-  \label{eq:4}
-  \hat\beta = \argmin_\tau \sum_{i=1}^n \phi(\mu_i(\beta)) - \langle y_i,\
-  \mu_i(\beta)\rangle + \lambda\norm{D\beta}_1.
+  \label{eq:7}
+   \hat\beta(y) = \argmin_\beta \sum_{i=1}^n \psi_i(x_i^\top \beta) -
+   w(y_i)\mu_i(x_i^\top \beta) + \lambda\norm{G\beta}_1,
 \end{equation}
 
-
 \begin{theorem}
-  The divergence of $\hat\mu(y)$ is given by
+\label{thm:regression-divergence}
+  The divergence of $\hat\theta(y) := X\hat\beta(y)$ is given by
   \begin{equation}
     \label{eq:5}
-    \trace\left(D \hat\mu(y)\right) = -X_P \left(X^\top_P
-      \diag\left(\frac{d^2}{d\mu_i^2}\ell
-        \vert_{y_i,\hat{\mu}_i}\right) X_P\right)^\dagger X^\top_P
-      \diag\left(\frac{d^2}{d\mu_i d y_i} \ell \vert_{y_i,\hat{\mu}_i}\right),
+    \trace\left(D \hat\theta(y)\right) = -X_P \left(X^\top_P
+      \diag\left(\frac{d^2}{d\theta_i^2}\ell
+        \bigg\vert_{y_i,\hat{\theta}_i}\right) X_P\right)^\dagger X^\top_P
+      \diag\left(\frac{d^2}{d\theta_i d y_i} \ell \bigg\vert_{y_i,\hat{\theta}_i}\right),
     \end{equation}
-    where $\ell = \ell(y,\eta(\mu_i)) = \sum_{i=1}^n \phi(\eta_i(\mu_i)) - \langle y_i,\
-    \mu_i\rangle$, $\hat{\eta_i} = \eta_i(x_i^\top\hat\beta)$, and 
+    where 
     \begin{equation}
       \label{eq:6}
-      X_P =( I_n - D_S^\top (D_S^\top D_S)^\dagger D_S) X
+      X_P =( I_n - G_S^\top (G_S^\top G_S)^\dagger G_S) X
     \end{equation}
-    is the projection of $X$ onto the null-space of $D_S$.
+    is the projection of $X$ onto the null-space of $G_S$.
 \end{theorem}
 
 \begin{proof}
@@ -185,6 +222,214 @@ $\mu_i = x_i^\top \beta$. Furthermore, write
   though the conditions are non-trivial. To be expanded.
 \end{proof}
 
+
+\section{Risk estimation}
+\label{sec:risk-estimation}
+
+If $Y \sim \mbox{N}(\theta, \sigma^2)$, a now common method of risk
+estimation makes use of Stein's Lemma.
+\begin{lemma}[Stein's Lemma]
+  Assume $f(Y)$ is weakly differentiable with essentially
+  bounded weak partial derivatives on $\R^n$, then
+  \begin{equation}
+    \label{eq:8}
+    \trace \Cov(Y,f(Y)) = \Expect{\left\langle Y,\ f(Y)\right\rangle} = \sigma^2\Expect{\trace Df(Y) \bigg\vert_y }.
+  \end{equation}
+\end{lemma}
+The utility of this result comes from examining the decomposition of
+the mean squared error of $f(Y)$ as an estimator of $\theta$.
+\begin{align}
+  \label{eq:9}
+  \Expect{\norm{\theta-f(Y)}_2^2} 
+  &= \Expect{\norm{Y-f(Y)}} -n\sigma^2 + 2
+    \trace\Cov(Y,f(Y))\\
+  &= \Expect{\norm{Y-f(Y)}} -n\sigma^2 + 2\sigma^2
+    \Expect{\trace Df(y) \bigg\vert_Y} .
+\end{align}
+This characterization motivates the definition of degrees-of-freedom
+for linear predictors ($\textrm{df} :=\frac{1}{\sigma^2} \trace
+Df(y)\big\vert_Y$)~\citep{efron1986biased}, where $f(y)=Hy$. Using 
+Stein's Lemma, assuming $\sigma^2$ is known, we have Stein's Unbiased
+Risk Estimator
+\begin{equation}
+  \label{eq:10}
+  SURE_\theta = \norm{Y-f(Y)} -n\sigma^2 + 2\sigma^2\trace Df(y) \bigg\vert_y.
+\end{equation}
+Note that this is a risk for estimating the $n$-dimensional parameter $\theta$.
+
+The following result generalizes this idea to certain continuous
+exponential families.
+\begin{lemma}[Generalized Stein Lemma~\citep{Eldar2009}]
+  \label{thm:g-stein-lemma}
+  Assume $f(Y)$ is weakly differentiable with essentially
+  bounded weak partial derivatives on $\R^n$. Let $Y$ be distributed
+  according to a natural exponential family
+  \begin{equation}
+    \label{eq:11}
+    p(Y \given \beta) = \left(\prod_{i=1}^n h(y_i)\right)\exp\left\{
+    \sum_{i=1}^n y_i \theta_i(\beta_i) -\psi(\beta_i) \right\},
+  \end{equation}
+  and assume that $h$ is weakly differentiable and that $\theta_i$ is
+  one-to-one. Then,
+  \begin{equation}
+    \label{eq:12}
+    \Expect{\left\langle \theta(\beta),\ f(Y)\right\rangle} = - \Expect{
+      \left\langle\frac{\nabla h(Y)}{h(Y)},\ f(Y)\right\rangle + \trace Df(y) \bigg\vert_Y}.
+  \end{equation}
+Note that $\nabla h(Y)$ here means the vector $[d/dy h(y)
+\vert_{y_i}]$ and $h(Y)$ means the vector $[h(y_i)]$.
+\end{lemma}
+Therefore we define the Generalized SURE~\citep{Eldar2009} along the lines of the multivariate Gaussian case.
+\begin{lemma}
+  \label{lem:gsure}
+  Assume $h$ and $\nabla h$ are weakly differentiable, $\theta_i$ is one-to-one,
+  $f(Y)$ is weakly differentiable with essentially bounded partial
+  derivatives and that $p(Y\given\beta)$ is as in \eqref{eq:11}. Then
+  \begin{equation}
+    \label{eq:13}
+    GSURE_{\theta} = \norm{f(Y)}^2_2 + 2 \left\langle\frac{\nabla
+        h(Y)}{h(Y)},\ f(Y)\right\rangle + 2\trace Df(y) \bigg\vert_Y +
+    \frac{1}{h(Y)} \trace \frac{\partial^2 h(y)}{\partial y^2}\bigg\vert_Y
+  \end{equation}
+  is an unbiased estimator for the MSE of an estimator $f(Y)$ of
+  $\theta$: $\Expect{\norm{f(Y) - \theta(\beta)}_2^2}$.
+\end{lemma}
+
+\begin{proof}
+  We have
+  \begin{align}
+    \label{eq:14}
+    \Expect{\norm{f(Y) - \theta(\beta)}_2^2} 
+    &= \Expect{\norm{f(Y)}_2^2} + \Expect{\norm{\theta}_2^2} -
+      2\Expect{\left\langle \theta(\beta),\ f(Y)\right\rangle}.
+  \end{align}
+  Now, the first term is a function of the data only, and to the last term, we simply apply
+  \autoref{thm:g-stein-lemma}. For the second term,
+  \begin{align}
+    \Expect{\norm{\theta}_2^2} 
+    &=\Expect{\langle \theta,\ \theta \rangle}
+     = -\Expect{\left\langle\frac{\nabla h(Y)}{h(Y)},\ \theta\right\rangle}\\ 
+    &= \Expect{\left\langle\frac{\nabla h(Y)}{h(Y)},\
+      \frac{\nabla h(Y)}{h(Y)}\right\rangle} + \Expect{\trace
+      \frac{\partial}{\partial y} \frac{\nabla h(y)}{h(y)}
+      \bigg\vert_Y}\\
+    &= \Expect{\frac{\norm{\nabla h(Y)}_2^2}{h(Y)^2}} + \Expect{\trace
+      \frac{\norm{\nabla h(Y)}_2^2 +h(Y) \partial^2/\partial y^2 h(y)\big\vert_Y} 
+      {h(Y)^2}}\\ 
+    &=\Expect{ \frac{1}{h(Y)} \trace \frac{\partial^2 h(y)}{\partial y^2}\bigg\vert_Y},
+  \end{align}
+  by applying \autoref{thm:g-stein-lemma} twice along with the
+  quotient rule.
+\end{proof}
+
+\begin{theorem}
+  Let $Y_i \sim N(0, e^{x_i})$. Consider estimating $x$ by solving
+  \begin{equation}
+    \label{eq:15}
+    \min_h \sum_{i=1}^n x_i + y_i^2e^{-x_i} + \lambda \norm{Gx}_1.
+  \end{equation}
+  Then an unbiased estimator of $\Expect{\norm{\frac{1}{2e^x} -
+      \frac{1}{2e^{\hat x}}}}_2^2$ is given by
+  \begin{equation}
+    \label{eq:16}
+    \norm{\frac{1}{2e^{\hat x}}}_2^2 - \frac{1}{2}\left\langle
+      \frac{1}{y^2},\ \frac{1}{e^{\hat x}}\right\rangle + 2 \Pnd \left(\Pnd
+      \diag\left(y^2e^{-\hat x}\right) \Pnd\right)^\dagger \Pnd
+      \diag\left( e^{-\hat x}\right) + \frac{3}{4y^4},
+  \end{equation}
+where $\Pnd$ is as in \eqref{eq:3}.
+\end{theorem}
+
+\begin{proof}
+  Define $z_i := y_i^2$ and $\theta_i = -\frac{1}{2e^{x_i}}$. Then
+  \begin{align}
+    \label{eq:17}
+    p(z_i \given x_i) 
+    &= \frac{1}{\sqrt{2\pi z_i e^{x_i}}} \exp\left\{-\frac{1}{2}
+      \frac{z_i}{e^{x_i}}\right\}\one_{(0,\infty)}(z_i)\\
+    &= \frac{1}{\sqrt{\pi z}}\one_{(0,\infty)}(z_i) \exp\left\{z_i \cdot
+      \left(-\frac{1}{2e^{x_i}}\right) -
+      \left(-\frac{1}{2}\log\left(\frac{1}{2 e^{x_i}}\right)
+      \right)\right\}\\
+    &= \frac{1}{\sqrt{\pi z}}\one_{(0,\infty)}(z_i)
+      \exp\left\{z_i\cdot \theta_i - \psi(\theta_i)\right\},
+  \end{align}
+  which is a natural exponential family with $\psi(t) =
+  -\frac{1}{2}\log(-t)$ and $h(t) = \frac{1}{\sqrt{\pi t}}
+  \one_{(0,\infty)}(t)$. Therefore, $d/dt \log h(t) = -1/(2t)$ and
+  $(d^2/dt^2 h(t))/h(t) = 3 / (4t^2)$. Finally, we have $\frac{d^2}{d\theta_i^2}\ell =
+  y^2_ie^{-\theta}$ and 
+  $\frac{d^2}{d\theta_i d y_i} \ell = -e^{-\theta}$. The result
+  follows from \autoref{thm:simple-divergence} and \autoref{lem:gsure}.
+
+\end{proof}
+
+An alternate model selection technique is to examine the
+Kullback-Leibler Divergence between the density under
+$\theta=\hat\theta(Y)$ and that under $\theta=\theta$:
+$\Expect{KL(p(Y\given \hat\theta(Y)) \Vert p(Y\given \theta))}$. For
+exponential families, we have
+\begin{equation}
+\Expect{KL(\hat\theta(Y) \Vert 
+  \theta)} = \Expect{KL(p(Y\given \hat\theta(Y)) \Vert p(Y\given
+  \theta))} = \left\langle \hat\theta(Y)-\theta,\ \nabla
+  \psi(\hat\theta(Y))\right\rangle + \psi(\theta) - \psi(\hat\theta(Y)).
+\end{equation}
+
+An application of \autoref{thm:g-stein-lemma} thus provides an
+unbiased estimator of this quantity~\citep{Deledalle2017}.
+\begin{lemma} 
+  \label{lem:sukls}
+  Assume $h$ and $\nabla h$ are weakly differentiable, $\theta_i$ is one-to-one,
+  $f(Y)$ is weakly differentiable with essentially bounded partial
+  derivatives and that $p(Y\given\beta)$ is as in \eqref{eq:11}. Then
+  \begin{equation}
+    SUKLS = \left\langle \hat\theta + \frac{\nabla h(Y)}{h(Y)},\
+      \nabla \psi(\hat\theta(Y))\right\rangle + \trace Df(y) \bigg\vert_Y
+    - \psi(\hat\theta(Y))
+  \end{equation}
+  is unbiased for $\Expect{KL(\hat\theta(Y) \Vert
+  \theta)} - \psi(\theta)$.
+\end{lemma}
+
+\begin{corollary}
+   Let $Y_i \sim N(0, e^{x_i})$. Consider estimating $x$ by solving
+  \begin{equation}
+    \label{eq:15}
+    \min_h \sum_{i=1}^n x_i + y_i^2e^{-x_i} + \lambda \norm{Gx}_1.
+  \end{equation}
+  Then an unbiased estimator of $\Expect{KL(\hat x \Vert
+    x} - \psi(\theta)$ is given by
+  \begin{equation}
+    \label{eq:18}
+    -\frac{n}{2} - \left\langle \frac{1}{2y^2},\ e^{\hat
+        x}\right\rangle + 
+    -\frac{1}{2}\log\left(2e^{\hat
+        x_i}\right) + \Pnd \left(\Pnd
+      \diag\left(y^2e^{-\hat x}\right) \Pnd\right)^\dagger \Pnd
+      \diag\left( e^{-\hat x}\right). 
+  \end{equation}
+\end{corollary}
+\begin{proof}
+  As $\hat \theta_i = -\frac{1}{2e^{\hat x_i}}$, 
+  \[
+    \psi(\hat\theta_i) = -\frac{1}{2}\log\left(\frac{1}{2e^{\hat
+          x_i}}\right)
+  \]
+  and $d/d\theta \psi(\theta) = -\frac{1}{2\theta}$. Thus
+  \begin{align}
+    SUKLS 
+    &= \left\langle -\frac{1}{2e^{\hat x}} - \frac{1}{2y^2},\ e^{\hat
+      x}\right\rangle + \trace Df(y) \bigg\vert_Y
+      +\frac{1}{2}\log\left(\frac{1}{2e^{\hat
+      x_i}}\right)\\
+    &= -\frac{n}{2} - \left\langle \frac{1}{2y^2},\ e^{\hat
+      x}\right\rangle + \trace Df(y) \bigg\vert_Y
+      -\frac{1}{2}\log\left(2e^{\hat
+      x_i}\right).
+  \end{align}
+NOTE: I think some signs are wrong here.
+\end{proof}
 
 \bibliographystyle{mybibsty}
 \bibliography{AllReferences}
