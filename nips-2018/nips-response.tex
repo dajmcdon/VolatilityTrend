@@ -1,0 +1,95 @@
+\documentclass[11pt]{article}
+% Include statements
+\usepackage{graphicx}
+\usepackage{amsfonts,amssymb,amsmath,amsthm}
+\usepackage[numbers,square]{natbib}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,nohead]{geometry}
+\usepackage{pdfsync}
+\usepackage{hyperref}
+\hypersetup{backref,colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+% Bibliography
+\bibliographystyle{mybibsty}
+
+% Theorem environments
+\newcommand{\email}[1]{\href{mailto:#1}{#1}}
+
+\title{Author response: NIPS 2018, Paper 3656}
+\author{Modeling trend in temperature volatility using generalized
+  LASSO}
+\date{\today}
+
+
+\begin{document}
+\noindent {\bf Author response: NIPS 2018, Paper 3656\\}
+Modeling trend in temperature volatility using generalized
+  LASSO\\
+\today
+
+\hspace{10pt}
+
+We wish to thank the reviewers for their careful and well-informed
+comments. We are especially grateful for the literature suggestions
+given by reviewer 1. The Gibberd et al.\ (2017) and Monti et al.\ (2014) papers especially deserve
+mention in our paper, and neither was familier to us. Both take a similar approach to ours, and while
+different in a number of key ways, deserve a more careful discussion
+than can be provided here. In particular, we should, at minimum, try
+their algorithms or give reasons why we cannot. However, we feel these papers provide
+a good launching point to discuss the main
+issue, mentioned by all three reviewers.
+
+\paragraph{Main issue} All three reviewers felt that this paper lacked sufficient novelty
+relative to existing literature. The novelty of our paper is best understood as an attempt to
+apply a slightly modified $\ell_1$-trend filter to a very large and
+very important dataset. It is certainly true that $\ell_1$
+regularization is everywhere, as is trend filtering, and variance
+estimation under such a penalty. In that sense, our paper is not
+particularly new. However, we found that the size of our problem
+(coupled with a non-quadratic likelihood function) meant that standard
+methods were computationally infeasible. The time-varying networks
+used in Monti, Hallac et al.\ (2017), and Gibberd, have on the order of hundreds of
+time points and dozens to hundreds of nodes. Our data have (see lines
+100--105) 3500 time points and ~25,000 nodes. It is this massive
+increase in throughput which makes our methods both relevant and
+novel. Even building the penalty matrix (or loading the data) is
+relatively infeasible. This is also the reason that our simulation
+size is relatively paltry: to enable many replications performed
+quickly. Note however that Gibberd uses 10 nodes and 50 timepoints in
+their simulations, so our example with 35 nodes and 780 timepoints is
+not that out of the ordinary.
+
+\paragraph{Why variance} Finally, there was some confusion as to why the variance would be
+important here (rather than the mean). This is for a number of reasons
+which we tried to articulate carefully in the introduction.
+\begin{enumerate}
+\item Instrument bias in the satellite increases over time so
+  examining the mean over time conflates that bias with any actual
+  change in mean (though the variance is unaffected).
+\item Extreme weather events (hurricanes, droughts, wildfires in
+  California, heatwaves in Europe) are driven more strongly by
+  increases in variance than by increases in mean.
+\item Even if the global mean temperature is constant, there may still
+  be climate change. In fact, atmospheric physics suggests that,
+  across space, average temperatures should not change (extreme cold
+  in one location is offset by heat in another). But if swings across
+  space are becoming more rapid, then even with no change in mean global
+  temperature over time, the variance is increasing, again leading to
+  increases in extreme events.
+\end{enumerate}
+
+\paragraph{Minor issues} We will of course be careful to address typos
+(thank you for pointing them out!) as well as attempt to clarify
+points of the paper which were less precise than they should have
+been. And, really, thank you for your reviews. 
+
+
+
+
+
+
+
+
+\bibliography{AllReferences.bib}
+\end{document}
+
