@@ -10,10 +10,12 @@
 \setlength{\pdfpagewidth}{8.5in}  %Required
 \setlength{\pdfpageheight}{11in}  %Required
 %PDF Info Is Required:
-  \pdfinfo{
-/Title (Algorithms for Estimating Trends in Global Temperature Volatility)
-%/Author (Khodadadi and McDonald)
-/Author (John Doe, Jane Doe)}
+
+%\pdfinfo{
+%	/Title (Algorithms for Estimating Trends in Global Temperature Volatility)
+	%/Author (Khodadadi and McDonald)
+%	/Author (John Doe, Jane Doe)}
+
 \setcounter{secnumdepth}{2}  
 
 
@@ -121,6 +123,8 @@ cloud reflectance temperature variability.
 % (or removing trends) in the temporal average, but trends in variance
 % can be more relevant, especially for financial data but also for
 % climate science.
+
+\textcolor{red}{How is this first part related to the rest of the paper?}
 
 The amount of sunlight reflected from clouds is among the largest
 sources of uncertainty in climate
@@ -489,8 +493,11 @@ univariate time series, which forms the basis of our methods. These
 methods have been generalized to higher order temporal smoothness
 ~\cite{Tibshirani2014}, graph dependencies~\cite{WangSharpnack2016},
 and, most recently, small, time-varying
-graphs~\cite{HallacPark2017}. Our methodology is similar in flavor
-to~\cite{HallacPark2017}, though it uses a different likelihood
+graphs~\cite{HallacPark2017}. 
+
+\textcolor{red}{Our methodology is similar in flavor to~\cite{HallacPark2017}, with several fundamental differences. The main goal of Hallac et al. is to discover the time-varying structure of a network. To achieve this goal, they introduced two penalty terms into the objective function. One term penalizes the sum of the absolute values of the off-diagonal elements of the inverse covariance matrix. This term enforces sparsity on the estimated inverse covariance matrix and so helps in discovering which nodes in the network are connected. The other penalty term, penalizes differences in the estimated inverse covariance matrix from one time-step to the next. Our goal in the present work is to detect the temporal trend in the variance of each point in the network. The network in our problem is the grid of points over the earth and so the network's structure remains the same through time. The variance of each point, however changes. To capture these properties in our data using the objective function used in Hallac et al. (see Equation 2 in their paper), we need to have different temporal penalty terms for the diagonal and off-diagonal elements in the inverse covariance matrix. This results in unnecessary complication in the optimization problem. To overcome these difficulties, we introduced the new objective function \ref{eq:l1tf_var_st_mat}. This leads to a new optimization problem which we consider its solution next.}
+
+though it uses a different likelihood
 function to emphasize variance estimation rather than trends in mean
 signal. Furthermore, the focus is in high-dimensional, regular data
 rather than a small number of changing graphs.
@@ -866,6 +873,8 @@ convergence of both methods. Each iteration of the linearized
 algorithm takes 0.01 seconds on average while each iteration of the
 consensus ADMM takes about 20 seconds. \attn{fix this discription}
 
+\attn{Arash: Can you be more specific?}
+
 \begin{figure}[tb]
   \centering	
   \includegraphics[height=.12\textheight]{Figures/true_fitted_var}
@@ -892,6 +901,9 @@ simulated 100 datasets using the method explained above with $\sigma_s
 \sim \mathsf{uniform}(4,7)$. The right panel of
 \autoref{fig:true_fitted_var} shows the boxplot of the MAE for these
 models. \attn{What is this next sentence trying to say?}
+
+\attn{that our model is better than GARCH in estimating the variance.}
+
 Interestingly, the proposed model with optimal parameters 
 outperforms GARCH(1,1) in estimating the true value of the variance.    
 
@@ -923,8 +935,8 @@ to achieve a reasonable level of accuracy. In addition, such a model
 cannot capture the non-stationarity in the cycles. 
 
 \autoref{fig:cities_ts} shows the time-series of the 
-temperature of three cities: Bloomington (USA), San Diego (USA) and
-Manaus (Brazil). The time-series of Bloomington and San Diego show
+temperature of three cities: Indianapolis (USA), San Diego (USA) and
+Manaus (Brazil). The time-series of Indianapolis and San Diego show
 clear cyclic behavior, though the amplitude of the cycles
 changes. The time-series of Manaus does not
 show any regular cyclic behavior. For this reason, we
@@ -941,13 +953,13 @@ computations \cite{arnold_efficient_2016}.
 \end{figure} 
 The blue curve in the left panel of Figure
 \autoref{fig:bloom_estimatedSD} shows the time-series of the
-temperature of Bloomington after detrending using this method. 
+temperature of Indianapolis after detrending using this method. 
 
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=\columnwidth]{Figures/bloom_estimatedSD}
-  \caption{Left: The residuals of the time-series of Bloomington
+  \caption{Left: The residuals of the time-series of Indianapolis
     (averaged weekly) and the estimated SD obtained from the method of
     \autoref{sec:l1tf_var} (red). Middle: the estimated SDs (red) and
     their annual average (black) without imposing the long horizon
@@ -958,7 +970,7 @@ temperature of Bloomington after detrending using this method.
 
 The red curve in the left panel of Figure \autoref{fig:bloom_estimatedSD}
 shows the estimated SD (which is $\exp(h_t/2)$) of the residuals of
-the time-series of Bloomington obtained from out proposed model. For
+the time-series of Indianapolis obtained from out proposed model. For
 ease of analysis, we compute the average
 of the estimated SD for each year. Both are shown in the middle panel of
 \autoref{fig:bloom_estimatedSD}. To smooth the annual trend, we add
@@ -1034,7 +1046,7 @@ are performed on the solution for these values.
 
 \begin{figure}[tb]
   \centering
-  \includegraphics[width=.8\columnwidth]{Figures/ts_estimatedVar}
+  \includegraphics[width=1\columnwidth]{Figures/ts_estimatedVar}
   \caption{Detrended data and the estimated SD for
     a small midwestern city (left) and San Diego (right).\attn{Fix these}} 
   \label{fig:avg_change_estimatedSD}
@@ -1213,8 +1225,9 @@ A=
 Therefore, to perform the Newton step we need to compute $\nabla f^*(-D^\top v)$ and $\nabla^2 f^*(-D^\top v)$. It is straightforward to show that
 
 \begin{align}
-\nabla f^*(-D^\top v) = -\nabla_u f^*(u) D^\top ,\quad u=-D^\top v, \quad (\nabla_u f^*(u))_j=\log\bigg(\frac{y_j^2}{1-u_j}\bigg) \\
-\nabla^2 f^*(-D^\top v)=D\nabla_u^2 f^*(u)D^\top, \quad (\nabla_u^2 f^*(u))_j=\mathbf{diag}\bigg(\frac{1}{1-u_j}\bigg)
+& \nabla f^*(-D^\top v) =  -\nabla_u f^*(u) D^\top ,\\
+& \quad u=-D^\top v, \quad (\nabla_u f^*(u))_j=\log\bigg(\frac{y_j^2}{1-u_j}\bigg) \\
+& \nabla^2 f^*(-D^\top v)=D\nabla_u^2 f^*(u)D^\top, \quad (\nabla_u^2 f^*(u))_j=\mathbf{diag}\bigg(\frac{1}{1-u_j}\bigg)
 \end{align}
 
 The matrix $D$ in these equations have the following form:  $D_{total}^t=[D_{t}^t|D_{s}^t]$. The matrix $D_t$ is the following block-diagonal matrix and corresponds to the temporal penalty: 
@@ -1340,10 +1353,10 @@ some of the difficulties in modeling the trend in the temperature
 volatility and motivate our methodology. 
 
 Figure \autoref{fig:cities_ts} shows the time-series of the
-temperature of three cities: Bloomington (USA), San Diego (USA) and
-Manaus (Brazil). The time-series of Bloomington and San Diego show
+temperature of three cities: Indianapolis (USA), San Diego (USA) and
+Manaus (Brazil). The time-series of Indianapolis and San Diego show
 clear cyclic behavior. However, while it seems (qualitatively) that
-these cycles can be modeled by a sinusoidal function for Bloomington,
+these cycles can be modeled by a sinusoidal function for Indianapolis,
 the same is not true for San Diego. Also, the amplitude of the cycles
 changes from some years to others. The time-series of Manaus does not
 show any regular cyclic behavior. This demonstrates the first
@@ -1374,12 +1387,12 @@ package \textbf{genlasso} to perform these computations
  	\label{fig:cities_ts}
 \end{figure} 
 
-The blue curve in the left panel of Figure \autoref{fig:bloom_estimatedSD} shows the time-series of the temperature of Bloomington after detrending using this method. This figure, reveals another difficulty in estimating the trend of volatility in this data: the variance of this signal, shows cyclic behavior. Also, the cycles are not regular and their amplitude and frequency change. Even if one can describe the behavior of the variance of the time-series at all locations using a single parametric model (for example a variant of the GARCH models \citep{bollerslev_generalized_1986}), it is not clear how the trend in the variance should be investigated in this framework. These observations motivate the need to develop a non-parametric framework for the problem at hand.
+The blue curve in the left panel of Figure \autoref{fig:bloom_estimatedSD} shows the time-series of the temperature of Indianapolis after detrending using this method. This figure, reveals another difficulty in estimating the trend of volatility in this data: the variance of this signal, shows cyclic behavior. Also, the cycles are not regular and their amplitude and frequency change. Even if one can describe the behavior of the variance of the time-series at all locations using a single parametric model (for example a variant of the GARCH models \citep{bollerslev_generalized_1986}), it is not clear how the trend in the variance should be investigated in this framework. These observations motivate the need to develop a non-parametric framework for the problem at hand.
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=\columnwidth]{Figures/bloom_estimatedSD}
-  \caption{Left: The residuals of the time-series of Bloomington
+  \caption{Left: The residuals of the time-series of Indianapolis
     (averaged weekly) and the estimated SD obtained from the method of
     \autoref{sec:l1tf_var} (red). Middle: the estimated SDs (red) and
     their annual average (black) without imposing the long horizon
@@ -1391,7 +1404,7 @@ The blue curve in the left panel of Figure \autoref{fig:bloom_estimatedSD} shows
 
 The red curve in the left panel of Figure \autoref{fig:bloom_estimatedSD}
 shows the estimated SD (which is $\exp(h_t/2)$) of the residuals of
-the time-series of Bloomington obtained from out proposed model. To reduce the number of time-steps we work on the weekly averaged of the data. The curve of the estimated SD captures the periodic variations in the
+the time-series of Indianapolis obtained from out proposed model. To reduce the number of time-steps we work on the weekly averaged of the data. The curve of the estimated SD captures the periodic variations in the
 SD of the signal. Just by looking at this curve, it is hard to say if
 the SD is decreasing or increasing. Therefore, we compute the average
 of the estimated SD for each year. The estimated SD together with this
