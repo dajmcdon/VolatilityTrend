@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 bl=[False,True]
 ifSimulateData=bl[0]
-ifFitModel=bl[0]
-ifVisualize=bl[1]
+ifFitModel=bl[1]
+ifVisualize=bl[0]
 ifModelSelection=bl[0]
 
 dstDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Data/Simulated data'
@@ -67,10 +67,10 @@ if ifSimulateData:
 ###################
 ###Fit model###
 ###################
-lam_t_vec=[5.];
+lam_t_vec=[100.];
 lam_s_vec=[0.0,.05,.1,.2,.3];
 lam_s_vec=[0.1];
-mu=.01
+mu=.0001
 #lam_t_vec=[10];lam_s_vec=[.05];mu=.01
 
 la = LinearizedADMM()#construct linearizedADMM object
@@ -110,7 +110,7 @@ if ifVisualize:
     fig.add_subplot(122)
     plt.pcolor(covMat[:,45].reshape((n_rows,n_cols),order='F'))    
     plt.xticks([]);plt.yticks([]);    
-    fig.savefig(join(saveFigDir,'true_var_spatial.pdf'))
+    #fig.savefig(join(saveFigDir,'true_var_spatial.pdf'))
     #---true spatial variance ---
 
     #---true vs estimated temporal variance --- 
@@ -122,12 +122,12 @@ if ifVisualize:
     i=0;plt.plot(np.exp(la.fittedVar[i,]/2));plt.plot(covMat[i,:])
     plt.xlabel('time');plt.ylabel('standard deviation')
     
-#    lam_t=100.;lam_s=.1;mu=.0001
-#    fn='mu_{}_lam_t_{}_lam_s_{}'.format(mu,lam_t,lam_s)
-#    filepath=join(savedResultsDir,'X_'+fn)
-#    la.analyseFittedValues(filepath)
-#    plt.plot(np.exp(la.fittedVar[i,]/2))
-#    plt.legend(['estimated, $\lambda_t=5$','true','estimated, $\lambda_t=100$'])
+    lam_t=100.;lam_s=.1;mu=.01
+    fn='mu_{}_lam_t_{}_lam_s_{}'.format(mu,lam_t,lam_s)
+    filepath=join(savedResultsDir,'X_'+fn)
+    la.analyseFittedValues(filepath)
+    plt.plot(np.exp(la.fittedVar[i,]/2))
+    plt.legend(['estimated, $\lambda_t=5$','true','estimated, $\lambda_t=100$'])
 #    fig.savefig(join(saveFigDir,'true_fitted_var.pdf'))
     #---true vs estimated temporal variance ---
     #===load fitted values===

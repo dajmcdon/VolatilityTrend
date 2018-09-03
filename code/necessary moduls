@@ -1,1 +1,8 @@
-pygrib
+conda install -c conda-forge pygrib
+
+conda install -c anaconda basemap 
+
+conda install -c conda-forge cvxopt
+
+source activate
+pip install ecmwf-api-client

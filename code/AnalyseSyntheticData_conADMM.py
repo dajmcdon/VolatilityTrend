@@ -16,7 +16,7 @@ saveFigDir='/home/arash/MEGA/MEGAsync/Projects/Cloud/Reports/051218/Figures'
 
 lam_t_vec=[5.];
 lam_s_vec=[0.1];
-rho=.013
+rho=.01
 
 ca = ConsensusADMM()#construct linearizedADMM object
 data_fn=join(dstDir,'simulated_data')

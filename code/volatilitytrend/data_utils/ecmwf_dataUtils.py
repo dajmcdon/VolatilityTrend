@@ -1,7 +1,11 @@
 '''
 This module contains functions for loading and analyzing
 datasets from ecmwf. See:
-https://software.ecmwf.int/wiki/display/WEBAPI/Access+ECMWF+Public+Datasets        
+https://software.ecmwf.int/wiki/display/WEBAPI/Access+ECMWF+Public+Datasets 
+
+and 
+
+http://apps.ecmwf.int/datasets/       
 '''
 
 from .. import config
@@ -210,7 +214,7 @@ def computeAveragedData(dataDir,data_fn,metadata_fn,win_size=7):
     #===sub-sample from dates===
     idx=np.arange(0,(n_win*win_size),win_size)
     new_dates=[dates[i] for i in idx]
-    metadata.update({'dates':new_dates})
+    metadata.update({'dates':new_dates,'T':n_win})
     with open(join(dataDir,metadata_fn+'_avg'),'wb') as f:
         dump(metadata,f)
     #===sub-sample from dates=== 

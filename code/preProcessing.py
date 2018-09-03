@@ -48,8 +48,9 @@ spatialSubSample(dataDir,data_fn=fn+'_data_avg',
 
 #===save data into csv file===
 #prepare data for genlasso R package. genlasso is used to detrend the data.
-metadata=load(open(join(dataDir,
-                        '1960-01-01_to_2010-12-31_metadata_avg_sub')))
+with open(join(dataDir,'1960-01-01_to_2010-12-31_metadata_avg_sub')) as f:
+    metadata=load(f)
+
 dataMat=np.fromfile(join(dataDir,
                          '1960-01-01_to_2010-12-31_data_avg_sub'),
                     'float32')
