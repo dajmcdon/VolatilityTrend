@@ -301,11 +301,11 @@ $
 $
 or equivalently:
 \begin{equation}
-\min_{\beta} \frac{1}{2} \norm{ y-\beta }_2^2+\lambda \norm{ D\beta}_1
+\min_{\beta} \frac{1}{2} \norm{ y-\beta }_2^2+\lambda \norm{ D_t \beta}_1
 \label{eq:l1tf}
 \end{equation}
  where $y=\{y_t\}_{t=1}^T$ is an observed time-series, $\beta\in \mathbb{R}^T$ is the smooth trend,
- $D$ is a $(T-2)\times T$ matrix, and $\lambda$ is a tuning parameter
+ $D_t$ is a $(T-2)\times T$ matrix, and $\lambda$ is a tuning parameter
  which balances fidelity to the data (small errors in the first term)
  with a desire for smoothness.  
 % The \textit{penalty matrix} is:
@@ -320,8 +320,8 @@ or equivalently:
 % \label{eq:d_matrix}
 % \end{equation}
 %The first term in \eqref{eq:l1tf} penalizes large residuals while the second term encourages smooth estimated $\beta$.
-With the penalty matrix $D$, the estimated $\beta$ will be piecewise
-linear. \citet{KimKoh2009} proposed a specialized primal-dual
+In Appendix A, we specify the form of the matrix $D_t$ which results in piecewise
+linear estimated $\beta$. \citet{KimKoh2009} proposed a specialized primal-dual
 interior point (PDIP) algorithm for solving \eqref{eq:l1tf}. From a
 statistical perspective, \eqref{eq:l1tf} can be viewed as a constrained maximum
 likelihood problem with independent observations from a normal
@@ -331,7 +331,7 @@ $\beta$. Alternatively, solutions to \eqref{eq:l1tf} are equivalent to
 maximum a posteriori Bayesian estimators based on Gaussian likelihood
 with a special Laplace prior distribution on $\beta$. Note that the
 structure of the estimator is determined by the penalty function
-$\lambda\norm{D\beta}_1$ rather than any parametric trend
+$\lambda\norm{D_t\beta}_1$ rather than any parametric trend
 assumptions---autoregressive, moving average, sinusoidal seasonal
 component, etc. The resulting trend is therefore essentially
 nonparametric in the same way that splines are. In fact,
@@ -366,10 +366,10 @@ we assume that the parameters $h_t$ vary smoothly. To impose
 this assumption, we estimate $h_t$ by solving the penalized, negative
 log-likelihood: 
 \begin{equation}
-\min_h -l(y\given h)+\lambda \norm{ Dh }_1
+\min_h -l(y\given h)+\lambda \norm{ D_th }_1
 \label{eq:l1tf_var}
 \end{equation}
-where $D$ has the same structure as above.
+where $D_t$ has the same structure as above.
 
 As with~\eqref{eq:l1tf}, one can solve~\eqref{eq:l1tf_var} using the
 PDIP algorithm (as in, e.g.,
@@ -449,7 +449,7 @@ graphs~\cite{WangSharpnack2016} which penalizes the difference between
 the estimated values of the signal on the connected nodes (though the
 likelihood is different). As before,
 we can write \eqref{eq:l1tf_var_st} in matrix form where $h$ is an
-$T\times S$ vector and $D$ is replaced by $D_{ST} \in
+$T\times S$ vector and $D_t$ is replaced by $D \in
 \mathbb{R}^{(N_t+N_s) \times (T \cdot S)	}$, where $N_t=S \cdot
 (T-2)$ and $N_s=T \cdot (2n_rn_c-n_r)$ are the number of temporal and
 spatial constraints, respectively\footnote{$N_s$ is obtained by
@@ -467,7 +467,7 @@ to:\footnote{Throughout the paper, we use $|x|$ for both scalars and
 % $T$ entries are $h_{21t}$ and so on, then the optimization problem in
 % the matrix form is as
 \begin{equation}
-\min_h -l(y\given h)+ \Lambda^\top | D_{ST}h |.
+\min_h -l(y\given h)+ \Lambda^\top | Dh |.
 \label{eq:l1tf_var_st_mat}
 \end{equation}
 
@@ -502,16 +502,16 @@ graphs~\cite{HallacPark2017}.
 \section{Optimization Methods}
 \label{sec:prop-optim-meth}
 
-For a spatial grid of size $S$ and $T$ time steps, $D_{ST}$ will have
-$3Tn_rn_c-2n_rn_c-Tn_r$ rows and $ST$ columns. For a $1^\circ\times
+For a spatial grid of size $S$ and $T$ time steps, $D$ in equation \ref{eq:l1tf_var_st_mat} will have
+$3Tn_rn_c-2n_rn_c-Tn_r$ rows and $S \cdot T$ columns. For a $1^\circ\times
 1^\circ$ grid over the entire northern hemisphere and daily data over
 10 years, we have $S=90\times 360\approx 32,000$ spatial locations and
-$T=3650$ time points, and so $D_{ST}$ has
+$T=3650$ time points, and so $D$ has
 approximately $10^8$ columns and $10^8$ rows. In each step of the PDIP
 algorithm, we need to solve a linear system of equations which
-depends on $D_{ST}^\top D_{ST}$ (see appendix A and B). Therefore,
+depends on $D^\top D$ (see appendix A and B). Therefore,
 applying the PDIP directly is infeasible for our data.\footnote{We
-  note that $D_{ST}$ is a highly structured, sparse matrix, but, unlike
+  note that $D$ is a highly structured, sparse matrix, but, unlike
   trend filtering alone, it is not banded. We are unaware of general
   linear algebra techniques for inverting such matrix, despite our
   best efforts.}  
@@ -875,9 +875,9 @@ consensus ADMM takes about 20 seconds. \attn{fix this discription}
   \includegraphics[height=.16\textheight]{Figures/convergence}  
   \includegraphics[height=.16\textheight]{Figures/modelComp_MAE}  
   \caption{Top: Convergence speed of linearized
-    and consensus ADMM. Bottom: MAE for four models: admm\_opt: the
+    and consensus ADMM. Bottom: MAE for four models: our method: the
     proposed model with optimal values of $\lambda_t$ and $\lambda_s$,
-    admm\_temp: no spatial penalty, admm\_sp: no temporal
+    temporal: no spatial penalty, spatial: no temporal
     penalty.\attn{Fix these}} \label{fig:true_fitted_var}
 \end{figure}
 
@@ -948,13 +948,15 @@ temperature of Indianapolis after detrending using this method.
 
 \begin{figure}[tb]
   \centering
-  \includegraphics[width=\columnwidth]{Figures/bloom_estimatedSD}
+  \includegraphics[width=.8 \columnwidth]{Figures/indy_estimatedSD_1}
+  \includegraphics[width=.45 \columnwidth]{Figures/indy_estimatedSD_2}
+  \includegraphics[width=.45 \columnwidth]{Figures/indy_estimatedSD_3}  
   \caption{Left: The residuals of the time-series of Indianapolis
     (averaged weekly) and the estimated SD obtained from the method of
     \autoref{sec:l1tf_var} (red). Middle: the estimated SDs (red) and
     their annual average (black) without imposing the long horizon
     penalty. Right: the same as middle panel but here the long horizon
-    penalty is imposed. See the text for more details.} 
+    penalty is imposed. See the text for more details. \attn{Fix the caption (top-bottom or left right)}} 
   \label{fig:bloom_estimatedSD}
 \end{figure} 
 
@@ -1156,16 +1158,16 @@ each sub-problem can be solved using linearized ADMM.
 \clearpage
 
 \appendix
-\section{PDIP for $\ell_1$ Trend Filtering}
+\section{PDIP for $\ell_1$ Trend Filtering of variance}
 \label{sec:app_l1tf_var}
 
-In this appendix we provide more details on how to solve the optimization problem \ref{eq:l1tf_var} using PDIP. The objective function is convex but not differentiable. Therefore, to be able to use PDIP we first need to derive the dual of this problem. We note that this is a generalized LASSO problem \citep{TibshiraniTaylor2011}. The dual of a generalized LASSO with the objective $f(x)+\lambda \norm{ Dx }_1$ is:  
+In this appendix we provide more details on how to solve the optimization problem with the objective specified in equation \ref{eq:l1tf_var} using PDIP. The objective function is convex but not differentiable. Therefore, to be able to use PDIP we first need to derive the dual of this problem. We note that this is a generalized LASSO problem \citep{TibshiraniTaylor2011}. The dual of a generalized LASSO with the objective $f(x)+\lambda \norm{ Dx }_1$ is:  
 
 \begin{align}
 \min_\nu&\quad f^*(-D^\top\nu) & \mbox{s.t.}&\quad \norm{ \nu }_\infty \le \lambda
 \end{align}
 
-where $f^*(\cdot)$ is the Fenchel conjugate of $f$: $f^*(u)=\max_x u^\top x-f(x)$. It is simple to show that 
+\noindent where $f^*(\cdot)$ is the Fenchel conjugate of $f$: $f^*(u)=\max_x u^\top x-f(x)$. It is simple to show that for the objective function of Equation \ref{eq:l1tf_var}
 
 \begin{equation}
 f^*(u)=\sum_t (u_t-1)\log\frac{y_t^2}{1-u_t} + u_t-1.
@@ -1187,7 +1189,7 @@ Each iteration of PDIP involves computing a search direction by taking a Newton 
 \label{eq:resid}
 \end{equation}
 
-for $w>0$, where $\mu_1$ and $\mu_2$ are dual variables for the $\ell_\infty$ constraint. Let $A=[\nabla r_{dual}^\top , \nabla r_{cent}^\top]^\top$. The newton step takes the following form
+\noindent for $w>0$, where $\mu_1$ and $\mu_2$ are dual variables for the $\ell_\infty$ constraint. Let $A=[\nabla r_{dual}^\top , \nabla r_{cent}^\top]^\top$. The newton step takes the following form
 
 \begin{equation}
 r_w(v,\mu_1,\mu_2)+A
@@ -1220,17 +1222,9 @@ Therefore, to perform the Newton step we need to compute $\nabla f^*(-D^\top v)$
 & \nabla^2 f^*(-D^\top v)=D\nabla_u^2 f^*(u)D^\top, \quad (\nabla_u^2 f^*(u))_j=\mathbf{diag}\bigg(\frac{1}{1-u_j}\bigg)
 \end{align}
 
-The matrix $D$ in these equations have the following form:  $D_{total}^t=[D_{t}^t|D_{s}^t]$. The matrix $D_t$ is the following block-diagonal matrix and corresponds to the temporal penalty: 
- \begin{equation}
- D_t=\begin{bmatrix}
- D &  & \\ 
-  & \ddots & \\
-  &  & D
- \end{bmatrix}
- \label{eq:d_t_matrix}
- \end{equation}
 
-where $D$ was defined in Section 2 of the main text. The number of the diagonal blocks is equal to the grid size $n_r \times n_c$. Each row of the matrix $D_s$ corresponds to one spatial constraint in Equation \eqref{eq:l1tf_var_st} in the text. For example, the first $T$ rows correspond to $|h_{11t}-h_{21t}|$ for $t=1,...,T$, the next $T$ rows correspond to $|h_{11t}-h_{12t}|$, and so on. 
+Having computed the conjugate function and its gradient and Jacobian, now we can use a number of convex optimization software packages which have an implementation of PDIP to solve the optimization problem with the objective function \ref{eq:l1tf_var}. We chose the python API of the \texttt{cvxopt} package ~\citep{andersen_cvxopt:_2013}.
+
 
 
 \section{PDIP Update in~\autoref{alg:conADMM}}
@@ -1243,7 +1237,37 @@ In this section we give more details on performing the $x$-update step in Algori
 \label{eq:x_update_opt}
 \end{equation}
 
-\noindent where $n_b$ is the number of local variables in each sub-cube in \autoref{fig:data_cube}, and for ease of notation we have dropped the subscript $i$ and superscript $m$. Let $f(x)=\sum_{j=1}^{n_b} (x_j + y_j^2e^{-x_j}) + (\rho/2) \lVert x-\tilde{z} + u \lVert_2^2$. As it was explained in \autoref{sec:l1tf_var}, the dual of this optimization problem is: $\min_\nu f^*(-D^\top\nu)$ with the constraints $|\nu_k| \le \Lambda_k$. So to use PDIP we first need to compute the conjugate function $f^*(\cdot)$. We have:
+\noindent where $n_b$ is the number of local variables in each sub-cube in \autoref{fig:data_cube}, and for ease of notation we have dropped the subscript $i$ and superscript $m$. 
+
+The matrix $D$ has the following form:  $D^t=[D_{temp}^t|D_{spat}^t]$. The matrix $D_{temp}$ is the following block-diagonal matrix and corresponds to the temporal penalty: 
+\begin{equation}
+D_{temp}=\begin{bmatrix}
+D_t &  & \\ 
+& \ddots & \\
+&  & D_t
+\end{bmatrix}
+\label{eq:d_t_matrix}
+\end{equation}
+
+\noindent where $D_t$ was first introduced in Section 2 of the main text and has the following form:
+
+\begin{equation}
+ D_t=\begin{bmatrix}
+ 1 & -2 & 1 &  &  &  &\\ 
+ & 1 & -2 & 1 &  &  &\\ 
+ &  & \ddots & \ddots & \ddots  &  &\\ 
+ &  & & 1 & -2 & 1 &  \\ 
+ &  &  &   & 1 & -2 & 1 
+ \end{bmatrix}
+\label{eq:d_matrix}
+\end{equation}
+
+The number of the diagonal blocks in $D_{temp}$ is equal to the grid size $n_r \times n_c$. Each row of the matrix $D_{spat}$ corresponds to one spatial constraint in Equation \eqref{eq:l1tf_var_st} in the text. For example, the first $T$ rows correspond to $|h_{11t}-h_{21t}|$ for $t=1,...,T$, the next $T$ rows correspond to $|h_{11t}-h_{12t}|$, and so on. 
+
+
+This optimization problem, is again a generalized LASSO problem with $f(x)=\sum_{j=1}^{n_b} (x_j + y_j^2e^{-x_j}) + (\rho/2) \lVert x-\tilde{z} + u \lVert_2^2$. 
+
+As it was explained in Appendix A, the dual of this optimization problem is: $\min_\nu f^*(-D^\top\nu)$ with the constraints $|\nu_k| \le \Lambda_k$. To use PDIP we first need to compute the conjugate function $f^*(\cdot)$. We have:
 
 
 \begin{align}
@@ -1298,7 +1322,7 @@ By some tedious but straightforward computation we can obtain the second derivat
 \label{eq:d2_x*_start}
 \end{equation}
 
-Having computed the conjugate function and its gradient and Jacobian, now we can use a number of convex optimization software packages which have an implementation of PDIP to perform the x-update step inside the ADMM loop. We chose the python API of the \texttt{cvxopt} package ~\citep{andersen_cvxopt:_2013}. 
+ 
 
 % \section{Appendix C}
 % \autoref{tab:sim_params} lists the parameters used for simulating data
@@ -1381,7 +1405,7 @@ The blue curve in the left panel of Figure \autoref{fig:bloom_estimatedSD} shows
 
 \begin{figure}[tb]
   \centering
-  \includegraphics[width=\columnwidth]{Figures/bloom_estimatedSD}
+  \includegraphics[width=\columnwidth]{Figures/indy_estimatedSD_1}
   \caption{Left: The residuals of the time-series of Indianapolis
     (averaged weekly) and the estimated SD obtained from the method of
     \autoref{sec:l1tf_var} (red). Middle: the estimated SDs (red) and
