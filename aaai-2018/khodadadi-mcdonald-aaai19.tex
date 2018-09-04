@@ -497,11 +497,6 @@ graphs~\cite{HallacPark2017}.
 
 \textcolor{red}{Our methodology is similar in flavor to~\cite{HallacPark2017}, with several fundamental differences. The main goal of Hallac et al. is to discover the time-varying structure of a network. To achieve this goal, they introduced two penalty terms into the objective function. One term penalizes the sum of the absolute values of the off-diagonal elements of the inverse covariance matrix. This term enforces sparsity on the estimated inverse covariance matrix and so helps in discovering which nodes in the network are connected. The other penalty term, penalizes differences in the estimated inverse covariance matrix from one time-step to the next. Our goal in the present work is to detect the temporal trend in the variance of each point in the network. The network in our problem is the grid of points over the earth and so the network's structure remains the same through time. The variance of each point, however changes. To capture these properties in our data using the objective function used in Hallac et al. (see Equation 2 in their paper), we need to have different temporal penalty terms for the diagonal and off-diagonal elements in the inverse covariance matrix. This results in unnecessary complication in the optimization problem. To overcome these difficulties, we introduced the new objective function \ref{eq:l1tf_var_st_mat}. This leads to a new optimization problem which we consider its solution next.}
 
-though it uses a different likelihood
-function to emphasize variance estimation rather than trends in mean
-signal. Furthermore, the focus is in high-dimensional, regular data
-rather than a small number of changing graphs.
-
 \attn{Paragraph discussing relationship with estimating time-varying covariance}
 
 \section{Optimization Methods}
@@ -848,7 +843,7 @@ the variance across time at $(0,0)$ in \autoref{fig:true_var_spatial}.
 \begin{figure}[tb]
   \centering	
   \includegraphics[height=.15\textheight]{Figures/true_var_spatial}\\
-  \includegraphics[height=.15\textheight]{Figures/true_fitted_var}
+  \includegraphics[height=.2\textheight]{Figures/true_fitted_var}
   \caption{Top: Variance function at $t=25$ (left) and $t=45$
     (right). Bottom: The true (orange) and estimated standard deviation 
     function at the location (0,0). The estimated values are
@@ -877,15 +872,10 @@ consensus ADMM takes about 20 seconds. \attn{fix this discription}
 
 \begin{figure}[tb]
   \centering	
-  \includegraphics[height=.12\textheight]{Figures/true_fitted_var}
-  \includegraphics[height=.12\textheight]{Figures/convergence}  
-  \includegraphics[height=.12\textheight]{Figures/modelComp_MAE}  
-  \caption{Left: The true (orange) and estimated standard deviation 
-    function at the location (0,0). The estimated values are
-    obtained using linearized ADMM with $\lambda_s=0.1$ and two
-    values of $\lambda_t$: $\lambda_t=5$ (blue) and
-    $\lambda_t=100$ (green). Middle: Convergence speed of linearized
-    and consensus ADMM. Right: MAE for four models: admm\_opt: the
+  \includegraphics[height=.16\textheight]{Figures/convergence}  
+  \includegraphics[height=.16\textheight]{Figures/modelComp_MAE}  
+  \caption{Top: Convergence speed of linearized
+    and consensus ADMM. Bottom: MAE for four models: admm\_opt: the
     proposed model with optimal values of $\lambda_t$ and $\lambda_s$,
     admm\_temp: no spatial penalty, admm\_sp: no temporal
     penalty.\attn{Fix these}} \label{fig:true_fitted_var}
@@ -947,7 +937,7 @@ $k=5$. We used the R package \textbf{genlasso} to perform these
 computations \cite{arnold_efficient_2016}.  
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=.2\textheight]{Figures/cities_ts}
+	\includegraphics[width=.3\textheight]{Figures/cities_ts}
  	\caption{Time-series of the temperature (in Kelvin) of three cities.}
  	\label{fig:cities_ts}
 \end{figure} 
@@ -1046,7 +1036,7 @@ are performed on the solution for these values.
 
 \begin{figure}[tb]
   \centering
-  \includegraphics[width=1\columnwidth]{Figures/ts_estimatedVar}
+  \includegraphics[width=1.1\columnwidth]{Figures/ts_estimatedVar}
   \caption{Detrended data and the estimated SD for
     a small midwestern city (left) and San Diego (right).\attn{Fix these}} 
   \label{fig:avg_change_estimatedSD}
