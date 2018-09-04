@@ -11,10 +11,10 @@
 \setlength{\pdfpageheight}{11in}  %Required
 %PDF Info Is Required:
 
-%\pdfinfo{
-%	/Title (Algorithms for Estimating Trends in Global Temperature Volatility)
-	%/Author (Khodadadi and McDonald)
-%	/Author (John Doe, Jane Doe)}
+\pdfinfo{
+  /Title (Algorithms for Estimating Trends in Global Temperature Volatility)
+  % /Author (Khodadadi and McDonald)
+  /Author (John Doe, Jane Doe)}
 
 \setcounter{secnumdepth}{2}  
 
@@ -109,7 +109,7 @@ tailored for dense, gridded observations over both
 space and time. We evaluate our methods with a simulation constructed
 to mimic these data's 
 features and on a large, publicly available, global
-temperature dataset with the goal of tracking trends in
+temperature dataset with the eventual goal of tracking trends in
 cloud reflectance temperature variability.
 \end{abstract}
 
@@ -124,50 +124,48 @@ cloud reflectance temperature variability.
 % can be more relevant, especially for financial data but also for
 % climate science.
 
-\textcolor{red}{How is this first part related to the rest of the paper?}
 
 The amount of sunlight reflected from clouds is among the largest
 sources of uncertainty in climate
 prediction~\citep{BoucherRandall2013}. But climate models fail to
-reproduce global cloud statistics and understanding the reasons for
+reproduce global cloud statistics, and understanding the reasons for
 this failure is a grand challenge of the World Climate Research
 Programme~\citep{BonyStevens2015}.
-By understanding how cloudliness changes over time, examining changes
-in brightness temperature within various cloud types, and inferring
-changes in cloud radiative effects, atmospheric scientists can better model climate
-change. Modeling inter-satellite biases, satellite drift, and
-seasonal and long-term climate phenomena like El Ni\~{n}o will lead to
-a better understanding of climate
-change~\citep{SchreierKahn2014,BaumWielicki1994,BaumWielicki1992,FreyAckerman1996}.
-
-Numerous
+% By understanding how cloudliness changes over time, examining changes
+% in brightness temperature within various cloud types, and inferring
+% changes in cloud radiative effects, atmospheric scientists can better model climate
+% change. Modeling inter-satellite biases, satellite drift, and
+% seasonal and long-term climate phenomena like El Ni\~{n}o will lead to
+% a better understanding of climate
+% change~\citep{SchreierKahn2014,BaumWielicki1994,BaumWielicki1992,FreyAckerman1996}.
+While numerous
 studies have examined the overall impacts of clouds on climate
 variability~\citep{MyersMechoso2018,GrisePolvani2013,BenderRamanathan2012},
-but such investigations have been hampered by the lack of a suitable
+such investigations have been hampered by the lack of a suitable
 dataset. Ideal data would have global coverage at high spatial
 resolution, a long enough record to recover temporal trends, and be
-multispectral~\citep{WielickiYoung2013}. The International Satellite
-Cloud Climatology Project (ISCCP)
-has been producing cloud property information from
-limited spectral channels for over three
-decades~\citep{RossowSchiffer1991}. These data have been used in 
-various climate variability
-studies~\citep[e.g.]{BenderRamanathan2012}, however, the utility of
-these data for long-term study of climate variability has been
-questioned~\citep{EvanHeidinger2007}. 
-
-ISCCP provides a relatively long record, but it only incorporates
-radiances from limited visible and infrared channels from Advanced
-Very High Resolution Radiometer (AVHRR) instruments. Ongoing work seeks to create a
-more spectrally-detailed dataset which can avoid the above issues by
-combining radiance data from AVHRR imagers with readings from High-resolution
+multispectral~\citep{WielickiYoung2013}. 
+% The International Satellite
+% Cloud Climatology Project (ISCCP)
+% has been producing cloud property information from
+% limited spectral channels for over three
+% decades~\citep{RossowSchiffer1991}. These data have been used in 
+% various climate variability
+% studies~\citep[e.g.]{BenderRamanathan2012}, however, the utility of
+% these data for long-term study of climate variability has been
+% questioned~\citep{EvanHeidinger2007}. 
+% ISCCP provides a relatively long record, but it only incorporates
+% radiances from limited visible and infrared channels from Advanced
+% Very High Resolution Radiometer (AVHRR) instruments. 
+Current work~\cite{StatenKahn2016,SchreierKahn2010,KahnFishbein2007} seeks to create a
+spectrally-detailed dataset by %which can avoid the above issues by
+combining radiance data from Advanced Very High Resolution Radiometer
+imagers with readings from High-resolution 
 Infrared Radiation Sounders on board legacy
-satellites~\citep{StatenKahn2016,SchreierKahn2010,KahnFishbein2007}. In
-anticipation of this new dataset, our work develops novel methodology
+satellites. 
+In anticipation of this new dataset, our work develops novel methodology
 for examining the trends in variability of climate data across space
 and time.
-
-
 
 \subsection{Variability Rather Than Average}
 \label{sec:vari-rath-than}
@@ -200,20 +198,20 @@ examining the empirical SD at each spatial location relative to that
 location's SD over a base period, and showed
 that these estimates are increasing.
 \citet{huntingford_no_2013} took a similar
-approach in analyzing the ERA-40 data set. Their results showed that there
-still is an increase in the SDs from 1958-1970 to 1991-2001, but this
-is much less than what is obtained from the method used in
-\cite{hansen_perception_2012}. The authors also computed the
+approach in analyzing the ERA-40 data set. They argued that, while there
+is an increase in the SDs from 1958-1970 to 1991-2001, it
+is much smaller than found in
+\cite{hansen_perception_2012}. \citet{huntingford_no_2013} also computed the
 time-evolving global SD from the de-trended time-series at each
-position, which suggests that the global SD has been
+position and argued that the global SD has been
 stable. 
 
-These and other related research, e.g.,
-\citet{rhines_frequent_2013}, have several shortcomings. First, no
+These and other related work  
+\cite[e.g.,]{rhines_frequent_2013} have several shortcomings. First, no
 statistical analysis has been performed to examine if the changes in
 the SD are statistically significant. Second, the methodologies for
 computing the SDs are highly sensitive to the choice of base period. Third,
-and most importantly, temporal and spatial correlations between the
+and most importantly, temporal and spatial correlations between 
 observations are completely ignored.  
 
 In the present work, we examine variance (rather than the mean) for a number of reasons.
@@ -229,7 +227,7 @@ across space, average temperatures should not change (extreme cold
 in one location is offset by heat in another). But if swings across
 space are becoming more rapid, then, even with no change in mean global
 temperature over time, increasing variance can lead to
-increases in the prevalence of extreme events.
+increases in the prevalence of extreme events. 
 
 
 
@@ -240,22 +238,24 @@ increases in the prevalence of extreme events.
 
 The main contribution of this work is to develop a new methodology for
 detecting the trend in the volatility of spatio-temporal data. In this
-methodology, the variance at each position and time is considered as
-a hidden variable. The values of these hidden variables
-are then estimated by maximizing the likelihood of the observed
-data. Following~\cite{Tibshirani2014}, we penalize the
+methodology, the variance at each position and time are estimated by
+maximizing penalized likelihood
+maximization. Following~\cite{Tibshirani2014}, we penalize the 
 differences between the estimated variances which
 are temporally and spatially ``close'', resulting
 in a generalized LASSO problem. However, in our application, the
-dimension of this optimization problem is massive, and so the
-standard solvers are inadequate. We develop two algorithms
-which are computationally feasible. In the first method, we adopt an optimization technique
+dimension of this optimization problem is massive, so the
+standard solvers are inadequate. 
+
+We develop two algorithms
+which are computationally feasible on extremely large data. In the
+first method, we adopt an optimization technique 
 called alternating direction method of multipliers
 (ADMM, \citealp{boyd_distributed_2011}), to divide the total problem into
 several sub-problems of much lower dimension and show how the total
 problem can be solved by iteratively solving these sub-problems. The
-second method, called the \textit{linearized ADMM algorithm}
-\cite{parikh_proximal_2014} solves the main problem by iteratively
+second method, called linearized ADMM
+\cite{parikh_proximal_2014}, solves the main problem by iteratively
 solving a linearized version of it. We will compare the benefits of
 each method. 
 
@@ -270,8 +270,11 @@ Our main contributions are as follows:
   very large data (\autoref{sec:prop-optim-meth}). We give situations
   under which each algorithm is most likely to be useful. Open-source
   Python code is available on {\tt github}.
-\item We illustrate our methods on a large, publicly available, global temperature dataset
-  with the goal of tracking world-wide trends in variance as well as a
+\item Because the construction of satellite-based datasets is ongoing
+  and currently proprietary, we illustrate our methods on a large,
+  publicly available, global temperature dataset.
+  The goal is to demonstrate the feasibility of these methods for tracking
+  world-wide trends in variance in standard atmospheric data and a
   simulation constructed to mimic these data's features
   (\autoref{sec:empirical-evaluation}). 
 \end{enumerate}
@@ -295,10 +298,10 @@ as the optimization problem
 % simultaneously and so a trade-off between them should be made. In
 % $\ell_1$-trend filtering, this trade-off is formulated as the
 % following convex optimization problem: 
-$
+$$
 \min_{\beta} \frac{1}{2} \sum_{t=1}^{T} (y_t-\beta_t)^2+\lambda
 \sum_{t=1}^{T-2} \left|\beta_t-2\beta_{t+1}+\beta_{t+2}\right| 
-$
+$$
 or equivalently:
 \begin{equation}
 \min_{\beta} \frac{1}{2} \norm{ y-\beta }_2^2+\lambda \norm{ D_t \beta}_1
@@ -320,21 +323,22 @@ or equivalently:
 % \label{eq:d_matrix}
 % \end{equation}
 %The first term in \eqref{eq:l1tf} penalizes large residuals while the second term encourages smooth estimated $\beta$.
-In Appendix A, we specify the form of the matrix $D_t$ which results in piecewise
-linear estimated $\beta$. \citet{KimKoh2009} proposed a specialized primal-dual
+% In Appendix A, we specify the form of the matrix $D$ which results in piecewise
+% linear estimated $\beta$. 
+\citet{KimKoh2009} proposed a specialized primal-dual
 interior point (PDIP) algorithm for solving \eqref{eq:l1tf}. From a
 statistical perspective, \eqref{eq:l1tf} can be viewed as a constrained maximum
 likelihood problem with independent observations from a normal
 distribution with common variance, $y_t \sim \mbox{N}(\beta_t,
 \sigma^2)$, subject to a piecewise linear constraint on
-$\beta$. Alternatively, solutions to \eqref{eq:l1tf} are equivalent to
+$\beta$. Alternatively, solutions to \eqref{eq:l1tf} are %equivalent to
 maximum a posteriori Bayesian estimators based on Gaussian likelihood
 with a special Laplace prior distribution on $\beta$. Note that the
 structure of the estimator is determined by the penalty function
 $\lambda\norm{D_t\beta}_1$ rather than any parametric trend
 assumptions---autoregressive, moving average, sinusoidal seasonal
 component, etc. The resulting trend is therefore essentially
-nonparametric in the same way that splines are. In fact,
+nonparametric in the same way that splines are nonparametric. In fact,
 using squared $\ell_2$ norm as the penalty instead of $\ell_1$ results exactly in
 regression splines.
 
@@ -362,9 +366,9 @@ $h_t$ such that the observations $y_t$
 are independent normal variables with zero mean and variance
 $\exp(h_t)$. The negative log-likelihood of the observed data in this
 model is $l(y\given h) \propto -\sum_{t=1}^T h_t - y_t^2e^{-h_t}$. Crucially,
-we assume that the parameters $h_t$ vary smoothly. To impose
-this assumption, we estimate $h_t$ by solving the penalized, negative
-log-likelihood: 
+we assume that the parameters $h_t$ vary smoothly and estimate them by
+minimizing the penalized, negative
+log-likelihood:  
 \begin{equation}
 \min_h -l(y\given h)+\lambda \norm{ D_th }_1
 \label{eq:l1tf_var}
@@ -375,8 +379,8 @@ As with~\eqref{eq:l1tf}, one can solve~\eqref{eq:l1tf_var} using the
 PDIP algorithm (as in, e.g.,
 \texttt{cvxopt}, \citealp{andersen_cvxopt:_2013}). In each iteration of
 PDIP we need to compute a search direction by taking a Newton
-step on a system of nonlinear equations. Due to space limitations, we
-defer details to Appendix A in the Supplement, where we show how to
+step on a system of nonlinear equations. For completeness, we
+provide the details in Appendix A of the Supplement, where we show how to
 derive the dual of this optimization problem and compute the first and
 second derivatives of the dual objective function.  
 
@@ -411,15 +415,15 @@ second derivatives of the dual objective function.
 \label{sec:exten}
 
 The method in the previous section can be used to estimate the
-variance of a single time-series. In this section, we extend this
-method to the estimation of the variance of spatio-temporal data. 
+variance of a single time-series. Here we extend this
+method to the case of spatio-temporal data. 
 
 At a specific time $t$, the data are measured on a grid of points with
 $n_r$ rows and $n_c$ columns for a total of $S=n_r\times n_c$ spatial
 locations. Let $y_{ijt}$ denote the value of the 
 observation at time $t$ on the $i^\text{th}$ row and $j^\text{th}$
-column of the grid, and $h_{ijt}$ denote the corresponding hidden
-variable. We seek to impose both temporal and spatial smoothness
+column of the grid, and $h_{ijt}$ denote the corresponding
+parameter. We seek to impose both temporal and spatial smoothness 
 constraints on the hidden variables. Specifically, we seek a solution
 for $h$ which is piecewise linear in time and piecewise constant in
 space (although higher-order smoothness can be imposed with minimal
@@ -448,17 +452,18 @@ penalty is a special case of trend filtering on
 graphs~\cite{WangSharpnack2016} which penalizes the difference between
 the estimated values of the signal on the connected nodes (though the
 likelihood is different). As before,
-we can write \eqref{eq:l1tf_var_st} in matrix form where $h$ is an
-$T\times S$ vector and $D_t$ is replaced by $D \in
+we can write \eqref{eq:l1tf_var_st} in matrix form where $h$ is a
+vector of length
+$TS$ and $D_t$ is replaced by $D \in
 \mathbb{R}^{(N_t+N_s) \times (T \cdot S)	}$, where $N_t=S \cdot
 (T-2)$ and $N_s=T \cdot (2n_rn_c-n_r)$ are the number of temporal and
-spatial constraints, respectively\footnote{$N_s$ is obtained by
-  counting the number of unique constraints at each location and at
-  all times.}. The exact form of this matrix in clarified in Appendix
-A in the Supplement. Then, as we have two different tuning parameters
+spatial constraints, respectively. 
+% The exact form of this matrix in clarified in Appendix
+% B in the Supplement. 
+Then, as we have two different tuning parameters
 for the temporal and spatial components, we write $\Lambda
-=\left[\lambda_1\one_{N_t}^\top,\;
-  \lambda_2\one_{N_s}^\top\right]^\top$ leading
+=\left[\lambda_t\one_{N_t}^\top,\;
+  \lambda_s\one_{N_s}^\top\right]^\top$ leading
 to:\footnote{Throughout the paper, we use $|x|$ for both scalars and
   vectors. For vectors we use this to denote a vector obtained by
   taking the absolute value of each entry of $x$.}  
@@ -472,9 +477,6 @@ to:\footnote{Throughout the paper, we use $|x|$ for both scalars and
 \end{equation}
 
 \subsection{Related Work}
-
-\attn{I've moved this here rather than above to focus the intro more
-  on the data.}
 
 Variance estimation for financial time series has a lengthy history,
 focused especially on parametric models like the generalized
@@ -505,13 +507,16 @@ off-diagonal elements and (2) discourage changes in the estimated inverse
 covariance matrix from one time-step to the next.
 Our goal in the present work is to detect the temporal trend in the variance of each
 point in the network, but the network is known (corresponding to the grid
-over the earth). The variance of each point, however changes. To modify the
+over the earth). To modify the
 objective function in~\cite[Eq.\ 2]{HallacPark2017}, we would
 enforce complete sparsity on the off-diagonal elements (since
 they are not estimated) and add a new penalty to enforce spatial
 behavior across the diagonal elements. Thus, 
 \eqref{eq:l1tf_var_st_mat} is not simply a special case of these
-existing methods.
+existing methods. Finally, these papers examine networks with hundreds
+of nodes and dozens to hundreds of time points. As discussed next, our data are
+significantly larger than these networks and attempting to estimate a
+full covariance would be prohibitive, were it required.
 
 
 \section{Optimization Methods}
@@ -521,15 +526,16 @@ For a spatial grid of size $S$ and $T$ time steps, $D$ in equation \ref{eq:l1tf_
 $3Tn_rn_c-2n_rn_c-Tn_r$ rows and $S \cdot T$ columns. For a $1^\circ\times
 1^\circ$ grid over the entire northern hemisphere and daily data over
 10 years, we have $S=90\times 360\approx 32,000$ spatial locations and
-$T=3650$ time points, and so $D$ has
-approximately $10^8$ columns and $10^8$ rows. In each step of the PDIP
-algorithm, we need to solve a linear system of equations which
-depends on $D^\top D$ (see appendix A and B). Therefore,
+$T=3650$ time points, so $D$ has
+approximately $10^8$ columns and $10^8$ rows. In principal, we could
+solve~\eqref{eq:l1tf_var_st_mat} using PDIP as before, however, each iteration
+requires solving a linear system of equations which
+depends on $D^\top D$. Therefore,
 applying the PDIP directly is infeasible for our data.\footnote{We
   note that $D$ is a highly structured, sparse matrix, but, unlike
   trend filtering alone, it is not banded. We are unaware of general
   linear algebra techniques for inverting such matrix, despite our
-  best efforts.}  
+  best efforts to find them.}  
 
 In the next section, we develop two ADMM algorithms for solving this
 problem efficiently. The first casts the problem as a
@@ -584,7 +590,7 @@ the original optimization problem is equivalent to the following
 problem:  
 \begin{equation}
 \begin{aligned}
-&\min_{\{x_1,...,x_N  \}} \sum_i f_i(x_i) &
+&\min_{\{x_1,...,x_N  \}} \sum_{i=1}^N f_i(x_i) &
 s.t. &\quad \tilde{h}_i=x_i.
 \end{aligned}
 \label{eq:consADMM}
@@ -593,10 +599,13 @@ It is important to note that each entry of the global variable may
 correspond to several entries of the local variables and so the
 constraints $\tilde{h}_i=x_i$ enforce the consensus between the local
 variables corresponding to the same global variable.  
-The \textit{augmented Lagrangian} corresponding to 
+The augmented Lagrangian corresponding to 
 \eqref{eq:consADMM} is $L_\rho(x,h,y)=\sum_i
 \big(f_i(x_i)+u_i^\top(x_i-\tilde{h}_i) + (\rho/2) \lVert
-x_i-\tilde{h}_i \lVert_2^2 \big)$. Now, we can apply ADMM to $L_\rho$. This results in solving $N$ independent optimization problems followed by a step to achieve consensus among the solutions in each iteration.
+x_i-\tilde{h}_i \lVert_2^2 \big)$. Now, we can apply ADMM to
+$L_\rho$. This results in solving $N$ independent optimization
+problems followed by a step to achieve consensus among the solutions
+in each iteration. 
 % which results in the following ADMM updates:
 % \begin{align}
 % x_i&\leftarrow\argmin_{x_i} f_i(x_i) + (u_i)^\top x_i +
@@ -673,8 +682,8 @@ plus the time to communicate the solutions on the master processor
 and perform the consensus step. Since each sub-problem is
 small, with parallelization, the computation time in each iteration
 will be small. In addition, our experiments with several values of
-$\lambda_t$ and $\lambda_s$ showed that the algorithm converges in few
-hundreds iterations. 
+$\lambda_t$ and $\lambda_s$ showed that the algorithm converges in a few
+hundred iterations. 
 % \attn{Need to redo this:}Solving each sub-problem on a machine with four
 % 3.20GHz Intel i5-3470 cores takes less than 3 seconds on average, and
 % so for example if we assume that communication time is 10 seconds and
@@ -721,7 +730,7 @@ where the algorithm parameters $\mu$ and $\rho$ satisfy $0 < \mu <
 defined as $\prox_{\alpha \varphi}(u) = \min_x \,\, \alpha \cdot
 \varphi(x)+\frac{1}{2} \norm{ x-u}_2^2$. Proximal algorithms are feasible
 when these proximal operators can be evaluated efficiently which, as
-we show next, is the case for our problem.  
+we show next, is the case.  
 
 %Clearly, \eqref{eq:l1tf_var_st} has this form necessary for using this algorithm.
 % The optimization problem 
@@ -767,7 +776,7 @@ we show next, is the case for our problem.
 %   sub-differential of $|z_\ell|$. The solution is the soft-thresholding
 %   operator $S_{\rho\lambda_\ell}(u_\ell)$.
 % \end{proof}
-
+The proof is fairly straightforward and given in Appendix B in the Supplement. 
 Therefore, \autoref{alg:linADMM} gives a different method for solving
 the same problem. For this algorithm, both the primal update and the
 soft thresholding step are performed elementwise at each point of the
@@ -776,7 +785,9 @@ these steps. However, because there are now many more dual variables,
 this algorithm will require more outer iterations to achieve
 consensus. It therefore is highly problem and architecture dependent
 whether \autoref{alg:conADMM} or \autoref{alg:linADMM} will be more
-useful in any particular context.
+useful in any particular context. In our experience,
+\autoref{alg:conADMM} converges in many fewer iterations, but
+each iteration is much slower unless carefully parallelized.
 
 \begin{algorithm}[tb]
   \caption{Linearized ADMM }
@@ -814,7 +825,7 @@ with four 3.20GHz Intel i5-3470 cores.
 Before examining real data, we apply our model to some synthetic
 data. This example was constructed to mimic the types of spatial and
 temporal phenomena observable in typical climate data. We generate a
-complete spatio temporal field wherein 
+complete spatio-temporal field wherein 
 observations at all time steps and all locations are
 independent Gaussian random variables with zero mean. However, the
 variance of these random variables follows a smoothly varying function
@@ -839,7 +850,7 @@ Specific parameter choices of the variance function are shown in
 \autoref{tab:sim_params}.
 For illustration, we also plot the
 variance function for all locations at $t=25$ and $t=45$
-(\autoref{fig:true_var_spatial}, top panel) in as well as
+(\autoref{fig:true_var_spatial}, top panel) as well as
 the variance across time at $(0,0)$ (bottom panel, orange).
 \begin{table}[tb]
   \caption{Parameters used to simulate data.}
@@ -880,12 +891,12 @@ estimated variance and the true variance at all locations and all time
 steps. For $\lambda_t=5$ and $\lambda_s=0.1$, the MAE was minimized. 
 \begin{figure}[tb]
   \centering	
-  \includegraphics[width=.46\columnwidth]{Figures/convergence}  
-  \includegraphics[width=.46\columnwidth]{Figures/modelComp_MAE}  
+  \includegraphics[width=.48\columnwidth]{Figures/convergence}  
+  \includegraphics[width=.48\columnwidth]{Figures/modelComp_MAE}  
   \caption{Left: Value of the objective function for linearized (orange)
     and consensus (blue) ADMM against iteration. Right: MAE for (1) our
     method with optimal values of $\lambda_t$ and $\lambda_s$ (2)
-    temporal penalty only (3) spatial
+    spatial penalty only (3) temporal
     penalty only and (4) a GARCH(1,1).} 
   \label{fig:true_fitted_var}
 \end{figure}
@@ -913,27 +924,30 @@ spatial smoothness (equivalent to fitting the model in
 simulated 100 datasets using the method explained above with $\sigma_s
 \sim \mathsf{uniform}(4,7)$. The right panel of
 \autoref{fig:true_fitted_var} shows the boxplot of the MAE for these
-models. We note that, using an algorithm akin
-to~\citep{HallacPark2017} ignores the spatial component and 
+models. As discussed above, using an algorithm akin
+to~\citep{HallacPark2017} ignores the spatial component and thus gives
+results which are similar to the second column when the covariances are shrunk to
+zero and massively worse otherwise.
 
 \subsection{Data Analysis}
 \label{sec:data}
 
 Consensus ADMM in~\autoref{sec:consOpt} is appropriate when we can
-easily parallelize it over multiple machines.  Otherwise, it is significantly
+easily parallelize over multiple machines.  Otherwise, it is significantly
 slower, so all the results reported in this section are obtained
 using \autoref{alg:linADMM}. We
-applied this algorithm to the Northern hemisphere of the ERA-20C
+applied this algorithm to the Northern Hemisphere of the ERA-20C
 dataset available from the European Center for Medium-Range
 Weather Forecasts\footnote{\url{https://www.ecmwf.int}}. We use 
 the 2 meter temperature measured daily at 12 p.m from January 1, 1960
 to December 24, 2010. 
 
-\paragraph{Preprocessing}
+\paragraph{Preprocessing and other considerations}
 
 Examination of the time-series alone demonstrates
 strong differences 
-between trend and cyclic behavior across spatial locations. One might
+between trend and cyclic behavior across spatial locations (the data
+are not mean-zero). One might
 try to model the cycles by the summation of 
 sinusoidal terms with different frequencies. However, for some
 time-series this may need many terms to be included in the summation
@@ -948,16 +962,17 @@ changes. The time-series of Manaus does not
 show any regular cyclic behavior. For this reason, we
 first apply trend filtering to remove seasonal terms and de-trend
 every time series. For each time-series, we found the optimal value of
-the penalty parameter using \textit{k-fold cross-validation} with
-$k=5$. We used the R package \textbf{genlasso} to perform these
-computations \cite{arnold_efficient_2016}.  
+the penalty parameter using 5-fold cross-validation with
+$k=5$. 
+% We used the R package \textbf{genlasso} to perform these
+% computations \cite{arnold_efficient_2016}.  
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=.3\textheight]{Figures/cities_ts}
+	\includegraphics[width=.66\columnwidth]{Figures/cities_ts}
  	\caption{Time-series of the temperature (in Kelvin) of three cities.}
  	\label{fig:cities_ts}
 \end{figure} 
-The blue curve in the left panel of Figure
+The blue curve in the left panel of 
 \autoref{fig:bloom_estimatedSD} shows the time-series of the
 temperature of Indianapolis after detrending using this method. 
 
@@ -967,23 +982,31 @@ temperature of Indianapolis after detrending using this method.
   \includegraphics[width=.8 \columnwidth]{Figures/indy_estimatedSD_1}
   \includegraphics[width=.45 \columnwidth]{Figures/indy_estimatedSD_2}
   \includegraphics[width=.45 \columnwidth]{Figures/indy_estimatedSD_3}  
-  \caption{Left: The residuals of the time-series of Indianapolis
-    (averaged weekly) and the estimated SD obtained from the method of
-    \autoref{sec:l1tf_var} (red). Middle: the estimated SDs (red) and
+  \caption{Top: The variability of the time-series of Indianapolis
+    (weekly) and the estimated SD obtained from the method of
+    \autoref{sec:l1tf_var} (red). Lower left: the estimated SDs (red) and
     their annual average (black) without imposing the long horizon
-    penalty. Right: the same as middle panel but here the long horizon
-    penalty is imposed. See the text for more details. \attn{Fix the caption (top-bottom or left right)}} 
+    penalty. Lower right: the same but with the long horizon
+    penalty is imposed.} 
   \label{fig:bloom_estimatedSD}
 \end{figure} 
+The red curve 
+shows the estimated SD (which is $\exp(h_t/2)$) obtained from out
+proposed model. For ease of analysis, we compute the average
+of the estimated SD for each year. Both are shown in the lower left panel of
+\autoref{fig:bloom_estimatedSD}. 
 
-The red curve in the left panel of Figure \autoref{fig:bloom_estimatedSD}
-shows the estimated SD (which is $\exp(h_t/2)$) of the residuals of
-the time-series of Indianapolis obtained from out proposed model. For
-ease of analysis, we compute the average
-of the estimated SD for each year. Both are shown in the middle panel of
-\autoref{fig:bloom_estimatedSD}. To smooth the annual trend, we add
-a long horizon penalty to \eqref{eq:l1tf_var}.
-The estimated, smoothed SDs are shown
+
+In addition to the constraints discussed in \autoref{sec:exten}, we
+, we add
+a long horizon penalty to smooth the annual trend.
+$\sum_{i=1}^{N_{year}-2}\left| \sum_t h_{t_1}-2h_{t_2}+h_{t_3}\right|$
+where $N_{year}$ is the number of years, $t_1=52(i-1)+t$, $t_2=52i+t$
+and $t_3=52(i+1)+t$. Finally, because the observations are on the surface
+of a hemisphere rather than a grid, we add extra spatial constraints with the
+obvious form to handle the boundary between
+$180^{\circ}$W and $180^{\circ}$E as well as the region near the North Pole.
+The estimated SDs for Indianapolis are shown
 the right panel of \autoref{fig:bloom_estimatedSD}. The annual average
 of the estimated SDs shows a linear trend with a positive slope. 
 
@@ -1013,15 +1036,15 @@ of the estimated SDs shows a linear trend with a positive slope.
 % \autoref{fig:bloom_estimatedSD}. The annual average of the estimated
 % SDs shows a linear trend with a positive slope.  
 
-\paragraph{Convergence}
+%\paragraph{Convergence and warm starts}
 
 As shown in \autoref{alg:linADMM}, we evaluated convergence using
 $\epsilon=0.001\%$ of the MSE of the data.
-Our simulation experiments showed that the
+Our simulation experiments indicated that the
 convergence speed depends on the value of $\lambda_t$ and
-$\lambda_s$. Furthermore, using the solution obtained for smaller values
-of these parameters as a warm start for the larger values, the
-converges speed improves.   
+$\lambda_s$. For the temperature data, we used the solutions obtained for smaller values
+of these parameters as a warm start for the larger values resulting in
+faster convergence.
 
 
 \paragraph{Model Selection}
@@ -1029,14 +1052,12 @@ One common method for choosing the penalty parameters in the Lasso
 problems is to find the solution for a range of the values of these
 parameters and then choose the values which minimize a model selection
 criterion. However, such analysis needs the computation of the degrees
-of freedom. Several previous work have investigated the df in
-generalized lasso problems
+of freedom. Several previous work have investigated the degrees of freedom in
+generalized lasso problems with Gaussian likelihood
 \cite{tibshirani_degrees_2012,hu_dual_2015,zeng_geometry_2017}. However,
-all these studies have considered the linear regression problem and,
-to the best of our knowledge, the problem of computing the df for
-generalized lasso with general objective function has not been
-considered yet. In this paper, we use a heuristic method for choosing $\lambda_t$ and
-$\lambda_s$: we compute the optimal solution for a range of values of
+similar computations for non-Gaussian likelihood remains an open problem.
+In this paper, therefore, we use a heuristic method for choosing $\lambda_t$ and
+$\lambda_s$: we compute the solutions for a range of values of
 these parameters and choose the values which minimize
 $\mathscr{L}(\lambda_t,\lambda_s)=-l(y|h)+ \sum \lVert D_{total}h
 \lVert$. This objective is a compromise between the negative log
@@ -1046,24 +1067,25 @@ likelihood ($-l(y|h)$) and the complexity of the solution ($\sum
 $-l(y|h)$. We computed the optimal solution for all the combinations of the
 following sets of values: $\lambda_t \in \{0,2,4,8,10,15,200,1000\} \, \, ,
 \lambda_s \in \{0,.1,.5,2,5,10\}$. The best combination was
-$\lambda_t=4$ and $\lambda_s=2$. All the analyses in the next section
-are performed on the solution for these values.  
+$\lambda_t=4$ and $\lambda_s=2$. 
 
 
 \paragraph{Analysis of Trends in Temperature Volatility}
 
 \begin{figure}[tb]
   \centering
-  \includegraphics[width=1.1\columnwidth]{Figures/ts_estimatedVar}
-  \caption{Detrended data and the estimated SD for
-    a small midwestern city (left) and San Diego (right).\attn{Fix these}} 
+  \includegraphics[width=.66\columnwidth]{Figures/ts_estimatedVarLeft}
+  \includegraphics[width=.66\columnwidth]{Figures/ts_estimatedVarRight}
+  \caption{Difference in observed data from the estimated trend
+    (blue), the estimated SDs (orange), and annual average SD (green) for
+   Indianapolis (top) and San Diego (bottom). The $y$-axis shows $\textrm{K}^{\circ}$.} 
   \label{fig:avg_change_estimatedSD}
 \end{figure} 
 
-The top row of \autoref{fig:avg_change_estimatedSD} shows the
+\autoref{fig:avg_change_estimatedSD} shows the
 detrended data, the estimated standard deviation and the yearly
-average of these estimates for two cities in the US: a small
-midwestern city (left) and San Diego (right). The estimated SD
+average of these estimates for two cities in the US: Indianapolis
+(top) and San Diego (bottom). The estimated SD 
 captures the periodic behavior in the variance of the time-series. In
 addition, the number of linear segments changes adaptively in each
 time window depending on how fast the variance is changing.  
@@ -1079,13 +1101,12 @@ time window depending on how fast the variance is changing.
 
 The yearly average of the estimated SD captures the trend in the
 temperature volatility. For example, we can see that the variance in
-the midwestern city displays a small positive trend. To determine how the volatility has
+Indianapolis displays a small positive trend. To determine how the volatility has
 changed in each location, we subtract the average of the estimated
 variance in 1961 from the average in the following years and compute
-their sum. The value of this change in the variance in each location
-is depicted in the right panel of
-\autoref{fig:avg_chg}. The left panel of this
-shows the average estimated variance in each location. Since the
+their sum. The average estimated variance at each location is shown in
+the top panel of~\autoref{fig:avg_chg} while the change from 1961
+is depicted in bottom panel. Since the
 optimal value of the spatial penalty is rather large ($\lambda_s=2$)
 the estimated variance is spatially very smooth. 
 
@@ -1120,13 +1141,12 @@ particularly in south-east Asia.
 
 
 
- 
-
 \section{Discussion}
 \label{sec:discussion}
 
 In this paper, we proposed a new method for estimating the variance of
-spatio-temporal data. The main idea is to cast this problem as a
+spatio-temporal data with the goal of analyzing global temperature
+data. The main idea is to cast this problem as a
 constrained optimization problem where the constraints enforce smooth
 changes in the variance for neighboring points in time and space. In
 particular, the solution is piecewise linear in time and piecewise
@@ -1136,7 +1156,7 @@ PDIP method directly is infeasible. We therefore developed two
 ADMM-based algorithms to solve this problem: the consensus ADMM and
 linearized ADMM. 
 
-The consensus ADMM algorithm converges in a few hundreds of iterations
+The consensus ADMM algorithm converges in a few hundred iterations
 but each iteration takes much longer than the linearized ADMM
 algorithm. The appealing feature of the consensus ADMM algorithm is
 that if it is parallelized on enough machines the
@@ -1204,9 +1224,7 @@ Each iteration of PDIP involves computing a search direction by taking a Newton 
   \end{bmatrix}
 \label{eq:resid}
 \end{equation}
-
-\noindent for $w>0$, where $\mu_1$ and $\mu_2$ are dual variables for the $\ell_\infty$ constraint. Let $A=[\nabla r_{dual}^\top , \nabla r_{cent}^\top]^\top$. The newton step takes the following form
-
+where $\mu_1$ and $\mu_2$ are dual variables for the $\ell_\infty$ constraint. Let $A=[\nabla r_{dual}^\top , \nabla r_{cent}^\top]^\top$. The newton step takes the following form
 \begin{equation}
 r_w(v,\mu_1,\mu_2)+A
 \begin{bmatrix}
@@ -1216,30 +1234,51 @@ r_w(v,\mu_1,\mu_2)+A
 	\end{bmatrix}= 0
 \label{eq:newton_step}
 \end{equation}
-
-
-We have:
-
+with
 \begin{equation}
 A=
 \begin{bmatrix}
 	\nabla^2 f^*(-D^\top v) & I & -I\\
 	-\mathbf{diag(\mu_1)}\one & -v+\lambda\one & \mathbf{0}\\
 	\mathbf{diag(\mu_2)}\one & v+\lambda\one & \mathbf{0}
-	\end{bmatrix}
+	\end{bmatrix}.
 \label{eq:delta_r}
 \end{equation}
+Therefore, to perform the Newton step we need to compute $\nabla
+f^*(-D^\top v)$ and $\nabla^2 f^*(-D^\top v)$. 
 
-Therefore, to perform the Newton step we need to compute $\nabla f^*(-D^\top v)$ and $\nabla^2 f^*(-D^\top v)$. It is straightforward to show that
-
+It is straightforward to show that
 \begin{align}
-& \nabla f^*(-D^\top v) =  -\nabla_u f^*(u) D^\top ,\\
-& \quad u=-D^\top v, \quad (\nabla_u f^*(u))_j=\log\bigg(\frac{y_j^2}{1-u_j}\bigg) \\
-& \nabla^2 f^*(-D^\top v)=D\nabla_u^2 f^*(u)D^\top, \quad (\nabla_u^2 f^*(u))_j=\mathbf{diag}\bigg(\frac{1}{1-u_j}\bigg)
+\nabla f^*(-D^\top v) &=  -\nabla_u f^*(u) D^\top ,\\
+u&=-D^\top v, \\
+ (\nabla_u f^*(u))_j&=\log\bigg(\frac{y_j^2}{1-u_j}\bigg), \\
+\nabla^2 f^*(-D^\top v)&=D\nabla_u^2 f^*(u)D^\top,\\  
+(\nabla_u^2 f^*(u))_j&=\mathbf{diag}\bigg(\frac{1}{1-u_j}\bigg).
 \end{align}
 
 
-Having computed the conjugate function and its gradient and Jacobian, now we can use a number of convex optimization software packages which have an implementation of PDIP to solve the optimization problem with the objective function \ref{eq:l1tf_var}. We chose the python API of the \texttt{cvxopt} package ~\citep{andersen_cvxopt:_2013}.
+Having computed the conjugate function and its gradient and Jacobian,
+now we can use a number of convex optimization software packages which
+have an implementation of PDIP to solve the optimization problem with
+the objective function \eqref{eq:l1tf_var}. We chose the python API of
+the \texttt{cvxopt} package ~\citep{andersen_cvxopt:_2013}. 
+
+\section{Proof of Lemma 1}
+
+\begin{proof}
+  If $f(x)=\sum_k f_k(x_k)$ then $[\prox_{\mu f}(x)]_k =
+  \prox_{\mu f_k}(u_k)$. So 
+  $[\prox_{\mu f}(u)]_k=\min_{x_k} \,\,
+  \mu\big(x_k+y_{k}^2e^{-x_{k}}\big)+\frac{1}{2}  (x_k-u_k)^2.$
+  Setting the derivative to 0 and solving for $u_k$ gives the
+  result. Similarly, $[\prox_{\rho g}(u)]_\ell=\rho
+  \lambda_\ell |z_\ell|+1/2(z_\ell-u_\ell)^2$. This is not differentiable,
+  but the solution must satisfy $\rho \cdot \lambda_\ell \cdot \partial
+  \big(|z_\ell| \big)=u_\ell-z_\ell$ where $\partial \big(|z_\ell| \big)$ is the
+  sub-differential of $|z_\ell|$. The solution is the soft-thresholding
+  operator $S_{\rho\lambda_\ell}(u_\ell)$.
+\end{proof}
+
 
 
 
@@ -1261,12 +1300,10 @@ D_{temp}=\begin{bmatrix}
 D_t &  & \\ 
 & \ddots & \\
 &  & D_t
-\end{bmatrix}
+\end{bmatrix},
 \label{eq:d_t_matrix}
 \end{equation}
-
-\noindent where $D_t$ was first introduced in Section 2 of the main text and has the following form:
-
+where $D_t$ was first introduced in Section 2 of the main text and has the following form:
 \begin{equation}
  D_t=\begin{bmatrix}
  1 & -2 & 1 &  &  &  &\\ 
@@ -1274,16 +1311,26 @@ D_t &  & \\
  &  & \ddots & \ddots & \ddots  &  &\\ 
  &  & & 1 & -2 & 1 &  \\ 
  &  &  &   & 1 & -2 & 1 
- \end{bmatrix}
+ \end{bmatrix}.
 \label{eq:d_matrix}
 \end{equation}
 
-The number of the diagonal blocks in $D_{temp}$ is equal to the grid size $n_r \times n_c$. Each row of the matrix $D_{spat}$ corresponds to one spatial constraint in Equation \eqref{eq:l1tf_var_st} in the text. For example, the first $T$ rows correspond to $|h_{11t}-h_{21t}|$ for $t=1,...,T$, the next $T$ rows correspond to $|h_{11t}-h_{12t}|$, and so on. 
+The number of the diagonal blocks in $D_{temp}$ is equal to the grid
+size $n_r \times n_c$. Each row of the matrix $D_{spat}$ corresponds
+to one spatial constraint in Equation \eqref{eq:l1tf_var_st} in the
+text. For example, the first $T$ rows correspond to
+$|h_{11t}-h_{21t}|$ for $t=1,...,T$, the next $T$ rows correspond to
+$|h_{11t}-h_{12t}|$, and so on.  
 
 
-This optimization problem, is again a generalized LASSO problem with $f(x)=\sum_{j=1}^{n_b} (x_j + y_j^2e^{-x_j}) + (\rho/2) \lVert x-\tilde{z} + u \lVert_2^2$. 
+This optimization problem, is again a generalized LASSO problem with
+$f(x)=\sum_{j=1}^{n_b} (x_j + y_j^2e^{-x_j}) + (\rho/2) \lVert
+x-\tilde{z} + u \lVert_2^2$.  
 
-As it was explained in Appendix A, the dual of this optimization problem is: $\min_\nu f^*(-D^\top\nu)$ with the constraints $|\nu_k| \le \Lambda_k$. To use PDIP we first need to compute the conjugate function $f^*(\cdot)$. We have:
+As it was explained in Appendix A, the dual of this optimization
+problem is: $\min_\nu f^*(-D^\top\nu)$ with the constraints $|\nu_k|
+\le \Lambda_k$. To use PDIP we first need to compute the conjugate
+function $f^*(\cdot)$. We have: 
 
 
 \begin{align}
@@ -1374,6 +1421,9 @@ By some tedious but straightforward computation we can obtain the second derivat
 %     values of $\lambda_t$: $\lambda_t=5$ (blue) and
 %     $\lambda_t=100$ (green).} \label{fig:true_var_spatial}
 % \end{figure}
+
+
+\end{document}
 
 \section{Data Exploration}
 
