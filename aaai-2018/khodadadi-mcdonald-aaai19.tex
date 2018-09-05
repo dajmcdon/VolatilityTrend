@@ -13,7 +13,7 @@
 
 \pdfinfo{
   /Title (Algorithms for Estimating Trends in Global Temperature Volatility)
-  % /Author (Khodadadi and McDonald)
+   /Author (Khodadadi and McDonald)
   /Author (John Doe, Jane Doe)}
 
 \setcounter{secnumdepth}{2}  
@@ -100,7 +100,7 @@ Address line
 
 
 \begin{abstract}
-Trends in terrestrial temperature variability are perhaps more relavant for species
+Trends in terrestrial temperature variability are perhaps more relevant for species
 viability than trends in mean
 temperature. In this paper, we develop methodology for estimating such
 trends using multi-resolution climate data from polar orbiting weather
@@ -170,7 +170,7 @@ and time.
 \subsection{Variability Rather Than Average}
 \label{sec:vari-rath-than}
 
-Trends in terrestrial temperature variability are perhaps more relavant for species
+Trends in terrestrial temperature variability are perhaps more relevant for species
 viability than trends in mean
 temperature~\cite{huntingford_no_2013},
 because an increase in
@@ -308,7 +308,7 @@ or equivalently:
 \label{eq:l1tf}
 \end{equation}
  where $y=\{y_t\}_{t=1}^T$ is an observed time-series, $\beta\in \mathbb{R}^T$ is the smooth trend,
- $D_t$ is a $(T-2)\times T$ matrix, and $\lambda$ is a tuning parameter
+ $D_t$ is a $(T-2)\times T$ matrix (see Appendix C), and $\lambda$ is a tuning parameter
  which balances fidelity to the data (small errors in the first term)
  with a desire for smoothness.  
 % The \textit{penalty matrix} is:
@@ -455,7 +455,7 @@ likelihood is different). As before,
 we can write \eqref{eq:l1tf_var_st} in matrix form where $h$ is a
 vector of length
 $TS$ and $D_t$ is replaced by $D \in
-\mathbb{R}^{(N_t+N_s) \times (T \cdot S)	}$, where $N_t=S \cdot
+\mathbb{R}^{(N_t+N_s) \times (T \cdot S)	}$ (see Appendix C), where $N_t=S \cdot
 (T-2)$ and $N_s=T \cdot (2n_rn_c-n_r)$ are the number of temporal and
 spatial constraints, respectively. 
 % The exact form of this matrix in clarified in Appendix
@@ -972,7 +972,7 @@ $k=5$.
  	\caption{Time-series of the temperature (in Kelvin) of three cities.}
  	\label{fig:cities_ts}
 \end{figure} 
-The blue curve in the left panel of 
+The blue curve in the top panel of 
 \autoref{fig:bloom_estimatedSD} shows the time-series of the
 temperature of Indianapolis after detrending using this method. 
 
@@ -991,7 +991,7 @@ temperature of Indianapolis after detrending using this method.
   \label{fig:bloom_estimatedSD}
 \end{figure} 
 The red curve 
-shows the estimated SD (which is $\exp(h_t/2)$) obtained from out
+shows the estimated SD (which is $\exp(h_t/2)$) obtained from our
 proposed model. For ease of analysis, we compute the average
 of the estimated SD for each year. Both are shown in the lower left panel of
 \autoref{fig:bloom_estimatedSD}. 
@@ -1006,8 +1006,7 @@ and $t_3=52(i+1)+t$. Finally, because the observations are on the surface
 of a hemisphere rather than a grid, we add extra spatial constraints with the
 obvious form to handle the boundary between
 $180^{\circ}$W and $180^{\circ}$E as well as the region near the North Pole.
-The estimated SDs for Indianapolis are shown
-the right panel of \autoref{fig:bloom_estimatedSD}. The annual average
+The estimated SDs for Indianapolis are shown in the lower right panel of \autoref{fig:bloom_estimatedSD}. The annual average
 of the estimated SDs shows a linear trend with a positive slope. 
 
 % The Supplement explains some preprocessing and investigates some
