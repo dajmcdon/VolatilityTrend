@@ -1,0 +1,39 @@
+We would like to thank the reviewers for their comments, and we appreciate the positive reception. We will address the reviewers' main concern first before responding to specific details.
+
+The major issue for all three reviewers was lack of novelty/suitability for AAAI. We agree that the algorithmic contributions here are marginal (though we would argue nontrivial) from the point of view of standard AI/ML methodological papers. Our major goal was to create tailored algorithms which worked for a specific applied problem (though they do generalize, see below). For this reason, the paper was submitted to the "AI for Social Impact" track (see https://aaai.org/Conferences/AAAI-19/aaai19emergingcall/) rather than the technical track. We chose AAAI specifically because of this particular emphasis, feeling that this type of contribution fits well with that call. We hope the reviewers will (or already have) taken this into account.
+
+Reviewer #1:
+
+"it is hard to quantitatively evaluate the results...the real data experiments is still not very convincing"
+
+This is an issue in our minds as well. We found it very difficult to find meaningful competing methods. While our simulation is enough to convince us that the estimator "works" for data of the appropriate structure, there aren't really any appropriate techniques to compare with in the literature. The state-of-the-art for this data is essentially the unpenalized estimator. We considered comparing to some image denoising algorithms (reformulated to estimate the size of the noise), but the performance was very poor since they ignore the temporal dependence.
+
+Reviewer #2:
+
+"the concern that the paper is too narrow by giving a few examples of other extant problems across the sciences to which their methodology could be applied"
+
+Our methods are easily generalizable to spatio-temporal data under convex loss, e.g. exponential family likelihood. And "spatio" can be broadly construed to include more complicated graph dependencies. Our particular application uses Gamma likelihood (rather than the standard Gaussian). This lends itself well to modeling trends in pollutant emissions, say, or in astronomical phenomena like microwave background radiation. Volatility estimation in natural gas/oil markets (see e.g. Pindyck, R. S. (2004)) or with financial data is another possibility. We've also considered applying it to resting-state fMRI data (though the penalty structure changes). In ML, as mentioned above, it could conceivably be used for video denoising, though we doubt it would be competitive with the state-of-the-art.
+
+Reviewer #3:
+
+"For consensus ADMM, can you provide results on how much time is spent on...communication...computation"?
+
+Computation per iteration per core is ~10s. Communication is ~4. Though this is platform specific.
+
+"The model selection criterion"
+
+We agree completely that this is heuristic. Cross validation has no theoretical support in  the spatio-temporal setting, and is too expensive computationally. Our current (theoretical) work derives unbiased risk estimators (like AIC) for this setup. Previous work requires Gaussian likelihood, and our results extend it to exponential families with this as a motivating application. It was not yet ready at the submission deadline.
+
+"If you change the model selection criterion,... will you still get this trend"?
+
+The short answer is: probably here, though not elsewhere. We chose Indianapolis for that figure because it has variable climate but not noisy weather, so that location isn't particularly sensitive to the tuning parameters. But other locations are more sensitive. Essentially, specific locations in the map in Fig 7 will likely change, but the broad pattern won't change too much (based on visual comparisons at other choices). However, this is strong motivation for the need for a theoretically sound risk estimator.
+
+"Can you provide the convergence rate for the ADMM algorithms?"
+
+The literature suggests linear convergence for ADMM (see Hong and Luo, 2016 or Nishihara, Lessard, Recht, et al. 2015). Fig 3 seems to fit in the linear framework for both algorithms, though with different constants. 
+
+"Can you provide the computing time for the algorithms?"
+
+For the simulation, the times are in the first paragraph of p6 and the left panel of Fig 3. For the temperature data we will provide these times in the revised version of the paper. The timing depends on the lambda_t and lambda_s, but it takes between 1 and 4 hours for convergence.   
+
+

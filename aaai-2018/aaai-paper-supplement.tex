@@ -11,10 +11,9 @@
 %PDF Info Is Required:
 
 \pdfinfo{
-  /Title (Supplement for Algorithms for Estimating Trends in Global Temperature
-  Volatility )
-   %/Author (Khodadadi and McDonald)
-  /Author (John Doe, Jane Doe)}
+  /Title (Supplement for ``Algorithms for Estimating Trends in Global Temperature
+  Volatility'' )
+   /Author (Khodadadi and McDonald)}
 
 \setcounter{secnumdepth}{2}  
 
@@ -41,7 +40,7 @@
 %\hypersetup{backref,colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue}
 
 %\newcommand{\theHalgorithm}{\arabic{algorithm}}
-\usepackage{cleveref}
+
 
 
 \usepackage{subfigure} 
@@ -57,6 +56,8 @@
 \usepackage{comment}
 \usepackage{mathtools}
 \mathtoolsset{showonlyrefs}
+
+\usepackage{cleveref}
 
 \newtheorem{theorem}{Theorem}%[section]
 \newtheorem{definition}[theorem]{Definition}
@@ -77,16 +78,18 @@
 \DeclareMathOperator*{\sign}{sign}
 
 \usepackage{xr}
-\externaldocument{khodadadi-mcdonald-aaai19}
+\externaldocument{khodadadi-mcdonald-aaai19-camera}
 
 \begin{document} 
 
-\title{Supplement for Algorithms for Estimating Trends in Global Temperature Volatility}
+\title{Supplement for ``Algorithms for Estimating Trends in Global Temperature Volatility''}
 
-\author{Author 1 \ and Author 2\\
-Address line\\
-Address line
-}
+\author{Arash Khodadadi \and Daniel J. McDonald\\
+ Department of Statistics\\
+ Indiana University\\
+ Bloomington, IN 47408 \\
+ \{arakhoda,dajmcdon\}@indiana.edu}
+
 % \author{Arash Khodadadi \and Daniel J. McDonald\\
 %  Department of Statistics\\
 %  Indiana University\\
@@ -105,24 +108,20 @@ Address line
 \label{sec:app_l1tf_var}
 
 In this appendix we provide more details on how to solve the optimization problem with the objective specified in equation \ref{eq:l1tf_var} using PDIP. The objective function is convex but not differentiable. Therefore, to be able to use PDIP we first need to derive the dual of this problem. We note that this is a generalized LASSO problem \citep{TibshiraniTaylor2011}. The dual of a generalized LASSO with the objective $f(x)+\lambda \norm{ Dx }_1$ is:  
-
 \begin{align}
 \min_\nu&\quad f^*(-D^\top\nu) & \mbox{s.t.}&\quad \norm{ \nu }_\infty \le \lambda
 \end{align}
-
-\noindent where $f^*(\cdot)$ is the Fenchel conjugate of $f$: $f^*(u)=\max_x u^\top x-f(x)$. It is simple to show that for the objective function of Equation \ref{eq:l1tf_var}
-
+where $f^*(\cdot)$ is the Fenchel conjugate of $f$: $f^*(u)=\max_x u^\top x-f(x)$. It is simple to show that for the objective function of Equation \ref{eq:l1tf_var}
 \begin{equation}
 f^*(u)=\sum_t (u_t-1)\log\frac{y_t^2}{1-u_t} + u_t-1.
 \label{eq:conj}
 \end{equation}
 
 Each iteration of PDIP involves computing a search direction by taking a Newton step for the system of nonlinear equations $r_w(v,\mu_1,\mu_2)=0$, where $w>0$ is a parameter and
-
 \begin{equation}
 \begin{aligned}
-  &r_w(v,\mu_1,\mu_2)\\
-  &:=
+  &r_w(v,\mu_1,\mu_2)
+  :=
 	\begin{bmatrix}
 	r_{dual}\\
 	r_{cent}	
@@ -156,7 +155,6 @@ A=
 \end{equation}
 Therefore, to perform the Newton step we need to compute $\nabla
 f^*(-D^\top v)$ and $\nabla^2 f^*(-D^\top v)$. 
-
 It is straightforward to show that
 \begin{align}
 \nabla f^*(-D^\top v) &=  -\nabla_u f^*(u) D^\top ,\\
@@ -180,15 +178,13 @@ the \texttt{cvxopt} package~\citep{andersen_cvxopt:_2013}.
 \label{sec:app_consADMM}
 
 In this section we give more details on performing the $x$-update step in Algorithm 1. We need to solve the following optimization problem:
-
-\begin{small}
-\begin{equation}
-\hat{x}:=\argmin_{x} \bigg( \sum_{j=1}^{n_b} (x_j + y_j^2e^{-x_j}) + (\rho/2) \lVert x-\tilde{z} + u \lVert_2^2 + \Lambda^\top |D x| \bigg)
+\begin{align}
+\hat{x} &:=\argmin_{x} \bigg( \sum_{j=1}^{n_b} (x_j +
+                y_j^2e^{-x_j})\\
+  &\quad+ (\rho/2) \lVert x-\tilde{z} + u \lVert_2^2 + \Lambda^\top |D x| \bigg)
 \label{eq:x_update_opt}
-\end{equation}
-\end{small}
-
-\noindent where $n_b$ is the number of local variables in each sub-cube in \autoref{fig:data_cube}, and for ease of notation we have dropped the subscript $i$ and superscript $m$. 
+\end{align}
+where $n_b$ is the number of local variables in each sub-cube in \autoref{fig:data_cube}, and for ease of notation we have dropped the subscript $i$ and superscript $m$. 
 
 The matrix $D$ has the following form:  $D=[D_{temp}|D_{spat}]$. The matrix $D_{temp}$ is the following block-diagonal matrix and corresponds to the temporal penalty: 
 \begin{equation}
@@ -203,9 +199,9 @@ where $D_t$ was first introduced in Section 2 of the main text and has the follo
 \begin{equation}
  D_t=\begin{bmatrix}
  1 & -2 & 1 &  &  &  &\\ 
- & 1 & -2 & 1 &  &  &\\ 
- &  & \ddots & \ddots & \ddots  &  &\\ 
- &  & & 1 & -2 & 1 &  \\ 
+ & 1 & -2 & 1 &  &0  &\\ 
+ &  &  & \ddots &  &  &\\ 
+ & 0 & & 1 & -2 & 1 &  \\ 
  &  &  &   & 1 & -2 & 1 
  \end{bmatrix}.
 \label{eq:d_matrix}
@@ -229,7 +225,7 @@ problem is: $\min_\nu f^*(-D^\top\nu)$ with the constraints $|\nu_k|
 function $f^*(\cdot)$. We have: 
 \begin{equation}
 \begin{aligned}
-&f^*(\xi)\\ & = \max_x  \xi^\top x - f(x)\\
+&f^*(\xi)  = \max_x  \xi^\top x - f(x)\\
 & =  \max_x \sum_{j=1}^{n_b} (\xi_jx_j - x_j - y_j^2e^{-x_j} -
 (\rho/2)(x_j-\tilde{z}_j+u_j)). 
 \end{aligned}
@@ -243,12 +239,10 @@ Setting the derivative of the terms inside the summation to 0, we obtain:
 where $x^*$ is the maximizer in \ref{eq:conjugate}. Then, it
 can be shown that $x_j^*$ which satisfies \eqref{eq:x_start} can be
 obtained as follows: 
-
 \begin{align}
 x^*_j & = \mathscr{W}\bigg(\frac{y_j^2}{\rho} e^{\phi_j} \bigg) - \phi_j, \\
 \phi_j & =\frac{1-\xi_j-\rho(\tilde{z}_j-u_j)}{\rho}.
 \end{align}
-
 In this equation, $\mathscr{W}(\cdot)$ is the Lambert W function \cite{corless_lambertw_1996}. Finally, the conjugate function is: $f^*(\xi) = \sum_{j=1}^{n_b} (\xi_jx^*_j - x^*_j - y_j^2e^{-x^*_j} - (\rho/2)(x^*_j-\tilde{z}_j+u_j))$.
 
 To use PDIP, we also need to evaluate $\nabla f^*$ and $\nabla^2 f^*$. First note that $\frac{\partial \mathscr{W}(q)}{\partial q} = \frac{\mathscr{W}(q)}{q(1+\mathscr{W}(q))}$ and $\frac{\partial^2 \mathscr{W}(q)}{\partial q^2} = - \frac{\mathscr{W}^2(q)(\mathscr{W}(q)+q)}{q^2(1+\mathscr{W}(q))^3}$. Using the chain rule we get:
