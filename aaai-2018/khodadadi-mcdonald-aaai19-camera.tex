@@ -53,10 +53,8 @@
 \usepackage{amssymb}
 \usepackage{mathrsfs}
 \DeclareMathOperator*{\argmin}{argmin}
-\usepackage{siunitx}
-\usepackage{comment}
-\usepackage{mathtools}
-\mathtoolsset{showonlyrefs}
+%\usepackage{siunitx}
+%\usepackage{comment}
 
 \usepackage{cleveref}
 
@@ -65,6 +63,10 @@
 \newtheorem{lemma}[theorem]{Lemma}
 
 \newcommand{\autoref}{\Cref}
+
+%\usepackage{autonum}
+
+
 
 \usepackage{gensymb}
 \usepackage{xcolor}
@@ -179,6 +181,7 @@ viability than trends in mean
 temperature~\cite{huntingford_no_2013},
 because an increase in
 temperature variability will increase the probability of extreme hot
+or cold
 outliers~\cite{VasseurDeLong2014}. Recent climate literature
 suggests that it is more difficult for society to adapt to these
 extremes than to the gradual increase in the mean temperature
@@ -204,8 +207,8 @@ that these estimates are increasing.
 \citet{huntingford_no_2013} took a similar
 approach in analyzing the ERA-40 data set. They argued that, while there
 is an increase in the SDs from 1958-1970 to 1991-2001, it
-is much smaller than found in
-\cite{hansen_perception_2012}. \citet{huntingford_no_2013} also computed the
+is much smaller than found by
+\citet{hansen_perception_2012}. \citet{huntingford_no_2013} also computed the
 time-evolving global SD from the detrended time-series at each
 position and argued that the global SD has been
 stable. 
@@ -291,8 +294,8 @@ likelihood. Furthermore the spatial structure can be broadly construed
 to include general graph dependencies. Our current application uses
 Gamma likelihood which lends itself well to modeling trends in
 pollutant emissions or in astronomical phenomena like microwave
-background radiation. Volatility estimation in natural gas/oil markets
-or with financial data is another possibility. These methods can also
+background radiation. Volatility estimation in oil and natural gas markets
+or with financial data is another possibility. Our methods can also
 be applied to resting-state fMRI data (though the penalty structure changes). 
 
 
@@ -383,8 +386,8 @@ we assume that the parameters $h_t$ vary smoothly and estimate them by
 minimizing the penalized, negative
 log-likelihood:  
 \begin{equation}
-\min_h -l(y\given h)+\lambda \norm{ D_th }_1
-\label{eq:l1tf_var}
+  \label{eq:l1tf_var}
+  \min_h -l(y\given h)+\lambda \norm{ D_th }_1
 \end{equation}
 where $D_t$ has the same structure as above.
 
@@ -398,31 +401,6 @@ derive the dual of this optimization problem and compute the first and
 second derivatives of the dual objective function.  
 
 
-\begin{comment}
-\begin{algorithm}[tb]
-  \caption{PDIP for $\ell_1$ variance estimation}
-  \label{alg:pdip}
-  \begin{algorithmic}
-    \REQUIRE $\lambda>0$, $w>0$, $\nu\leftarrow 0$, $\mu_1\leftarrow
-    0$, $\mu_2\leftarrow 0$, $J\in\mathbb{Z}^+$, $\{w_k\}$
-    \COMMENT{Initialization} 
-    \FOR[Central path]{$k=1,2,\ldots$}
-    \FOR[Newton updates]{$j=1,\ldots,J$}
-    \STATE Solve $A [\Delta\nu\; \Delta\mu_1\;
-    \Delta\mu_2]^\top=r_{w_k}$ to find the search direction. 
-    \STATE $\quad\quad A$ is given in \ref{eq:delta_r}
-    \STATE Update $[\nu^{j+1}\; \mu^{j+1}_1\; \mu^{j+1}_2] \leftarrow
-    [\nu^{j}\; \mu^{j}_1\; \mu^{j}_2] + [\Delta\nu\; \Delta\mu_1\;
-    \Delta\mu_2]$. 
-    \ENDFOR
-   \ENDFOR
-   \RETURN $h=\log\frac{y^2}{1+D^\top\nu}$ 
-   \\
-   \attn{Is this right? Explicit form of $A$}\\
-   \attn{Arash: see appendix A}
-  \end{algorithmic}
-\end{algorithm}
-\end{comment}
 
 \subsection{Adding Spatial Constraints}
 \label{sec:exten}
@@ -443,16 +421,14 @@ space (although higher-order smoothness can be imposed with minimal
 alterations to the methodology). We achieve this goal
 by solving the following optimization problem: 
 {\small
-\begin{equation}
-\label{eq:l1tf_var_st}.
-\begin{aligned}
-&\min_h \sum_{i,j,t}h_{ijt}+y_{ijt}^2e^{-h_{ijt}}\\& +\lambda_t
-\sum_{i,j} \sum_{t=2}^{T-1}
-\left|h_{ij(t-1)}-2h_{ijt}+h_{ij(t+1)}\right|\\ 
-&+\lambda_s \sum_{t,j} \sum_{i=1}^{n_r-1} \left|h_{ijt}-h_{(i+1)jt}\right|
-+\lambda_s \sum_{t,i} \sum_{j=1}^{n_c-1} \left|h_{ijt}-h_{i(j+1)t}\right|
-\end{aligned}
-\end{equation}
+\begin{align}
+  &\min_h \sum_{i,j,t}h_{ijt}+y_{ijt}^2e^{-h_{ijt}}\notag\\
+  & +\lambda_t \sum_{i,j} \sum_{t=2}^{T-1}
+    \left|h_{ij(t-1)}-2h_{ijt}+h_{ij(t+1)}\right|\label{eq:l1tf_var_st}\\ 
+  &+\lambda_s \sum_{t,j} \sum_{i=1}^{n_r-1} \left|h_{ijt}-h_{(i+1)jt}\right|
+    +\lambda_s \sum_{t,i} \sum_{j=1}^{n_c-1}
+    \left|h_{ijt}-h_{i(j+1)t}\right|\notag
+\end{align}
 }%
 
 The first term in the objective is proportional to the negative
@@ -562,28 +538,6 @@ appropriate depending on the particular computing infrastructure.
 \subsection{Consensus Optimization}
 \label{sec:consOpt}
 
-\begin{comment}
-General (unconstrained) optimization problems $\min_z
-\sum_i f_i(z)$, $z\in\mathbb{R}^n$ can be rewritten equivalently using a
-collection of local variables, $x_i\in \mathbb{R}^{n_i}$, and a
-constraint. Following the notation of 
-\cite{boyd_distributed_2011}, let $k=\mathscr{G}(i,j)$ which
-means that the $j^\text{th}$ entry of $x_i$ is $z_k$ (or
-$(x_i)_j=z_k$) and define $\tilde{z}_i \in \mathbb{R}^{n_i}$ by
-$(\tilde{z}_i)_j=(x_i)_j$. Then the original unconstrained
-optimization problem is equivalent to the following constrained
-problem
-$\min_{\{x_1,...,x_N  \}} \sum_i f_i(x_i)$ subject to $\tilde{z}_i=x_i$.
-Now, we can apply ADMM to the augmented Lagrangian of this
-problem: 
-\begin{align}
-x_i&\leftarrow \argmin_{x_i} f_i(x_i) + (u_i)^\top x_i +
-     (\rho/2) \norm{ x_i-\tilde{z}_i }_2^2\\
-%\label{eq:ADMM_steps}
-z_k&\leftarrow (1/S_k)\sum_{\mathscr{G}(i,j)=k} (x_i)_j\\
-u_i&\leftarrow u_i + \rho (x_i-\tilde{z}_i)
-\end{align}
-\end{comment}
 
 Consider an optimization problem of the form $\min_h f(h)$, where
 $h\in\mathbb{R}^n$ is the global variable and
@@ -596,11 +550,11 @@ Assume it is possible to define a set of local variables
 $x_i \in \mathbb{R}^{n_i}$ such that $f(h)=\sum_i f_i(x_i)$, where
 each $x_i$ is a subset of the global variable $h$. More specifically,
 each entry of the local variables corresponds to an entry of the
-global variable. Therefore we can define a mapping $\mathscr{G}(i,j)$
+global variable. Therefore we can define a mapping $G(i,j)$
 from the local variable indices into the global variable indices:
-$k=\mathscr{G}(i,j)$ means that the $j^\text{th}$ entry of $x_i$ is
+$k=G(i,j)$ means that the $j^\text{th}$ entry of $x_i$ is
 $h_k$ (or $(x_i)_j=h_k$). For ease of notation, define $\tilde{h}_i
-\in \mathbb{R}^{n_i}$ as $(\tilde{h}_i)_j=h_{\mathscr{G}(i,j)}$. Then,
+\in \mathbb{R}^{n_i}$ as $(\tilde{h}_i)_j=h_{G(i,j)}$. Then,
 the original optimization problem is equivalent to:  
 \begin{equation}
 \begin{aligned}
@@ -677,7 +631,7 @@ of the augmented Lagrangian.
     x_i)+\Lambda_{(i)}^\top |D_{(i)}x_i|\\&\quad+ (u_i)^\top x_i +
     (\rho/2)  \lVert x_i-\tilde{h}_i \rVert_2^2\end{aligned}$. \\\COMMENT{Update local
       vars using PDIP}
-    \STATE $h_k\leftarrow (1/S_k)\sum_{\mathscr{G}(i,j)=k} (x_i)_j
+    \STATE $h_k\leftarrow (1/S_k)\sum_{G(i,j)=k} (x_i)_j
     $. \COMMENT{Global update.}
     \STATE $ u_i\leftarrow u_i + \rho (x_i-\tilde{h}_i)$. \COMMENT{Dual update}
     \UNTIL {$\max\left\{\norm{h^{m+1}-h^m},\ \norm{h^m-x^m}\right\} < \epsilon$}
@@ -731,14 +685,14 @@ where $x\in \mathbb{R}^n$ and $D\in \mathbb{R}^{m\times n}$. Each
 iteration of the linearized ADMM
 algorithm~\cite{parikh_proximal_2014} for solving this problem 
 has the form
-\begin{equation}
+\begin{equation*}
   \label{eq:linADMM_steps}
   \begin{aligned}
     x & \leftarrow \prox_{\mu f} \left(x - (\mu/\rho)D^\top (D x - z + u )\right)\\
     z & \leftarrow \prox_{\rho g} \left(z + u\right)\\
     u & \leftarrow u + D x - z
   \end{aligned}
-\end{equation}
+\end{equation*}
 where the algorithm parameters $\mu$ and $\rho$ satisfy $0 < \mu <
 \rho/\norm{D}_2^2$, $z,u\in \mathbb{R}^m$ and the proximal operator is
 defined as $\prox_{\alpha \varphi}(u) = \min_x \,\, \alpha \cdot
@@ -766,13 +720,13 @@ we show next, is the case.
 \begin{lemma}
   Let $f(x) = \sum_{k} x_{k} + y_{k}^2e^{-x_{k}}$ and $g(x) =
   \norm{x}_1$. Then, 
-  \begin{equation}
+  \begin{equation*}
     \begin{aligned}
-      [\prox_{\mu f}(u)]_k &= \mathscr{W}\bigg(\frac{y_k^2}{\mu}
+      \bigl[\prox_{\mu f}(u) \bigl]_k &= \mathscr{W}\bigg(\frac{y_k^2}{\mu}
       \exp\bigg(\frac{1-\mu u_k}{\mu}\bigg) \bigg) + \frac{1-\mu u_k}{\mu},\\
       \prox_{\rho g}(u) &= S_{\rho\lambda}(u)
     \end{aligned}
-  \end{equation}
+  \end{equation*}
   where $\mathscr{W}(\cdot)$ is the Lambert W function
   \cite{corless_lambertw_1996},  $[S_{\alpha}(u)]_k = \sign(u_k)(|u_k|
   -\alpha_k)_+$ and $(v)_+=v\vee 0$.
@@ -847,12 +801,12 @@ observations at all time steps and all locations are
 independent Gaussian random variables with zero mean. However, the
 variance of these random variables follows a smoothly varying function
 in time and space given by the following parametric model:
-\begin{align}
+\begin{align*}
   \sigma^2(t,r,c) & =\sum_{k=1}^{K} W_k(t) \cdot \exp\bigg(
                     \frac{(r-r_k)^2+(c-c_k)^2} {2\sigma_k^2} \bigg)\\
   W_k(t) & =\alpha_k \cdot t + \exp(\sin(2\pi\omega_k t+\phi_k)) .
 \label{eq:sourceVar}
-\end{align}
+\end{align*}
 The variance at each time and location is computed as the
 weighted sum of $K$ bell-shaped functions where the weights are
 time-varying, consist of a linear trend %$\alpha_k \cdot t$ 
@@ -931,7 +885,7 @@ algorithm takes 0.01 seconds on average while each iteration of the
 consensus ADMM takes about 20 seconds. Thus, where the lines meet at
 400 iterations requires about 4 seconds for the linearized method and
 2 hours for the consensus method. For consensus ADMM, computation per
-iteration per core is requires $\sim$10 seconds with $\sim$4 seconds
+iteration per core requires $\sim$10 seconds with $\sim$4 seconds
 for communication. In general, the literature suggests linear
 convergence for ADMM~\citep{NishiharaLessard2015} and~\autoref{fig:true_fitted_var} seems to fit in the linear framework for both algorithms, though with different constants. 
 
@@ -973,19 +927,20 @@ between trend and cyclic behavior across spatial locations (the data
 are not mean-zero). One might
 try to model the cycles by the summation of 
 sinusoidal terms with different frequencies. However, for some
-time-series this may need many terms to be included in the summation
-to achieve a reasonable level of accuracy. In addition, such a model
+locations, this would require many frequencies
+to achieve a reasonable level of accuracy, while other locations would
+require relatively few. In addition, such a model
 cannot capture the non-stationarity in the cycles. 
 
 \autoref{fig:cities_ts} shows the time-series of the 
 temperature of three cities: Indianapolis (USA), San Diego (USA) and
 Manaus (Brazil). The time-series of Indianapolis and San Diego show
-clear cyclic behavior, though the amplitude of the cycles
-changes. The time-series of Manaus does not
+clear cyclic behavior, though the amplitude is different. The
+time-series of Manaus does not 
 show any regular cyclic behavior. For this reason, we
 first apply trend filtering to remove seasonal terms and detrend
 every time-series. For each time-series, we found the optimal value of
-the penalty parameter using 5-fold cross-validation with.
+the penalty parameter using 5-fold cross-validation.
 % We used the R package \textbf{genlasso} to perform these
 % computations \cite{arnold_efficient_2016}.  
 \begin{figure}[tb]
@@ -996,8 +951,8 @@ the penalty parameter using 5-fold cross-validation with.
 \end{figure} 
 
 The blue curve in the top panel of 
-\autoref{fig:bloom_estimatedSD} shows the time-series of the
-temperature of Indianapolis after detrending using this method. 
+\autoref{fig:bloom_estimatedSD} shows the daily
+temperature for Indianapolis after detrending. 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=.8 \columnwidth]{Figures/indy_estimatedSD_1}
@@ -1063,8 +1018,8 @@ $\epsilon=0.001\%$ of the MSE of the data.
 Our simulations indicated that the
 convergence speed depends on the value of $\lambda_t$ and
 $\lambda_s$. For the temperature data, we used the solutions obtained for smaller values
-of these parameters as a warm start for the larger values resulting in
-faster convergence. The timing of the estimation depends on $\lambda_t$ and $\lambda_s$ but takes between 1 and 4 hours for convergence.
+of these parameters as warm starts for larger values. Estimation takes
+between 1 and 4 hours for convergence for each pair of tuning parameters. 
 
 
 \paragraph{Model Selection}
@@ -1081,7 +1036,7 @@ validation is too expensive.
 In this paper, therefore, we use a heuristic method for choosing $\lambda_t$ and
 $\lambda_s$: we compute the solutions for a range of values of
 and choose those which minimize
-$\mathscr{L}(\lambda_t,\lambda_s)=-l(y|h)+ \sum \lVert D h
+$L(\lambda_t,\lambda_s)=-l(y|h)+ \sum \lVert D h
 \lVert$. This objective is a compromise between the negative log
 likelihood and the complexity of the solution. For smoother solutions the value of $\sum
 \lVert Dh \lVert$ will be smaller but with the cost of larger

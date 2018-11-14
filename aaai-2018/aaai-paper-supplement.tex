@@ -107,7 +107,7 @@
 \section{PDIP for $\ell_1$ Trend Filtering of variance}
 \label{sec:app_l1tf_var}
 
-In this appendix we provide more details on how to solve the optimization problem with the objective specified in equation \ref{eq:l1tf_var} using PDIP. The objective function is convex but not differentiable. Therefore, to be able to use PDIP we first need to derive the dual of this problem. We note that this is a generalized LASSO problem \citep{TibshiraniTaylor2011}. The dual of a generalized LASSO with the objective $f(x)+\lambda \norm{ Dx }_1$ is:  
+In this appendix we provide more details on how to solve the optimization problem with the objective specified in \autoref{eq:l1tf_var} using PDIP. The objective function is convex but not differentiable. Therefore, to be able to use PDIP we first need to derive the dual of this problem. We note that this is a generalized LASSO problem \citep{TibshiraniTaylor2011}. The dual of a generalized LASSO with the objective $f(x)+\lambda \norm{ Dx }_1$ is:  
 \begin{align}
 \min_\nu&\quad f^*(-D^\top\nu) & \mbox{s.t.}&\quad \norm{ \nu }_\infty \le \lambda
 \end{align}
@@ -168,7 +168,7 @@ u&=-D^\top v, \\
 Having computed the conjugate function and its gradient and Jacobian,
 now we can use a number of convex optimization software packages which
 have an implementation of PDIP to solve the optimization problem with
-the objective function \eqref{eq:l1tf_var}. We chose the python API of
+the objective function \autoref{eq:l1tf_var}. We chose the python API of
 the \texttt{cvxopt} package~\citep{andersen_cvxopt:_2013}. 
 
 
